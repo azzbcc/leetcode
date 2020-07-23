@@ -3,6 +3,10 @@ project(leetcode C)
 
 set(CMAKE_C_STANDARD 99)
 
+# 使用pkg-config检查check依赖
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(CHECK REQUIRED check)
+
 # 宏定义 获取程序目录
 macro(PROGRAM_DIRS result)
     set(${result} "")
@@ -25,5 +29,5 @@ list(APPEND RESULT demo)
 foreach(dir ${RESULT})
     add_executable(${dir} main.c ${dir}/suites.c)
     target_compile_definitions(${dir} PRIVATE -DPROGRAM="${dir}")
-    target_link_libraries(${dir} check)
+    target_link_libraries(${dir} ${CHECK_LIBRARIES})
 endforeach()
