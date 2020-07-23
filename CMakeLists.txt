@@ -1,0 +1,29 @@
+cmake_minimum_required(VERSION 3.18)
+project(leetcode C)
+
+set(CMAKE_C_STANDARD 99)
+
+# 宏定义 获取程序目录
+macro(PROGRAM_DIRS result)
+    set(${result} "")
+    set(root ${CMAKE_CURRENT_SOURCE_DIR})
+    file(GLOB children RELATIVE ${root} *)
+    foreach(child ${children})
+        if(NOT IS_DIRECTORY ${root}/${child})
+            continue()
+        endif()
+        if (child MATCHES ^[0-9]+$)
+            list(APPEND ${result} ${child})
+        endif()
+    endforeach(child)
+endmacro()
+
+add_subdirectory(demo)
+
+# 加载程序子目录
+program_dirs(RESULT)
+foreach(dir ${RESULT})
+    add_executable(${dir} main.c ${dir}/suites.c)
+    target_compile_definitions(${dir} PRIVATE -DPROGRAM="${dir}")
+    target_link_libraries(${dir} check)
+endforeach()
