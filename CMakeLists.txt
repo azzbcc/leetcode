@@ -18,10 +18,10 @@ macro(PROGRAM_DIRS result)
     endforeach(child)
 endmacro()
 
-add_subdirectory(demo)
-
 # 加载程序子目录
 program_dirs(RESULT)
+list(APPEND RESULT demo)
+
 foreach(dir ${RESULT})
     add_executable(${dir} main.c ${dir}/suites.c)
     target_compile_definitions(${dir} PRIVATE -DPROGRAM="${dir}")
