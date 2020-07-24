@@ -10,7 +10,7 @@
 #include <check.h>
 #include <stdlib.h>
 
-#include "001.c"
+#include "0001.c"
 
 START_TEST(test_official) {
     int arr[] = { 2, 7, 11, 15 }, target = 9, retSize;

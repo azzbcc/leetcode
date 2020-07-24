@@ -9,7 +9,7 @@
  */
 #include <check.h>
 
-#include "064.c"
+#include "0064.c"
 
 START_TEST(test_official) {
     int len      = 3;
