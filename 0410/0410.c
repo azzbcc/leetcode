@@ -50,7 +50,7 @@ long bs(long a[], long b[], int beg, int end) {
 }
 
 // dp[i][j] = min( max(dp[i-1][j-1], num[j]), ..., max(dp[i-1][i-1], num[i...j]) )
-int splitArray(int *nums, int numsSize, int m) {
+int splitArray_01(int *nums, int numsSize, int m) {
     long dp[MAXN + 1]     = { 0 };
     long sums[MAXN][MAXN] = { 0 }; // sums[i][j] = sum(num[j...i])
 
@@ -75,3 +75,37 @@ int splitArray(int *nums, int numsSize, int m) {
         return dp[numsSize];
     }
 }
+
+int available(int *nums, int numsSize, int m, long target) {
+    long sum = 0;
+    for (int i = 0; i < numsSize; ++i) {
+        if (sum + nums[i] <= target) {
+            sum += nums[i];
+            continue;
+        }
+        m -= 1, i -= 1, sum = 0;
+    }
+    return m > 0;
+}
+
+// the result is always in [max(nums), sum(nums)]
+int splitArray_02(int *nums, int numsSize, int m) {
+    long beg = 0, end = 0;
+    for (int i = 0; i < numsSize; ++i) {
+        end += nums[i];
+        beg = MAX(beg, nums[i]);
+    }
+
+    while (beg < end) {
+        long mid = (beg + end) / 2;
+        if (available(nums, numsSize, m, mid)) {
+            end = mid;
+        } else {
+            beg = mid + 1;
+        }
+    }
+
+    return end;
+}
+
+int (*splitArray)(int *, int, int) = splitArray_02;
