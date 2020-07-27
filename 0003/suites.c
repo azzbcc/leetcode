@@ -40,9 +40,17 @@ START_TEST(failed_01) {
     ck_assert_msg(ans == target, "error, except %ld but got %ld on lengthOfLongestSubstring('%s').", target, ans, str);
 }
 
+START_TEST(failed_02) {
+    char *str = "ohomm";
+    long target = 3, ans = lengthOfLongestSubstring(str);
+
+    ck_assert_msg(ans == target, "error, except %ld but got %ld on lengthOfLongestSubstring('%s').", target, ans, str);
+}
+
 void tcase_complete(TCase *t) {
     tcase_add_test(t, test_official_01);
     tcase_add_test(t, test_official_02);
     tcase_add_test(t, test_official_03);
     tcase_add_test(t, failed_01);
+    tcase_add_test(t, failed_02);
 }

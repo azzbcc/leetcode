@@ -24,7 +24,7 @@
 // Related Topics 哈希表 双指针 字符串 Sliding Window
 // 👍 4028 👎 0
 
-int lengthOfLongestSubstring(char *s) {
+int lengthOfLongestSubstring_01(char *s) {
     if (!s || !*s) return 0;
 
     int beg = 0, end = 0, len = 0;
@@ -49,3 +49,25 @@ int lengthOfLongestSubstring(char *s) {
 
     return len;
 }
+
+int lengthOfLongestSubstring_02(char *s) {
+    if (!s || !*s) return 0;
+
+    int beg, end, len = 0, map[128] = {0};
+
+    for (beg = 0, end = 1; s[end] ; ++end) {
+        map[s[end - 1]] = end;
+
+        if (map[s[end]] > beg) {
+            if (len < end - beg) {
+                len = end - beg;
+            }
+            beg = map[s[end]];
+        }
+    }
+    if (len < end - beg) len = end - beg;
+
+    return len;
+}
+
+int (*lengthOfLongestSubstring)(char *) = lengthOfLongestSubstring_02;
