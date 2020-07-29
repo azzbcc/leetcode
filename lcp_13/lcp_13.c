@@ -72,6 +72,7 @@ typedef struct {
 int stone_count = 0, mechanism_count = 0;
 int costs[MAX_M + 2][MAX_M + 2]   = { 0 };
 int dist_stones[MAX_O][MAX_M + 1] = { 0 };
+int dists[0x10000][MAX_M]         = { 0 };
 const point_t wards[]             = { -1, 0, 1, 0, 0, -1, 0, 1 };
 point_t start, end, stones[MAX_O], mechanisms[MAX_M];
 
@@ -104,6 +105,11 @@ void init(char **maze, int m, int n) {
     for (int i = 0; i < stone_count; ++i) {
         for (int j = 0; j <= mechanism_count; ++j) {
             dist_stones[i][j] = INF;
+        }
+    }
+    for (int i = 0; i < 0x1 << mechanism_count; ++i) {
+        for (int j = 0; j < mechanism_count; ++j) {
+            dists[i][j] = INF;
         }
     }
 }
@@ -199,10 +205,45 @@ int minimalSteps(char **maze, int m) {
         }
     }
 
-    // 深搜遍历获取最短路径
-    int ans             = INF;
-    bool visited[MAX_M] = { false };
-    dfs(0, 0, visited, &ans);
+	// 定义S为任意个机关点组成的集合
+    // dists[S][k] = min(
+    //     dists[S-k][1] + costs[1][k],
+    //     dists[S-k][2] + costs[2][k],
+    //     ...
+	//     dists[S-k][i] + costs[i][k],
+    // )
+    for (int i = 0; i < mechanism_count; ++i) {
+		dists[0x1 << i][i] = costs[0][i + 1];
+    }
+    for (size_t i = 0x3; i < 0x1 << mechanism_count; ++i) {
+        for (int j = 0; j < mechanism_count; ++j) {
+            int tj = 0x1 << j;
+            // 集合i中不包含目的地j，不必运算
+            if (0 == (i & tj)) continue;
+
+            // 剔除集合中任意一点，动态规划最短路径
+            for (int k = 0; k < mechanism_count; ++k) {
+				// 目的地不可被剔除
+				if (k == j) continue;
+                int tk = 0x1 << k;
+                if (0 == (i & tk)) continue;
+
+                if (dists[i][j] > dists[i - tj][k] + costs[k + 1][j + 1]) {
+					dists[i][j] = dists[i - tj][k] + costs[k + 1][j + 1];
+                }
+            }
+        }
+    }
+    int ans = INF, last = (0x1 << mechanism_count) - 1;
+    if (mechanism_count <= 0) {
+        ans = costs[0][mechanism_count + 1];
+    } else {
+		for (int i = 0; i < mechanism_count; ++i) {
+			if (ans > dists[last][i] + costs[i + 1][mechanism_count + 1]) {
+				ans = dists[last][i] + costs[i + 1][mechanism_count + 1];
+			}
+		}
+    }
 
     return ans >= INF ? -1 : ans;
 }
