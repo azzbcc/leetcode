@@ -52,13 +52,9 @@ int uniqueLetterString(char *str) {
         last[i]          = at[str[i] - 'A'];
         at[str[i] - 'A'] = i + 1;
 
-        sum += 1;
-        for (int j = 0; j < i; ++j) {
-            if (last[i] <= j) {
-                sum += 1;
-            } else if (last[last[i] - 1] <= j) {
-                sum -= 1;
-            }
+        sum += i + 1;
+        if (last[i] > 0) {
+            sum -= 2 * last[i] - last[last[i] - 1];
         }
 
         ans += sum, ans %= MOD;
