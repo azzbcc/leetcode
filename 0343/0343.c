@@ -15,24 +15,11 @@
 // 说明: 你可以假设 n 不小于 2 且不大于 58。
 // Related Topics 数学 动态规划
 // 👍 293 👎 0
-
-#define MAX_N 58
-int pos = 4, data[MAX_N + 1] = { 0, 1, 1, 2 };
-
-static int max(int a, int b) {
+int max(int a, int b) {
     return a > b ? a : b;
 }
-
 int integerBreak(int n) {
-    if (n < pos) return data[n];
-
-    for (; pos <= n; ++pos) {
-        if (pos % 3 == 0) {
-            data[pos] = max(data[pos - 3], pos - 3) * 3;
-        } else {
-            data[pos] = max(data[pos - 2], pos - 2) * 2;
-        }
-    }
-
-    return data[n];
+    int arr[] = { 1, 2, 4 };
+    if (n <= 4) return arr[n - 2];
+    return 3 * max(integerBreak(n - 3), n - 3);
 }
