@@ -43,21 +43,16 @@
 //
 // Related Topics 双指针
 // 👍 55 👎 0
-#define MAX 10000
 #define MOD 1000000007
 int uniqueLetterString(char *str) {
-    int at[26] = { 0 }, last[MAX] = { 0 }, sum = 0, ans = 0;
+    int at1[26] = { 0 }, at2[26] = { 0 }, sum = 0, ans = 0;
 
     for (int i = 0; str[i]; ++i) {
-        last[i]          = at[str[i] - 'A'];
-        at[str[i] - 'A'] = i + 1;
-
-        sum += i + 1;
-        if (last[i] > 0) {
-            sum -= 2 * last[i] - last[last[i] - 1];
-        }
-
+        int pos = str[i] - 'A';
+        sum += i + 1 - 2 * at1[pos] + at2[pos];
         ans += sum, ans %= MOD;
+
+        at2[pos] = at1[pos], at1[pos] = i + 1;
     }
 
     return ans;
