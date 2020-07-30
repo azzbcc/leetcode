@@ -45,30 +45,21 @@
 // 👍 55 👎 0
 #define MAX 10000
 #define MOD 1000000007
-int map[MAX][MAX] = { 0 };
 int uniqueLetterString(char *str) {
-    int at[26] = { 0 }, last[MAX] = { 0 }, ans = 0;
+    int at[26] = { 0 }, last[MAX] = { 0 }, map[MAX] = { 0 }, ans = 0;
 
     for (int i = 0; str[i]; ++i) {
         last[i]          = at[str[i] - 'A'];
         at[str[i] - 'A'] = i + 1;
 
-        map[i][i] = 1;
+        map[i] = 1, ans += 1, ans %= MOD;
         for (int j = 0; j < i; ++j) {
             if (last[i] <= j) {
-                map[j][i] = map[j][i - 1] + 1;
+                map[j] += 1;
             } else if (last[last[i] - 1] <= j) {
-                map[j][i] = map[j][i - 1] - 1;
-            } else {
-                map[j][i] = map[j][i - 1];
+                map[j] -= 1;
             }
-        }
-    }
-
-    for (int beg = 0; str[beg]; ++beg) {
-        for (int end = beg; str[end]; ++end) {
-            ans += map[beg][end];
-            ans %= MOD;
+            ans += map[j], ans %= MOD;
         }
     }
 
