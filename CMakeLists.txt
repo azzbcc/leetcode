@@ -29,4 +29,5 @@ endmacro()
 
 dir_programs(demo)
 add_subdirectory(base)
+add_subdirectory(interview)
 add_subdirectory(lcp)
