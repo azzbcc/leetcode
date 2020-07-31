@@ -25,9 +25,13 @@
 // 👍 46 👎 0
 
 int findMagicIndex(int *nums, int numsSize) {
-    for (int i = 0; nums[i] <= numsSize && i < numsSize; ++i) {
+    for (int i = 0; i < numsSize && nums[i] <= numsSize;) {
         if (nums[i] == i) {
             return i;
+        } else if (nums[i] > i) {
+            i = nums[i];
+        } else {
+            i += 1;
         }
     }
     return -1;
