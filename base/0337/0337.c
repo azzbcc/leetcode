@@ -34,29 +34,24 @@
 // Related Topics 树 深度优先搜索
 // 👍 477 👎 0
 
-int max(struct TreeNode *root, bool use) {
-    if (!root) return 0;
+// cur[0] 表示包含改点最大值，cur[1]表示不包含
+#define MAX(a, b) ((a) > (b) ? (a) : (b))
+void dfs(struct TreeNode *root, int *cur) {
+    if (!root) return;
 
-    int max_ans = 0;
-    if (use) max_ans = root->val;
+    int left[2] = { 0 }, right[2] = { 0 };
 
-    int left  = max(root->left, false);
-    int right = max(root->right, false);
+    dfs(root->left, left);
+    dfs(root->right, right);
 
-    if (!use) {
-        int t_left  = max(root->left, true);
-        int t_right = max(root->right, true);
-
-        if (left < t_left) left = t_left;
-        if (right < t_right) right = t_right;
-    }
-
-    return max_ans + left + right;
+    cur[0] = root->val + left[1] + right[1];
+    cur[1] = MAX(left[0], left[1]) + MAX(right[0], right[1]);
 }
 
 int rob(struct TreeNode *root) {
-    int max1 = max(root, true);
-    int max2 = max(root, false);
+    int ans[2] = { 0 };
 
-    return max1 > max2 ? max1 : max2;
+    dfs(root, ans);
+
+    return MAX(ans[0], ans[1]);
 }
