@@ -43,14 +43,19 @@ int **threeSum(int *nums, int numsSize, int *returnSize, int **returnColumnSizes
 
     qsort(nums, numsSize, sizeof(nums[0]), comp);
     for (int i = 0; i < numsSize - 2 && nums[i] <= 0; i = next(nums, numsSize, i)) {
-        for (int j = i + 1; j < numsSize - 1; j = next(nums, numsSize, j)) {
-            int key = -nums[i] - nums[j];
-            if (key <= nums[numsSize - 1] && key >= nums[j]
-                && bsearch(&key, nums + j + 1, numsSize - j - 1, sizeof(nums[0]), comp)) {
-                arr[len][0]   = nums[i];
-                arr[len][1]   = nums[j];
-                arr[len++][2] = key;
-                assert(len < 0xffff);
+        for (int j = i + 1, k = numsSize - 1; j < k; j = next(nums, k, j)) {
+            while (j < k && nums[i] + nums[j] + nums[k] < 0) {
+                j = next(nums, k, j);
+            }
+            while (j < k && nums[i] + nums[j] + nums[k] > 0) {
+                int cur = nums[k];
+                while (j < --k && nums[k] == cur) {}
+            }
+            if (j < k && nums[i] + nums[j] + nums[k] == 0) {
+                arr[len][0] = nums[i];
+                arr[len][1] = nums[j];
+                arr[len][2] = nums[k];
+                assert(len++ < 0xffff);
             }
         }
     }
