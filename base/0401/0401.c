@@ -49,9 +49,28 @@ void search(int num, int hour, int minute) {
     }
 }
 
+void dfs(int num, int pos, int hour, int minute) {
+    static int array[] = { 1, 2, 4, 8, 1, 2, 4, 8, 16, 32 };
+
+    if (hour > 11 || minute >= 60) return;
+    if (num <= 0) {
+        help[help_len] = calloc(6, sizeof(char));
+        sprintf(help[help_len++], "%d:%02d", hour, minute);
+        return;
+    }
+
+    for (int i = pos; i + num <= sizeof(array) / sizeof(array[0]); ++i) {
+        if (i < 4) {
+            dfs(num - 1, i + 1, hour + array[i], minute);
+        } else {
+            dfs(num - 1, i + 1, hour, minute + array[i]);
+        }
+    }
+}
+
 char **readBinaryWatch(int num, int *returnSize) {
     help_len = 0;
-    search(num, 0, 0);
+    dfs(num, 0, 0, 0);
 
     *returnSize = help_len;
     char **ans  = calloc(help_len, sizeof(char *));
