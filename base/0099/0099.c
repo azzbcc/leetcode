@@ -75,7 +75,7 @@ bool findLastDown(struct TreeNode *root, struct TreeNode **prev) {
 
     return findLastDown(root->left, prev);
 }
-void recoverTree(struct TreeNode *root) {
+void recoverTree_1(struct TreeNode *root) {
     if (!root) return;
 
     int tmp;
@@ -86,3 +86,38 @@ void recoverTree(struct TreeNode *root) {
 
     tmp = first->val, first->val = last->val, last->val = tmp;
 }
+
+void recoverTree_2(struct TreeNode *root) {
+    int tmp;
+    struct TreeNode *first = NULL, *last = NULL, *prev = NULL;
+
+    while (root) {
+        if (root->left) {
+            struct TreeNode *morris_prev = root->left;
+            while (morris_prev->right && morris_prev->right != root) {
+                morris_prev = morris_prev->right;
+            }
+
+            if (morris_prev->right) {
+                morris_prev->right = NULL;
+            } else {
+                morris_prev->right = root;
+                root               = root->left;
+                continue;
+            }
+        }
+
+        if (prev) {
+            if (prev->val > root->val) {
+                if (!first) first = prev;
+                last = root;
+            }
+        }
+        prev = root;
+        root = root->right;
+    }
+
+    tmp = first->val, first->val = last->val, last->val = tmp;
+}
+
+void (*recoverTree)(struct TreeNode *) = recoverTree_2;
