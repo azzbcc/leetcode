@@ -30,18 +30,19 @@
 //
 // Related Topics 字符串
 // 👍 167 👎 0
-
+#define MIN(a, b) (((a) < (b)) ? (a) : (b))
 int countBinarySubstrings(char *s) {
-    int ans = 0, last = 0, cur = 0;
-    for (int i = 0; s[i]; ++i) {
-        if (i > 0 && s[i] == s[i - 1]) {
+    if (!*s) return 0;
+    int ans = 0, last = 0, cur = 1;
+    for (int i = 1; s[i]; ++i) {
+        if (s[i] == s[i - 1]) {
             cur += 1;
         } else {
-            last = cur;
-            cur  = 1;
+            ans += MIN(last, cur);
+            last = cur, cur = 1;
         }
-        if (cur <= last) { ans += 1; }
     }
+    ans += MIN(last, cur);
 
     return ans;
 }
