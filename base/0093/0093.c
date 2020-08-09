@@ -55,7 +55,7 @@ void dfs(const char *s, size_t len, int points[5], int pos) {
     }
 }
 
-char **restoreIpAddresses(char *s, int *returnSize) {
+char **restoreIpAddresses_1(char *s, int *returnSize) {
     int points[5] = { 0 };
 
     help_len = 0;
@@ -67,3 +67,41 @@ char **restoreIpAddresses(char *s, int *returnSize) {
 
     return ans;
 }
+
+void dfs_2(const char *s, size_t len, int addr[4], int pos) {
+    if (pos >= 4 && 0 == len) {
+        help[help_len] = calloc(16, sizeof(char));
+        sprintf(help[help_len], "%d.%d.%d.%d", addr[0], addr[1], addr[2], addr[3]);
+        assert(help_len++ < MAXN);
+        return;
+    }
+    if (len < 4 - pos || len > 3 * (4 - pos)) return;
+    addr[pos] = s[0] - '0';
+    dfs_2(s + 1, len - 1, addr, pos + 1);
+
+    if (!addr[pos]) return;
+    if (len > 1) {
+        addr[pos] = addr[pos] * 10 + s[1] - '0';
+        dfs_2(s + 2, len - 2, addr, pos + 1);
+    }
+    if (len > 2) {
+        addr[pos] = addr[pos] * 10 + s[2] - '0';
+        if (addr[pos] > 0xff) return;
+        dfs_2(s + 3, len - 3, addr, pos + 1);
+    }
+}
+
+char **restoreIpAddresses_2(char *s, int *returnSize) {
+    int addr[4] = { 0 };
+
+    help_len = 0;
+    dfs_2(s, strlen(s), addr, 0);
+
+    *returnSize = help_len;
+    char **ans  = calloc(help_len, sizeof(char *));
+    memcpy(ans, help, help_len * sizeof(char *));
+
+    return ans;
+}
+
+char **(*restoreIpAddresses)(char *, int *) = restoreIpAddresses_2;
