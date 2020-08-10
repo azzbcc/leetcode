@@ -33,31 +33,25 @@
  * };
  */
 
-struct ListNode *reverseK(struct ListNode *l, int K, int pos, bool *flag) {
-    if (!l || !l->next) {
-        *flag = pos >= K;
+struct ListNode *reverse(struct ListNode *l, int k, int now, bool *flag) {
+    if (now <= 1 || !l || !l->next) {
+        if (l && l->next) l->next = reverse(l->next, k, k, flag);
+        if (!*flag && now <= 1) *flag = true;
         return l;
     }
 
-    struct ListNode *tail = NULL;
-    if (pos >= K) {
-        tail  = reverseK(l->next, K, 1, flag);
-        *flag = true, l->next = tail;
-        return l;
-    } else {
-        tail = reverseK(l->next, K, pos + 1, flag);
-    }
+    struct ListNode *tail = reverse(l->next, k, now - 1, flag);
     if (*flag) {
         struct ListNode *next = l->next;
         l->next = next->next, next->next = l;
+
         return tail;
-    } else {
-        return l;
     }
+    return l;
 }
 struct ListNode *reverseKGroup(struct ListNode *l, int k) {
     if (k <= 1) return l;
 
     bool flag = false;
-    return reverseK(l, k, 1, &flag);
+    return reverse(l, k, k, &flag);
 }
