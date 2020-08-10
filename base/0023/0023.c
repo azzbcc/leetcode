@@ -20,20 +20,24 @@
  * };
  */
 
+struct ListNode *mergeTwoLists(struct ListNode *l1, struct ListNode *l2) {
+    if (!l1) return l2;
+    if (!l2) return l1;
+
+    if (l1->val < l2->val) {
+        l1->next = mergeTwoLists(l1->next, l2);
+        return l1;
+    } else {
+        l2->next = mergeTwoLists(l1, l2->next);
+        return l2;
+    }
+}
 struct ListNode *mergeKLists(struct ListNode **lists, int listsSize) {
-    int pos              = -1;
-    struct ListNode *min = NULL;
-    for (int i = 0; i < listsSize; ++i) {
-        if (!min || lists[i] && min->val > lists[i]->val) {
-            pos = i;
-            min = lists[i];
-        }
-    }
+    if (!listsSize) return NULL;
+    if (listsSize == 1) return lists[0];
 
-    if (min) {
-        lists[pos] = lists[pos]->next;
-        min->next  = mergeKLists(lists, listsSize);
-    }
-
-    return min;
+    int mid = listsSize / 2;
+    struct ListNode *left = mergeKLists(lists, mid);
+    struct ListNode *right = mergeKLists(lists + mid, listsSize - mid);
+    return mergeTwoLists(left, right);
 }
