@@ -27,85 +27,40 @@
 // Related Topics 深度优先搜索 动态规划
 // 👍 228 👎 0
 #define MAXN 100
-typedef struct st_state {
-    struct st_node {
-        uint8_t val, count;
-        int8_t prev, next;
-    } nodes[MAXN];
-    int8_t head;
-    uint8_t repeats[MAXN + 1];
-} state_t;
 
-void dfs(state_t state, int ans, int *result) {
-    // remove all data which repeat only 1 time
-    for (int8_t pos = state.head; pos >= 0;) {
-        if (state.repeats[state.nodes[pos].val] == 1) {
-            state.repeats[state.nodes[pos].val] = 0;
-            ans += state.nodes[pos].count * state.nodes[pos].count;
-
-            // remove current node
-            if (state.nodes[pos].prev >= 0) state.nodes[state.nodes[pos].prev].next = state.nodes[pos].next;
-            if (state.nodes[pos].next >= 0) state.nodes[state.nodes[pos].next].prev = state.nodes[pos].prev;
-
-            // back to prev if exists
-            if (state.nodes[pos].prev >= 0) {
-                pos = state.nodes[pos].prev;
-            } else if (state.nodes[pos].next >= 0) {
-                state.head = pos = state.nodes[pos].next;
-            } else {
-                state.head = -1;
-                break;
-            }
-        } else if (state.nodes[pos].next >= 0 && state.nodes[pos].val == state.nodes[state.nodes[pos].next].val) {
-            state.repeats[state.nodes[pos].val] -= 1;
-            state.nodes[pos].count += state.nodes[state.nodes[pos].next].count;
-
-            // remove next node
-            state.nodes[pos].next = state.nodes[state.nodes[pos].next].next;
-            if (state.nodes[pos].next >= 0) state.nodes[state.nodes[pos].next].prev = pos;
-        } else {
-            pos = state.nodes[pos].next;
-        }
-    }
-
-    if (state.head < 0) {
-        if (*result < ans) *result = ans;
-        return;
-    }
-
-    for (int8_t pos = state.nodes[state.head].next; state.nodes[pos].next >= 0; pos = state.nodes[pos].next) {
-        // try remove current node
-        state_t cur = state;
-
-        // remove current node
-        cur.repeats[cur.nodes[pos].val] -= 1;
-        cur.nodes[cur.nodes[pos].prev].next = cur.nodes[pos].next;
-        cur.nodes[cur.nodes[pos].next].prev = cur.nodes[pos].prev;
-
-        dfs(cur, ans + cur.nodes[pos].count * cur.nodes[pos].count, result);
-    }
-}
-
+struct st_node {
+    uint8_t val, count;
+} nodes[MAXN];
+uint8_t node_size = 0;
 int removeBoxes(int *boxes, int boxesSize) {
-    int ans       = 0;
-    state_t state = { .nodes[0] = { boxes[0], 1, -1, -1 } };
-
     // data initial
-    state.repeats[boxes[0]] = 1;
-    for (int i = 1, cur = 0; i < boxesSize; ++i) {
-        if (boxes[i] == state.nodes[cur].val) {
-            state.nodes[cur].count += 1;
+    node_size = 1, nodes[0].val = boxes[0], nodes[0].count = 1;
+    for (int i = 1; i < boxesSize; ++i) {
+        if (boxes[i] == nodes[node_size - 1].val) {
+            nodes[node_size - 1].count += 1;
         } else {
-            cur += 1;
-            state.repeats[boxes[i]] += 1;
-            state.nodes[cur].val = boxes[i], state.nodes[cur].count = 1;
-            state.nodes[cur].prev     = cur - 1;
-            state.nodes[cur].next     = -1;
-            state.nodes[cur - 1].next = cur;
+            node_size += 1;
+            nodes[node_size - 1].val = boxes[i], nodes[node_size - 1].count = 1;
         }
     }
 
-    dfs(state, 0, &ans);
+    // dp[j][i] = max(dp[j][i-1]+K(i), dp[j][m-1]+dp[m+1][i-1]+K(m+i), ...)
+    int dp[MAXN][MAXN] = { 0 };
 
-    return ans;
+    for (int i = 0; i < node_size; ++i) {
+        dp[i][i] = nodes[i].count * nodes[i].count;
+        for (int j = i - 1; j >= 0; --j) {
+            dp[j][i] = dp[j][i - 1] + dp[i][i];
+            for (int m = i - 2, k = i, mk = 0, count = nodes[i].count; m >= j; --m) {
+                if (nodes[m].val == nodes[i].val) {
+                    mk += dp[m + 1][k - 1], k = m, count += nodes[m].count;
+                    int now = mk + count * count;
+                    if (m > j) now += dp[j][m - 1];
+                    if (dp[j][i] < now) dp[j][i] = now;
+                }
+            }
+        }
+    }
+
+    return dp[0][node_size - 1];
 }
