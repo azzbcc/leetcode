@@ -34,8 +34,17 @@ START_TEST(test_tle) {
 
     ck_assert_int_eq(target, ans);
 }
+START_TEST(test_limit) {
+    int arr[]  = { 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2,
+                  1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2,
+                  1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2 };
+    int target = 2550, ans = removeBoxes(arr, sizeof(arr) / sizeof(arr[0]));
+
+    ck_assert_int_eq(target, ans);
+}
 
 void tcase_complete(TCase *t) {
+    tcase_add_test(t, test_limit);
     tcase_add_test(t, test_tle);
     tcase_add_test(t, test_own);
     tcase_add_test(t, test_official);

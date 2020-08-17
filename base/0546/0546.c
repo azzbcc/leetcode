@@ -46,18 +46,26 @@ int removeBoxes(int *boxes, int boxesSize) {
 
     // dp[j][i] = max(dp[j][i-1]+K(i), dp[j][m-1]+dp[m+1][i-1]+K(m+i), ...)
     int dp[MAXN][MAXN] = { 0 };
+    int repeats[MAXN] = { 0 }, records[MAXN][MAXN / 2] = { 0 };
 
     for (int i = 0; i < node_size; ++i) {
-        dp[i][i] = nodes[i].count * nodes[i].count;
-        for (int j = i - 1; j >= 0; --j) {
+        int offset = nodes[i].val - 1, repeat = repeats[offset]++;
+        records[offset][repeat] = i, dp[i][i] = nodes[i].count * nodes[i].count;
+        for (int j = i - 1, tmp_repeat = repeat; j >= 0; --j) {
             dp[j][i] = dp[j][i - 1] + dp[i][i];
-            for (int m = i - 2, k = i, mk = 0, count = nodes[i].count; m >= j; --m) {
-                if (nodes[m].val == nodes[i].val) {
-                    mk += dp[m + 1][k - 1], k = m, count += nodes[m].count;
-                    int now = mk + count * count;
-                    if (m > j) now += dp[j][m - 1];
-                    if (dp[j][i] < now) dp[j][i] = now;
+            if (tmp_repeat) tmp_repeat -= j == records[offset][tmp_repeat - 1];
+            for (uint64_t m = 1; m < (1 << (repeat - tmp_repeat)); ++m) {
+                int mj = 0, count = nodes[i].count, last = i;
+                for (int k = repeat - 1; k >= tmp_repeat; --k) {
+                    if (m & 1 << (k - tmp_repeat)) {
+                        int pos = records[offset][k];
+                        mj += dp[pos + 1][last - 1];
+                        last = pos, count += nodes[pos].count;
+                    }
                 }
+                int now = mj + count * count;
+                if (last > j) now += dp[j][last - 1];
+                if (dp[j][i] < now) dp[j][i] = now;
             }
         }
     }
