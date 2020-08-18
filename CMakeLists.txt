@@ -31,9 +31,12 @@ macro(DIR_PROGRAMS _regexp)
         add_executable(${program_name} ${CMAKE_SOURCE_DIR}${separator}main.c ${child}/suites.c)
         target_compile_definitions(${program_name} PRIVATE -DPROGRAM="${program_name}")
         target_link_libraries(${program_name} ${CHECK_LIBRARIES})
+
+        add_test(NAME ${program_name} COMMAND ${program_name})
     endforeach(child)
 endmacro()
 
+enable_testing()
 dir_programs(demo "")
 add_subdirectory(base)
 add_subdirectory(interview)
