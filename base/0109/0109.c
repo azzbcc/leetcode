@@ -34,7 +34,7 @@ struct TreeNode *createBST(struct ListNode *l, int len) {
     return t;
 }
 
-struct TreeNode *sortedListToBST(struct ListNode *head) {
+struct TreeNode *sortedListToBST_01(struct ListNode *head) {
     if (!head) return NULL;
 
     int len = 0;
@@ -42,3 +42,27 @@ struct TreeNode *sortedListToBST(struct ListNode *head) {
 
     return createBST(head, len);
 }
+
+struct TreeNode *preCreateBST(struct ListNode **l, int len) {
+    if (len <= 0) return NULL;
+
+    struct TreeNode *t = calloc(1, sizeof(struct TreeNode));
+
+    t->left  = preCreateBST(l, len / 2);
+    t->val   = (*l)->val;
+    *l       = (*l)->next;
+    t->right = preCreateBST(l, (len - 1) / 2);
+
+    return t;
+}
+
+struct TreeNode *sortedListToBST_02(struct ListNode *head) {
+    if (!head) return NULL;
+
+    int len = 0;
+    for (struct ListNode *p = head; p; p = p->next, len += 1) {}
+
+    return preCreateBST(&head, len);
+}
+
+struct TreeNode *(*sortedListToBST)(struct ListNode *) = sortedListToBST_02;
