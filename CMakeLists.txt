@@ -36,8 +36,13 @@ macro(DIR_PROGRAMS _regexp)
     endforeach(child)
 endmacro()
 
+# 公共头文件夹
+include_directories(common)
+
 enable_testing()
+
 dir_programs(demo "")
+add_subdirectory(common)
 add_subdirectory(base)
 add_subdirectory(interview)
 add_subdirectory(lcp)
