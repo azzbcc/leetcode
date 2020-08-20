@@ -30,7 +30,7 @@ macro(DIR_PROGRAMS _regexp)
         endif()
         add_executable(${program_name} ${CMAKE_SOURCE_DIR}${separator}main.c ${child}/suites.c)
         target_compile_definitions(${program_name} PRIVATE -DPROGRAM="${program_name}")
-        target_link_libraries(${program_name} ${CHECK_LIBRARIES})
+        target_link_libraries(${program_name} ${CHECK_LIBRARIES} ${${child}_libraries})
 
         add_test(NAME ${program_name} COMMAND ${program_name})
     endforeach(child)
