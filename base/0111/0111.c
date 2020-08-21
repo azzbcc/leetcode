@@ -18,19 +18,18 @@
 // Related Topics 树 深度优先搜索 广度优先搜索
 // 👍 337 👎 0
 
-static int min(int a, int b) {
-    return a < b ? a : b;
-}
-int minDepth(struct TreeNode* root){
+int minDepth(struct TreeNode *root) {
     if (!root) return 0;
-    if (!root->left && !root->right) return 1;
 
-    int ans = INT32_MAX;
-    if (root->left) {
-        ans = min(ans, minDepth(root->left));
+    struct TreeNode *stack[2][0x100] = { root };
+    struct TreeNode **cur = stack[0], **next = stack[1], **tmp;
+    for (int i = 1;; ++i) {
+        for (int j = 0, k = 0; cur[j]; ++j) {
+            struct TreeNode *now = cur[j];
+            if (!now->left && !now->right) return i;
+            if (now->left) next[k++] = now->left;
+            if (now->right) next[k++] = now->right;
+        }
+        tmp = cur, cur = next, next = tmp;
     }
-    if (root->right) {
-        ans = min(ans, minDepth(root->right));
-    }
-    return ans + 1;
 }
