@@ -38,20 +38,13 @@
 // 👍 162 👎 0
 
 int *diStringMatch(char *s, int *len) {
-    int c = 0;
-    for (*len = 0; s[(*len)]; ++*len) {
-        c += s[*len] == 'I';
-    }
+    int max  = strlen(s);
+    int *ans = calloc(max + 1, sizeof(int));
 
-    int min = c, max = c;
-    int *ans = calloc(++*len, sizeof(int));
-    for (int i = *len - 2; i >= 0; --i) {
-        if (s[i] == 'I') {
-            ans[i] = --max;
-        } else {
-            ans[i] = ++min;
-        }
+    *len = max;
+    for (int i = 0, min = 0; s[i]; ++i) {
+        ans[i] = s[i] == 'I' ? (min++) : (max--);
     }
-    ans[*len - 1] = c;
+    ans[(*len)++] = max;
     return ans;
 }
