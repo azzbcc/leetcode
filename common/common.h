@@ -13,6 +13,7 @@
 #include <assert.h>
 #include <check.h>
 #include <check_stdint.h>
+#include <ctype.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
