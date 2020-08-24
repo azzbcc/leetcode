@@ -30,7 +30,7 @@
 // Related Topics 字符串
 // 👍 286 👎 0
 
-bool repeatedSubstringPattern(char *s) {
+bool repeatedSubstringPattern_1(char *s) {
     int len = strlen(s);
     for (int repeat = 1, pos; repeat <= len / 2; ++repeat) {
         if (len % repeat) continue;
@@ -41,3 +41,18 @@ bool repeatedSubstringPattern(char *s) {
     }
     return false;
 }
+
+bool repeatedSubstringPattern_2(char *s) {
+    int next[10001] = { -1 }, pa = 0, pb = -1;
+    while (s[pa]) {
+        if (pb == -1 || s[pa] == s[pb]) {
+            pa += 1, pb += 1, next[pa] = pb;
+        } else {
+            pb = next[pb];
+        }
+    }
+
+    return pb > 0 && pa % (pa - pb) == 0;
+}
+
+bool (*repeatedSubstringPattern)(char *s) = repeatedSubstringPattern_2;
