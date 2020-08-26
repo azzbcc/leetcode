@@ -32,9 +32,7 @@
 // 👍 140 👎 0
 
 bool isOneBitCharacter(int *bits, int bitsSize) {
-    while (bitsSize > 1) {
-        int len = *bits + 1;
-        bitsSize -= len, bits += len;
-    }
-    return bitsSize > 0;
+    int pos = bitsSize - 1;
+    while (pos-- > 0 && bits[pos]) {}
+    return (bitsSize - pos) % 2 == 0;
 }
