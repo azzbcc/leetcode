@@ -31,50 +31,40 @@
         strdup(str);                                                                                                   \
     })
 
-int cmp(const void *a, const void *b) {
-    int(*pa)[2] = a, (*pb)[2] = b;
-
-    if ((*pa)[0] == (*pb)[0]) return (*pa)[1] - (*pb)[1];
-    return (*pa)[0] - (*pb)[0];
+typedef struct node {
+    int val;
+    struct node *next;
+} * node_t;
+void dfs(node_t map[], int now, char **ans, int *pos) {
+    for (node_t cur = map[now]; cur; cur = map[now]) {
+        map[now] = cur->next;
+        dfs(map, cur->val, ans, pos);
+    }
+    ans[--*pos] = INT2STR(now);
 }
-bool dfs(int map[][2], int size, int now, int *ans, int len, bool visited[]) {
-    ans[len] = now;
-    if (len >= size) return true;
-
-    int beg = 0, end = size;
-    while (beg < end) {
-        int mid = (beg + end) / 2;
-
-        if (map[mid][0] >= now) end = mid;
-        if (map[mid][0] < now) beg = mid + 1;
+void list_insert(node_t *head, node_t n) {
+    if (!*head || (*head)->val > n->val) {
+        n->next = (*head), *head = n;
+        return;
     }
-    for (int i = beg; i < size && map[i][0] == now; ++i) {
-        if (visited[i]) continue;
-
-        visited[i] = true;
-        if (dfs(map, size, map[i][1], ans, len + 1, visited)) return true;
-        visited[i] = false;
+    node_t prev = *head;
+    while (prev->next && prev->next->val < n->val) {
+        prev = prev->next;
     }
-    return false;
+    n->next = prev->next, prev->next = n;
 }
 char **findItinerary(char ***tickets, int ticketsSize, int *ticketsColSize, int *returnSize) {
     char **ans = NULL;
-    bool visited[ticketsSize];
-    int map[ticketsSize][2], result[ticketsSize + 1];
-
+    struct node nodes[ticketsSize], *map[26 * 26 * 26] = { NULL };
     for (int i = 0; i < ticketsSize; ++i) {
-        visited[i] = false;
-        map[i][0]  = STR2INT(tickets[i][0]);
-        map[i][1]  = STR2INT(tickets[i][1]);
-    }
-    qsort(map, ticketsSize, sizeof(map[0]), cmp);
+        nodes[i].val  = STR2INT(tickets[i][1]);
+        nodes[i].next = NULL;
 
-    *returnSize = 0;
-    if (!dfs(map, ticketsSize, STR2INT("JFK"), result, 0, visited)) return NULL;
-
-    *returnSize = ticketsSize + 1, ans = calloc(ticketsSize + 1, sizeof(char *));
-    for (int i = 0; i <= ticketsSize; ++i) {
-        ans[i] = INT2STR(result[i]);
+        list_insert(&map[STR2INT(tickets[i][0])], &nodes[i]);
     }
+
+    *returnSize = ++ticketsSize, ans = calloc(ticketsSize, sizeof(char *));
+    dfs(map, STR2INT("JFK"), ans, &ticketsSize);
+
     return ans;
 }
