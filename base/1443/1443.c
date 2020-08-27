@@ -47,29 +47,41 @@
 //
 // Related Topics 树 深度优先搜索
 // 👍 27 👎 0
-
-int dfs(int n, int **edges, int now, bool *visited, bool *hasApple) {
+typedef struct node {
+    int val;
+    struct node *next;
+} * node_t;
+int dfs(node_t map[], int now, bool *visited, bool *hasApple) {
     if (visited[now]) return 0;
 
     int ans = 0;
 
     visited[now] = true;
-    for (int i = 0; i < n - 1; ++i) {
-        if (edges[i][0] != now && edges[i][1] != now) continue;
-        int next = now ^ edges[i][0] ^ edges[i][1];
-
-        if (!visited[next]) {
-            int tmp = dfs(n, edges, next, visited, hasApple);
-            if (tmp > 0 || hasApple[next]) tmp += 2;
+    for (node_t cur = map[now]; cur ; cur = cur->next) {
+        if (!visited[cur->val]) {
+            int tmp = dfs(map, cur->val, visited, hasApple);
+            if (tmp > 0 || hasApple[cur->val]) tmp += 2;
             ans += tmp;
         }
     }
     return ans;
 }
-
 int minTime(int n, int **edges, int edgesSize, int *edgesColSize, bool *hasApple, int hasAppleSize) {
     bool visited[n];
-    for (int i = 0; i < n; visited[i++] = false) {}
+    struct node *map[n], nodes[edgesSize * 2];
+    for (int i = 0; i < n; ++i) {
+        map[i] = NULL, visited[i] = false;
+    }
+    for (int i = 0; i < edgesSize; ++i) {
+        int p1 = edges[i][0], p2 = edges[i][1];
 
-    return dfs(n, edges, 0, visited, hasApple);
+        nodes[2 * i].val      = p1;
+        nodes[2 * i].next     = map[p2];
+        map[p2]               = &nodes[2 * i];
+        nodes[2 * i + 1].val  = p2;
+        nodes[2 * i + 1].next = map[p1];
+        map[p1]               = &nodes[2 * i + 1];
+    }
+
+    return dfs(map, 0, visited, hasApple);
 }
