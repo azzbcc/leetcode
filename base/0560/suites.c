@@ -17,6 +17,13 @@ START_TEST(test_official) {
     ck_assert_int_eq(target, ans);
 }
 
+START_TEST(test_own) {
+    int arr[] = { 1, -1, 1, -1, 1 }, k = 0;
+    int target = 6, ans = subarraySum(arr, sizeof(arr) / sizeof(arr[0]), k);
+    ck_assert_int_eq(target, ans);
+}
+
 void tcase_complete(TCase *t) {
+    tcase_add_test(t, test_own);
     tcase_add_test(t, test_official);
 }

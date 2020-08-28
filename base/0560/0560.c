@@ -15,14 +15,59 @@
 //
 // Related Topics 数组 哈希表
 // 👍 568 👎 0
+#define SIZE 9973
 
-int subarraySum(int *nums, int numsSize, int k) {
-    int ans = 0;
-    for (int i = 0; i < numsSize; ++i) {
-        for (int j = i, sum = 0; j < numsSize; ++j) {
-            sum += nums[j];
-            ans += sum == k;
+typedef struct node {
+    int val;
+    int count;
+    struct node *next;
+} * node_t;
+typedef node_t hash_t[SIZE];
+
+static uint32_t h(int val) {
+    val %= SIZE;
+    if (val < 0) val += SIZE;
+    return val;
+}
+static void hash_add(hash_t t, node_t n) {
+    node_t cur = t[h(n->val)];
+    if (!cur || cur->val > n->val) {
+        n->next = cur, t[h(n->val)] = n;
+    } else if (cur->val == n->val) {
+        cur->count++;
+    } else {
+        while (cur->next && cur->next->val < n->val) {
+            cur = cur->next;
+        }
+        if (cur->next && cur->next->val == n->val) {
+            cur->next->count++;
+        } else {
+            n->next = cur->next, cur->next = n;
         }
     }
+}
+static int hash_count(hash_t t, int val) {
+    node_t cur = t[h(val)];
+    while (cur && cur->val < val) {
+        cur = cur->next;
+    }
+    if (cur && cur->val == val) return cur->count;
+    return 0;
+}
+int subarraySum(int *nums, int numsSize, int k) {
+    int ans  = 0;
+    hash_t t = { 0 };
+    struct node nodes[numsSize], zero = { .count = 1 };
+
+    hash_add(t, &zero);
+
+    for (int i = 0; i < numsSize; ++i) {
+        nodes[i].val = nums[i], nodes[i].count = 1, nodes[i].next = NULL;
+        if (i) nodes[i].val += nodes[i - 1].val;
+
+        ans += hash_count(t, nodes[i].val - k);
+        hash_add(t, &nodes[i]);
+    }
+
     return ans;
 }
