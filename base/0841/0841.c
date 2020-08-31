@@ -42,23 +42,21 @@
 // Related Topics 深度优先搜索 图
 // 👍 124 👎 0
 
-void dfs(int **rooms, int size, int colSize[], int now, bool visited[]) {
-    if (visited[now]) return;
+bool dfs(int **rooms, int size, int colSize[], int now, bool visited[], int *count) {
+    if (visited[now]) return false;
 
-    visited[now] = true;
+    visited[now] = true, ++*count;
+    if (*count == size) return true;
+
     for (int i = 0; i < colSize[now]; ++i) {
-        dfs(rooms, size, colSize, rooms[now][i], visited);
+        if (dfs(rooms, size, colSize, rooms[now][i], visited, count)) return true;
     }
+    return false;
 }
 
 bool canVisitAllRooms(int **rooms, int roomsSize, int *roomsColSize) {
+    int count          = 0;
     bool visited[1000] = { false };
 
-    dfs(rooms, roomsSize, roomsColSize, 0, visited);
-
-    for (int i = 0; i < roomsSize; ++i) {
-        if (!visited[i]) return false;
-    }
-
-    return true;
+    return dfs(rooms, roomsSize, roomsColSize, 0, visited, &count);
 }
