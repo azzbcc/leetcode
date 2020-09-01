@@ -61,9 +61,26 @@ int initiative(int *nums, int size, int uncle) {
     return MAX(left, right);
 }
 
-bool PredictTheWinner(int *nums, int numsSize) {
+bool PredictTheWinner_1(int *nums, int numsSize) {
     int sum = 0;
     for (int i = 0; i < numsSize; sum += nums[i++]) {}
 
     return sum <= 2 * initiative(nums, numsSize, INT32_MAX);
 }
+
+bool PredictTheWinner_2(int *nums, int numsSize) {
+    int dp[numsSize][numsSize][2];
+
+    for (int i = 0; i < numsSize; ++i) {
+        dp[i][i][0] = nums[i], dp[i][i][1] = 0;
+    }
+    for (int len = 1; len < numsSize; ++len) {
+        for (int i = 0; i + len < numsSize; ++i) {
+            dp[i][i + len][0] = MAX(nums[i] + dp[i + 1][i + len][1], nums[i + len] + dp[i][i + len - 1][1]);
+            dp[i][i + len][1] = MIN(dp[i + 1][i + len][0], dp[i][i + len - 1][0]);
+        }
+    }
+    return dp[0][numsSize - 1][0] >= dp[0][numsSize - 1][1];
+}
+
+bool (*PredictTheWinner)(int *nums, int numsSize) = PredictTheWinner_2;
