@@ -38,21 +38,25 @@
 #define MAX(a, b) (((a) > (b)) ? (a) : (b))
 #define MIN(a, b) (((a) < (b)) ? (a) : (b))
 
-int initiative(int *, int);
+int initiative(int *, int, int);
 
-int gote(int *nums, int size) {
+int gote(int *nums, int size, int uncle) {
     if (size == 1) return 0;
 
-    int left  = initiative(nums + 1, size - 1);
-    int right = initiative(nums, size - 1);
+    int left = initiative(nums + 1, size - 1, INT32_MAX);
+    if (left < uncle) return uncle;
+
+    int right = initiative(nums, size - 1, left);
 
     return MIN(left, right);
 }
-int initiative(int *nums, int size) {
+int initiative(int *nums, int size, int uncle) {
     if (size == 1) return *nums;
 
-    int left  = gote(nums + 1, size - 1) + nums[0];
-    int right = gote(nums, size - 1) + nums[size - 1];
+    int left = gote(nums + 1, size - 1, 0) + nums[0];
+    if (left > uncle) return uncle;
+
+    int right = gote(nums, size - 1, left - nums[size - 1]) + nums[size - 1];
 
     return MAX(left, right);
 }
@@ -61,5 +65,5 @@ bool PredictTheWinner(int *nums, int numsSize) {
     int sum = 0;
     for (int i = 0; i < numsSize; sum += nums[i++]) {}
 
-    return sum <= 2 * initiative(nums, numsSize);
+    return sum <= 2 * initiative(nums, numsSize, INT32_MAX);
 }
