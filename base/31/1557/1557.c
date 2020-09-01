@@ -39,23 +39,25 @@
 // Related Topics 图
 // 👍 5 👎 0
 
-/**
- * Note: The returned array must be malloced, assume caller calls free().
- */
+static int cmp(const void *a, const void *b) {
+    int **pa = a, **pb = b;
+
+    return pa[0][1] - pb[0][1];
+}
 int *findSmallestSetOfVertices(int n, int **edges, int edgesSize, int *edgesColSize, int *returnSize) {
-    int c = n, *ans = NULL;
-    bool visited[100000] = { false };
-    for (int i = 0; i < edgesSize; i++) {
-        if (!visited[edges[i][1]]) {
-            c -= 1;
-            visited[edges[i][1]] = true;
+    int *ans = NULL, arr[n], len = 0;
+    qsort(edges, edgesSize, sizeof(int *), cmp);
+
+    for (int i = 0, pe = 0; i < n; ++i) {
+        if (pe >= edgesSize || edges[pe][1] != i) {
+            arr[len++] = i;
+            continue;
         }
+        while (++pe < edgesSize && edges[pe][1] == i) {}
     }
 
-    *returnSize = c, ans = calloc(c, sizeof(int));
-    for (int i = 0, len = 0; i < n; i++) {
-        if (!visited[i]) ans[len++] = i;
-    }
+    *returnSize = len, ans = calloc(len, sizeof(int));
+    memcpy(ans, arr, len * sizeof(int));
 
     return ans;
 }
