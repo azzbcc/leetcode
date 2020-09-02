@@ -33,11 +33,8 @@ typedef struct {
     int val;
     int count;
 } node_t;
-bool exists(int routes[], int size, int key) {
-    for (int i = 0; i < size; ++i) {
-        if (routes[i] == key) return true;
-    }
-    return false;
+static int cmp(const void *a, const void *b) {
+    return *( int * )a - *( int * )b;
 }
 int numBusesToDestination(int **routes, int routesSize, int *routesColSize, int S, int T) {
     int front = 0, rear = 1;
@@ -45,12 +42,16 @@ int numBusesToDestination(int **routes, int routesSize, int *routesColSize, int 
     node_t queue[MAXN] = { { S, 0 } };
 
     visited[S] = true;
+    for (int i = 0; i < routesSize; ++i) {
+        qsort(routes[i], routesColSize[i], sizeof(int), cmp);
+    }
+
     while (front < rear) {
         node_t now = queue[front++];
         if (now.val == T) return now.count;
 
         for (int i = 0; i < routesSize; ++i) {
-            if (!exists(routes[i], routesColSize[i], now.val)) continue;
+            if (!bsearch(&now.val, routes[i], routesColSize[i], sizeof(int), cmp)) continue;
             for (int j = 0; j < routesColSize[i]; ++j) {
                 if (visited[routes[i][j]]) continue;
 
