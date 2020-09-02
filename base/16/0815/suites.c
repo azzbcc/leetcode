@@ -21,6 +21,24 @@ START_TEST(test_official) {
     ck_assert_int_eq(target, ans);
 }
 
+START_TEST(test_tle) {
+    const int N = 300;
+    int cols[N], arr[N][N + 1], *grid[N], S = 0, T = N * N;
+
+    for (int i = 0; i < N; ++i) {
+        cols[i] = N + 1, grid[i] = arr[i];
+        for (int j = 0; j < N + 1; ++j) {
+            arr[i][j] = N * i + j;
+        }
+    }
+
+
+    int target = N, ans = numBusesToDestination(grid, sizeof(grid) / sizeof(grid[0]), cols, S, T);
+
+    ck_assert_int_eq(target, ans);
+}
+
 void tcase_complete(TCase *t) {
+    tcase_add_test(t, test_tle);
     tcase_add_test(t, test_official);
 }
