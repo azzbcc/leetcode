@@ -28,6 +28,7 @@
 //
 // Related Topics 广度优先搜索
 // 👍 64 👎 0
+#define MAXM 500
 #define MAXN 100000
 typedef struct {
     int val;
@@ -38,7 +39,7 @@ static int cmp(const void *a, const void *b) {
 }
 int numBusesToDestination(int **routes, int routesSize, int *routesColSize, int S, int T) {
     int front = 0, rear = 1;
-    bool visited[MAXN] = { false };
+    bool visited[MAXN] = { false }, bus_visited[MAXM] = {false};
     node_t queue[MAXN] = { { S, 0 } };
 
     visited[S] = true;
@@ -51,7 +52,10 @@ int numBusesToDestination(int **routes, int routesSize, int *routesColSize, int 
         if (now.val == T) return now.count;
 
         for (int i = 0; i < routesSize; ++i) {
+            if (bus_visited[i]) continue;
             if (!bsearch(&now.val, routes[i], routesColSize[i], sizeof(int), cmp)) continue;
+
+            bus_visited[i] = true;
             for (int j = 0; j < routesColSize[i]; ++j) {
                 if (visited[routes[i][j]]) continue;
 
