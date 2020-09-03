@@ -20,10 +20,24 @@
 // Related Topics 数学 二分查找
 // 👍 489 👎 0
 
-int mySqrt(int x) {
+int mySqrt_1(int x) {
     int m = x, n = 1;
     while (m > n) {
         m = n + (m - n) / 2, n = x / m;
     }
     return m;
 }
+
+int my_sqrt(int x, int *mod) {
+    int tmp = 0, n = 1;
+    if (x >= 100) tmp = my_sqrt(x / 100, mod);
+    for (*mod = *mod * 100 + x % 100; n < 10 && n * (20 * tmp + n) <= *mod; n++) {}
+    n -= 1, *mod = *mod - n * (20 * tmp + n);
+    return tmp * 10 + n;
+}
+int mySqrt_2(int x) {
+    int mod = 0;
+    return my_sqrt(x, &mod);
+}
+
+int (*mySqrt)(int x) = mySqrt_2;
