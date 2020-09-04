@@ -32,6 +32,20 @@ struct st_node {
     uint8_t val, count;
 } nodes[MAXN];
 uint8_t node_size = 0;
+int max(int a, int b) {
+    return a > b ? a : b;
+}
+int cal(int size, int dp[size][size][size], int l, int r, int n) {
+    if (l > r) return 0;
+    if (!dp[l][r][n]) {
+        dp[l][r][n] = cal(size, dp, l + 1, r, 0) + (n + nodes[l].count) * (n + nodes[l].count);
+        for (int i = l + 1; i <= r; i++) {
+            if (nodes[i].val != nodes[l].val) continue;
+            dp[l][r][n] = max(dp[l][r][n], cal(size, dp, l + 1, i - 1, 0) + cal(size, dp, i, r, n + nodes[l].count));
+        }
+    }
+    return dp[l][r][n];
+}
 int removeBoxes(int *boxes, int boxesSize) {
     // data initial
     node_size = 1, nodes[0].val = boxes[0], nodes[0].count = 1;
@@ -44,31 +58,9 @@ int removeBoxes(int *boxes, int boxesSize) {
         }
     }
 
-    // dp[j][i] = max(dp[j][i-1]+K(i), dp[j][m-1]+dp[m+1][i-1]+K(m+i), ...)
-    int dp[MAXN][MAXN] = { 0 };
-    int repeats[MAXN] = { 0 }, records[MAXN][MAXN / 2] = { 0 };
+    int dp[node_size][node_size][node_size];
 
-    for (int i = 0; i < node_size; ++i) {
-        int offset = nodes[i].val - 1, repeat = repeats[offset]++;
-        records[offset][repeat] = i, dp[i][i] = nodes[i].count * nodes[i].count;
-        for (int j = i - 1, tmp_repeat = repeat; j >= 0; --j) {
-            dp[j][i] = dp[j][i - 1] + dp[i][i];
-            if (tmp_repeat) tmp_repeat -= j == records[offset][tmp_repeat - 1];
-            for (uint64_t m = 1; m < (1 << (repeat - tmp_repeat)); ++m) {
-                int mj = 0, count = nodes[i].count, last = i;
-                for (int k = repeat - 1; k >= tmp_repeat; --k) {
-                    if (m & 1 << (k - tmp_repeat)) {
-                        int pos = records[offset][k];
-                        mj += dp[pos + 1][last - 1];
-                        last = pos, count += nodes[pos].count;
-                    }
-                }
-                int now = mj + count * count;
-                if (last > j) now += dp[j][last - 1];
-                if (dp[j][i] < now) dp[j][i] = now;
-            }
-        }
-    }
-
-    return dp[0][node_size - 1];
+    // calculate
+    memset(dp, 0, sizeof(dp));
+    return cal(node_size, dp, 0, node_size - 1, 0);
 }
