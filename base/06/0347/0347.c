@@ -58,22 +58,21 @@ static bool hash_add(hash_t t, node_t n) {
     }
     return true;
 }
-void heap_adjust(node_t nodes[], int len) {
-    node_t tmp;
-    if (len % 2 == 0) nodes[len++] = &(struct node) { .count = 0 };
-    for (int i = len / 2 - 1; i >= 0; --i) {
-        if (nodes[i]->count < nodes[2 * i + 1]->count) {
-            tmp = nodes[i], nodes[i] = nodes[2 * i + 1], nodes[2 * i + 1] = tmp;
-        }
-        if (nodes[i]->count < nodes[2 * i + 2]->count) {
-            tmp = nodes[i], nodes[i] = nodes[2 * i + 2], nodes[2 * i + 2] = tmp;
-        }
+void heap_adjust(node_t nodes[], int now, int len) {
+    node_t tmp = nodes[now];
+    int l = 2 * now + 1, r = l + 1, max_pos = now;
+
+    if (l < len && nodes[l]->count > nodes[max_pos]->count) max_pos = l;
+    if (r < len && nodes[r]->count > nodes[max_pos]->count) max_pos = r;
+    if (max_pos != now) {
+        nodes[now] = nodes[max_pos], nodes[max_pos] = tmp;
+        heap_adjust(nodes, max_pos, len);
     }
 }
 int *topKFrequent(int *nums, int numsSize, int k, int *returnSize) {
     int *ans, len = 0;
     hash_t hash = { NULL };
-    node_t nodes[numsSize + 1];
+    node_t nodes[numsSize];
     struct node stack[numsSize];
 
     for (int i = 0; i < numsSize; ++i) {
@@ -81,10 +80,12 @@ int *topKFrequent(int *nums, int numsSize, int k, int *returnSize) {
         if (hash_add(hash, &stack[i])) nodes[len++] = &stack[i];
     }
 
+    for (int i = len / 2 - 1; i >= 0; heap_adjust(nodes, i--, len)) {}
+
     ans = calloc(k, sizeof(int)), *returnSize = k;
     for (int i = 0; i < k; ++i) {
-        heap_adjust(nodes, len - i);
         ans[i] = nodes[0]->val, nodes[0] = nodes[len - i - 1];
+        heap_adjust(nodes, 0, len - i - 1);
     }
 
     return ans;
