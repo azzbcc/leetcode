@@ -72,7 +72,7 @@ void heap_adjust(node_t nodes[], int now, int len) {
 int *topKFrequent(int *nums, int numsSize, int k, int *returnSize) {
     int *ans, len = 0;
     hash_t hash = { NULL };
-    node_t nodes[numsSize];
+    node_t nodes[numsSize], tmp;
     struct node stack[numsSize];
 
     for (int i = 0; i < numsSize; ++i) {
@@ -80,12 +80,18 @@ int *topKFrequent(int *nums, int numsSize, int k, int *returnSize) {
         if (hash_add(hash, &stack[i])) nodes[len++] = &stack[i];
     }
 
-    for (int i = len / 2 - 1; i >= 0; heap_adjust(nodes, i--, len)) {}
+    if (k < len) {
+        for (int i = len / 2 - 1; i >= 0; heap_adjust(nodes, i--, len)) {}
+
+        for (int i = 0; i < k; ++i) {
+            tmp = nodes[0], nodes[0] = nodes[len - i - 1], nodes[len - i - 1] = tmp;
+            heap_adjust(nodes, 0, len - i - 1);
+        }
+    }
 
     ans = calloc(k, sizeof(int)), *returnSize = k;
     for (int i = 0; i < k; ++i) {
-        ans[i] = nodes[0]->val, nodes[0] = nodes[len - i - 1];
-        heap_adjust(nodes, 0, len - i - 1);
+        ans[i] = nodes[len - i - 1]->val;
     }
 
     return ans;
