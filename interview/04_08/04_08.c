@@ -35,13 +35,13 @@ static int dfs(struct TreeNode *root, struct TreeNode *p, struct TreeNode *q, st
     if (!root) return count;
     if (root == p || root == q) count++;
 
-    if (count < 2) count += dfs(root->left, p, q, ans);
-    if (count < 2) count += dfs(root->right, p, q, ans);
-    if (count == 2) count = 0, *ans = root;
+    if (!*ans) count += dfs(root->left, p, q, ans);
+    if (!*ans) count += dfs(root->right, p, q, ans);
+    if (!*ans && count == 2) *ans = root;
     return count;
 }
 struct TreeNode *lowestCommonAncestor(struct TreeNode *root, struct TreeNode *p, struct TreeNode *q) {
-    struct TreeNode *ans;
+    struct TreeNode *ans = NULL;
     dfs(root, p, q, &ans);
 
     return ans;
