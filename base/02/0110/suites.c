@@ -14,7 +14,7 @@
 
 START_TEST(test_official_1) {
     int arr[] = { 3, 9, 20, null, null, 15, 7 };
-    tree_t t  = tree_create(arr, 0, sizeof(arr) / sizeof(arr[0]));
+    tree_t t  = tree_create(arr, sizeof(arr) / sizeof(arr[0]));
 
     bool target = true, ans = isBalanced(t);
 
@@ -25,7 +25,7 @@ START_TEST(test_official_1) {
 
 START_TEST(test_official_2) {
     int arr[] = { 1, 2, 2, 3, 3, null, null, 4, 4 };
-    tree_t t  = tree_create(arr, 0, sizeof(arr) / sizeof(arr[0]));
+    tree_t t  = tree_create(arr, sizeof(arr) / sizeof(arr[0]));
 
     bool target = false, ans = isBalanced(t);
 

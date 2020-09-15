@@ -9,14 +9,23 @@
  */
 #include <tree.h>
 
-tree_t tree_create(const int *data, size_t cur, size_t len) {
-    if (len <= cur || data[cur] == null) return NULL;
-
+static tree_t tree_node_new(int val) {
+    if (val == null) return NULL;
     tree_t t = calloc(1, sizeof(struct TreeNode));
-    t->val   = data[cur];
-    t->left  = tree_create(data, 2 * cur + 1, len);
-    t->right = tree_create(data, 2 * cur + 2, len);
-
+    t->val = val, t->left = t->right = NULL;
+    return t;
+}
+tree_t tree_create(const int *data, size_t len) {
+    if (len == 0) return NULL;
+    tree_t t = tree_node_new(data[0]), nodes[2][0x1000] = { t };
+    for (int di = 1, ni = 0, nlen = 1, now = 0; di < len && nlen; now = 1 - now, nlen = ni, ni = 0) {
+        for (int i = 0; i < nlen; ++i) {
+            if (di < len) nodes[now][i]->left = tree_node_new(data[di++]);
+            if (di < len) nodes[now][i]->right = tree_node_new(data[di++]);
+            if (nodes[now][i]->left) nodes[1 - now][ni++] = nodes[now][i]->left;
+            if (nodes[now][i]->right) nodes[1 - now][ni++] = nodes[now][i]->right;
+        }
+    }
     return t;
 }
 

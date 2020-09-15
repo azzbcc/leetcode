@@ -13,15 +13,10 @@
 #include "0114.c"
 
 START_TEST(test_official) {
-    int arr[] = { 1, 2, 5, 3, 4, null, 6, null, null, null, null }, target[128] = { 0 };
-    for (int i = 0, pos = 0; i < 6; ++i, pos = pos * 2 + 2) {
-        target[pos]         = i + 1;
-        target[pos * 2 + 1] = null;
-        target[pos * 2 + 2] = null;
-    }
+    int arr[] = { 1, 2, 5, 3, 4, null, 6 }, target[] = { 1, null, 2, null, 3, null, 4, null, 5, null, 6 };
 
-    tree_t ta = tree_create(arr, 0, sizeof(arr) / sizeof(arr[0]));
-    tree_t tt = tree_create(target, 0, sizeof(target) / sizeof(target[0]));
+    tree_t ta = tree_create(arr, sizeof(arr) / sizeof(arr[0]));
+    tree_t tt = tree_create(target, sizeof(target) / sizeof(target[0]));
 
     flatten(ta);
 

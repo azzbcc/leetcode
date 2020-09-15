@@ -14,7 +14,7 @@
 
 START_TEST(test_official) {
     int arr[] = { 3, 9, 20, null, null, 15, 7 };
-    tree_t t  = tree_create(arr, 0, sizeof(arr) / sizeof(arr[0]));
+    tree_t t  = tree_create(arr, sizeof(arr) / sizeof(arr[0]));
 
     int target = 2, ans = minDepth(t);
 
@@ -25,7 +25,7 @@ START_TEST(test_official) {
 
 START_TEST(test_failed) {
     int arr[] = { 1, 2 };
-    tree_t t  = tree_create(arr, 0, sizeof(arr) / sizeof(arr[0]));
+    tree_t t  = tree_create(arr, sizeof(arr) / sizeof(arr[0]));
 
     int target = 2, ans = minDepth(t);
 
@@ -188,9 +188,9 @@ START_TEST(test_limit) {
         0, null, 0, null, 0, null, 0, null, 0, null, 0, null, 0, null, 0, null, 0, null, 0, null, 0, null, 0, null,
         0, null, 0, null, 0, 0
     };
-    tree_t t = tree_create(arr, 0, sizeof(arr) / sizeof(arr[0]));
+    tree_t t = tree_create(arr, sizeof(arr) / sizeof(arr[0]));
 
-    int target = 11, ans = minDepth(t);
+    int target = 1804, ans = minDepth(t);
 
     ck_assert_int_eq(target, ans);
 

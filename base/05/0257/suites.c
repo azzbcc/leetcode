@@ -14,7 +14,7 @@
 
 START_TEST(test_official) {
     int len, arr[] = { 1, 2, 3, null, 5 };
-    tree_t t       = tree_create(arr, 0, sizeof(arr) / sizeof(arr[0]));
+    tree_t t       = tree_create(arr, sizeof(arr) / sizeof(arr[0]));
     char *target[] = { "1->2->5", "1->3" }, **ans = binaryTreePaths(t, &len);
 
     ck_assert_int_eq(len, sizeof(target) / sizeof(target[0]));

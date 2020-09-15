@@ -22,7 +22,7 @@ static tree_t tree_find(tree_t root, int val) {
 
 START_TEST(test_official) {
     int arr[] = { 3, 5, 1, 6, 2, 0, 8, null, null, 7, 4 };
-    tree_t t  = tree_create(arr, 0, sizeof(arr) / sizeof(arr[0]));
+    tree_t t  = tree_create(arr, sizeof(arr) / sizeof(arr[0]));
 
     tree_t target = tree_find(t, 2), ans = subtreeWithAllDeepest(t);
 

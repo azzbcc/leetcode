@@ -14,7 +14,7 @@
 
 START_TEST(test_official) {
     int arr[] = { 7, 3, 15, null, null, 9, 20 };
-    tree_t t  = tree_create(arr, 0, sizeof(arr) / sizeof(arr[0]));
+    tree_t t  = tree_create(arr, sizeof(arr) / sizeof(arr[0]));
 
     BSTIterator *iter = bSTIteratorCreate(t);
     ck_assert_int_eq(3, bSTIteratorNext(iter));

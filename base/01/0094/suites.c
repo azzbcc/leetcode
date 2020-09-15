@@ -13,8 +13,8 @@
 #include "0094.c"
 
 START_TEST(test_official) {
-    int len, arr[] = { 1, null, 2, null, null, 3 };
-    tree_t t = tree_create(arr, 0, sizeof(arr) / sizeof(arr[0]));
+    int len, arr[] = { 1, null, 2, 3 };
+    tree_t t = tree_create(arr, sizeof(arr) / sizeof(arr[0]));
 
     int target[] = { 1, 3, 2 }, *ans = inorderTraversal(t, &len);
 
@@ -27,7 +27,7 @@ START_TEST(test_official) {
 
 START_TEST(test_own) {
     int len, arr[] = { 1, 2, 3, 4, 5, 6, 7 };
-    tree_t t = tree_create(arr, 0, sizeof(arr) / sizeof(arr[0]));
+    tree_t t = tree_create(arr, sizeof(arr) / sizeof(arr[0]));
 
     int target[] = { 4, 2, 5, 1, 6, 3, 7 }, *ans = inorderTraversal(t, &len);
 

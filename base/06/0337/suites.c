@@ -14,7 +14,7 @@
 
 START_TEST(test_official_1) {
     int arr[] = { 3, 2, 3, null, 3, null, 1 };
-    tree_t ta = tree_create(arr, 0, sizeof(arr) / sizeof(arr[0]));
+    tree_t ta = tree_create(arr, sizeof(arr) / sizeof(arr[0]));
 
     int target = 7, ans = rob(ta);
     ck_assert_msg(target == ans, "error, except %d but got %d on rob().", target, ans);
@@ -24,7 +24,7 @@ START_TEST(test_official_1) {
 
 START_TEST(test_official_2) {
     int arr[] = { 3, 4, 5, 1, 3, null, 1 };
-    tree_t ta = tree_create(arr, 0, sizeof(arr) / sizeof(arr[0]));
+    tree_t ta = tree_create(arr, sizeof(arr) / sizeof(arr[0]));
 
     int target = 9, ans = rob(ta);
     ck_assert_msg(target == ans, "error, except %d but got %d on rob().", target, ans);
@@ -34,7 +34,7 @@ START_TEST(test_official_2) {
 
 START_TEST(test_own) {
     int arr[] = { 1, 1, 2, 3 };
-    tree_t ta = tree_create(arr, 0, sizeof(arr) / sizeof(arr[0]));
+    tree_t ta = tree_create(arr, sizeof(arr) / sizeof(arr[0]));
 
     int target = 5, ans = rob(ta);
     ck_assert_msg(target == ans, "error, except %d but got %d on rob().", target, ans);

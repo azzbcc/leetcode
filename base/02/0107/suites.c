@@ -18,7 +18,7 @@ START_TEST(test_official) {
     int target[][2] = { { 15, 7 }, { 9, 20 }, { 3 } };
     int len = 0, *returnColumnSizes = NULL;
 
-    tree_t tree = tree_create(arr, 0, sizeof(arr) / sizeof(arr[0]));
+    tree_t tree = tree_create(arr, sizeof(arr) / sizeof(arr[0]));
     int **ans   = levelOrderBottom(tree, &len, &returnColumnSizes);
 
     ck_assert_int_eq(len, sizeof(target) / sizeof(target[0]));
