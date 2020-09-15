@@ -24,8 +24,18 @@ int chechsum(int num) {
     if (mod == 2) return num + 1;
     return 0;
 }
-int missingNumber(int *nums, int numsSize) {
+int missingNumber_1(int *nums, int numsSize) {
     int n = chechsum(numsSize);
     for (int i = 0; i < numsSize; n ^= nums[i++]) {}
     return n;
 }
+
+int missingNumber_2(int *nums, int numsSize) {
+    int n = numsSize;
+    for (int i = 0; i < numsSize; i++) {
+        n ^= i ^ nums[i];
+    }
+    return n;
+}
+
+int (*missingNumber)(int *, int) = missingNumber_2;
