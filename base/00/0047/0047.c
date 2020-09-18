@@ -13,42 +13,44 @@
 // 👍 420 👎 0
 
 #define MAXN 0x10000
-typedef struct {
+typedef struct node_t {
     int val, count;
+    struct node_t *next;
 } node_t;
 int *help[MAXN] = { NULL }, help_len = 0;
 static int cmp(const void *a, const void *b) {
     return *( int * )a - *( int * )b;
 }
-void dfs(node_t map[], int size, int len, int res[], int pos) {
+void dfs(node_t *list, int size, int res[], int pos) {
     if (pos >= size) {
         assert(help_len < MAXN);
         help[help_len] = calloc(size, sizeof(int));
         memcpy(help[help_len++], res, size * sizeof(int));
-        return;
     }
-    for (int i = 0; i < len; ++i) {
-        if (!map[i].count) continue;
-        map[i].count -= 1, res[pos] = map[i].val;
-        dfs(map, size, len, res, pos + 1);
-        map[i].count += 1;
+    for (node_t *pre = list, *cur = pre->next; cur; pre = cur, cur = cur->next) {
+        cur->count -= 1, res[pos] = cur->val;
+        if (!cur->count) pre->next = cur->next;
+        dfs(list, size, res, pos + 1);
+        cur->count += 1, pre->next = cur;
     }
 }
 int **permuteUnique(int *nums, int numsSize, int *returnSize, int **returnColumnSizes) {
-    node_t nodes[numsSize];
-    int len = 0, res[numsSize], **ans;
+    int res[numsSize], **ans;
+    node_t nodes[numsSize + 1];
 
     qsort(nums, numsSize, sizeof(int), cmp);
-    for (int i = 0; i < numsSize; ++i) {
-        if (len && nums[i] == nodes[len - 1].val) {
-            nodes[len - 1].count++;
+    for (int i = 0, len = 0; i < numsSize; ++i) {
+        if (len && nums[i] == nodes[len].val) {
+            nodes[len].count++;
         } else {
-            nodes[len].val = nums[i], nodes[len].count = 1, len += 1;
+            len += 1;
+            nodes[len].val = nums[i], nodes[len].count = 1;
+            nodes[len].next = NULL, nodes[len - 1].next = &nodes[len];
         }
     }
 
     help_len = 0;
-    dfs(nodes, numsSize, len, res, 0);
+    dfs(nodes, numsSize, res, 0);
 
     *returnSize = help_len, *returnColumnSizes = calloc(help_len, sizeof(int));
     for (int i = 0; i < help_len; (*returnColumnSizes)[i++] = numsSize) {}
