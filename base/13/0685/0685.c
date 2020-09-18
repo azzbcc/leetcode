@@ -48,7 +48,7 @@ bool check_circle(int arrived[], int size, int now, bool circled[]) {
     if (check_circle(arrived, size, arrived[now], circled)) return true;
     return circled[now] = false;
 }
-int *findRedundantDirectedConnection(int **edges, int edgesSize, int *edgesColSize, int *returnSize) {
+int *findRedundantDirectedConnection_1(int **edges, int edgesSize, int *edgesColSize, int *returnSize) {
     bool circled[edgesSize + 1];
     int mul_i = 0; // 导致节点入度为2的边的下标
     int cir_i = 0; // 图中存在环，所有在环上的边中，记录最后一个的下标
@@ -87,3 +87,48 @@ int *findRedundantDirectedConnection(int **edges, int edgesSize, int *edgesColSi
 
     return ans;
 }
+
+int find_ancestor(int ancestor[], int n) {
+    if (!ancestor[n]) return ancestor[n] = n;
+    if (ancestor[n] == n) return n;
+    return ancestor[n] = find_ancestor(ancestor, ancestor[n]);
+}
+void merge_ancestor(int ancestor[], int from, int to) {
+    ancestor[find_ancestor(ancestor, to)] = ancestor[find_ancestor(ancestor, from)];
+}
+int *findRedundantDirectedConnection_2(int **edges, int edgesSize, int *edgesColSize, int *returnSize) {
+    int mul_i = 0; // 导致节点入度为2的边的下标
+    int cir_i = 0; // 图中存在环，所有在环上的边中，记录最后一个的下标
+    int *ans, ancestor[edgesSize + 1], parent[edgesSize + 1];
+
+    memset(parent, 0, (edgesSize + 1) * sizeof(int));
+    memset(ancestor, 0, (edgesSize + 1) * sizeof(int));
+    for (int i = 0; i < edgesSize; ++i) {
+        int from = edges[i][0], to = edges[i][1];
+        if (parent[to]) {
+            mul_i = i;
+        } else {
+            parent[to] = from;
+            if (find_ancestor(ancestor, from) == find_ancestor(ancestor, to)) {
+                cir_i = i;
+            } else {
+                merge_ancestor(ancestor, from, to);
+            }
+        }
+    }
+
+    *returnSize = 2, ans = calloc(2, sizeof(int));
+    if (mul_i && cir_i) {
+        // 存在入度为2的节点，且图中有环，当前边必然不是冗余边
+        ans[0] = parent[edges[mul_i][1]], ans[1] = edges[mul_i][1];
+    } else if (mul_i) {
+        // 存在入度为2的节点，且图中没有环，当前边必然是冗余边
+        ans[0] = edges[mul_i][0], ans[1] = edges[mul_i][1];
+    } else {
+        // 所有节点入度为1，必然存在环，环中任意一个节点可移除
+        memcpy(ans, edges[cir_i], 2 * sizeof(int));
+    }
+    return ans;
+}
+
+int *(*findRedundantDirectedConnection)(int **, int, int *, int *) = findRedundantDirectedConnection_2;
