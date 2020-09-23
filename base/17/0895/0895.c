@@ -50,7 +50,8 @@
 //
 // Related Topics 栈 哈希表
 // 👍 95 👎 0
-#define HASH_MAX_SIZE 9997
+#define HASH_MAX_SIZE  9997
+#define MAX_STACK_SIZE 10001
 
 typedef struct list_node {
     int val;
@@ -60,6 +61,18 @@ static list_t list_new(int val) {
     list_t l = calloc(1, sizeof(struct list_node));
     l->val = val, l->next = NULL;
     return l;
+}
+static void stack_push(list_t s, int val) {
+    list_t l = list_new(val);
+    l->next = s->next, s->next = l;
+}
+static int stack_pop(list_t s) {
+    int val;
+    list_t l = NULL;
+    if (!s->next) return -1;
+    l = s->next, val = l->val, s->next = s->next->next;
+    free(l);
+    return val;
 }
 static void list_free(list_t l) {
     if (l->next) list_free(l->next);
@@ -113,55 +126,40 @@ static void hash_free(hash_t t) {
 }
 typedef struct {
     int max_count;
-    list_t list;
-    hash_t repeat;
+    list_t stacks[MAX_STACK_SIZE];
     hash_t count_map;
 } FreqStack;
 
 FreqStack *freqStackCreate() {
     FreqStack *stack = calloc(1, sizeof(*stack));
 
-    stack->list = list_new(0);
-    memset(stack->repeat, 0, sizeof(stack->repeat));
+    stack->max_count = 0;
+    memset(stack->stacks, 0, sizeof(stack->stacks));
     memset(stack->count_map, 0, sizeof(stack->count_map));
 
     return stack;
 }
 
 void freqStackPush(FreqStack *stack, int x) {
-    hash_node_t node = hash_find(stack->count_map, x);
-    if (!node || !node->count) {
-        node = hash_add(stack->count_map, x);
-    } else {
-        hash_find(stack->repeat, node->count++)->count--;
-    }
-    hash_add(stack->repeat, node->count);
-    if (stack->max_count < node->count) stack->max_count = node->count;
+    hash_node_t node = hash_add(stack->count_map, x);
 
-    list_t l = list_new(x);
-    l->next = stack->list->next, stack->list->next = l;
+    if (stack->max_count < node->count) stack->max_count = node->count;
+    if (!stack->stacks[node->count]) stack->stacks[node->count] = list_new(0);
+
+    stack_push(stack->stacks[node->count], x);
 }
 
 int freqStackPop(FreqStack *stack) {
-    hash_node_t node = NULL;
-    for (list_t list = stack->list, tmp; list->next; list = list->next) {
-        node = hash_find(stack->count_map, list->next->val);
-        if (node->count != stack->max_count) continue;
-        tmp = list->next, list->next = list->next->next;
-        free(tmp);
-        break;
-    }
-    if (!node) return -1;
-    hash_node_t repeat = hash_find(stack->repeat, node->count);
-    if (!--repeat->count) stack->max_count--;
-    if (--node->count) hash_find(stack->repeat, node->count)->count++;
+    int val = stack_pop(stack->stacks[stack->max_count]);
 
-    return node->val;
+    hash_find(stack->count_map, val)->count--;
+    if (!stack->stacks[stack->max_count]->next) stack->max_count--;
+
+    return val;
 }
 
 void freqStackFree(FreqStack *stack) {
-    list_free(stack->list);
-    hash_free(stack->repeat);
+    for (int i = 1; stack->stacks[i]; list_free(stack->stacks[i++])) {}
     hash_free(stack->count_map);
     free(stack);
 }
