@@ -30,65 +30,20 @@
 // Related Topics 动态规划
 // 👍 687 👎 0
 
-#define MAXN  1000
-#define WIDTH 128
+bool wordBreak(char *s, char **wordDict, int wordDictSize) {
+    if (wordDictSize <= 0) return false;
+    size_t lens[wordDictSize], len = strlen(s);
+    for (int i = 0; i < wordDictSize; lens[i] = strlen(wordDict[i]), i++) {}
 
-typedef struct trie_node {
-    bool exists;
-    struct trie_node *next[WIDTH];
-} * trie_t;
-trie_t trie_create() {
-    trie_t t = calloc(1, sizeof(struct trie_node));
+    bool dp[len + 1];
+    memset(dp, 0, sizeof(dp));
 
-    t->exists = false;
-    for (int i = 0; i < WIDTH; ++i) {
-        t->next[i] = NULL;
-    }
-    return t;
-}
-void trie_add(trie_t t, char *s) {
-    for (; *s; s++) {
-        if (!t->next[*s]) t->next[*s] = trie_create();
-        t = t->next[*s];
-    }
-    t->exists = true;
-}
-void trie_dump(trie_t t, char *res, int len) {
-    if (t->exists) {
-        res[len] = '\0';
-        puts(res);
-    }
-    for (int i = 0; i < WIDTH; ++i) {
-        if (t->next[i]) {
-            res[len] = i;
-            trie_dump(t->next[i], res, len + 1);
+    dp[0] = true;
+    for (int i = 1; i <= len; ++i) {
+        for (int j = 0; !dp[i] && j < wordDictSize; ++j) {
+            if (i >= lens[j] && dp[i - lens[j]]) dp[i] = !strncmp(s + i - lens[j], wordDict[j], lens[j]);
         }
     }
-}
-void trie_free(trie_t t) {
-    if (!t) return;
-    for (int i = 0; i < WIDTH; ++i) {
-        trie_free(t->next[i]);
-    }
-    free(t);
-}
-bool dfs(trie_t t, char *s) {
-    if (!*s) return true;
 
-    for (trie_t tmp = t->next[*s]; tmp && *s; tmp = tmp->next[*++s]) {
-        if (tmp->exists && dfs(t, s + 1)) return true;
-    }
-    return false;
-}
-bool wordBreak(char *s, char **wordDict, int wordDictSize) {
-    trie_t t = trie_create();
-    for (int i = 0; i < wordDictSize; ++i) {
-        trie_add(t, wordDict[i]);
-    }
-
-    bool ans = dfs(t, s);
-
-    trie_free(t);
-
-    return ans;
+    return dp[len];
 }
