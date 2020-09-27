@@ -24,11 +24,16 @@
 // 👍 165 👎 0
 
 typedef struct {
-    int dividend;
-    int divisor;
+    union {
+        struct {
+            int16_t dividend;
+            int16_t divisor;
+        };
+        int32_t d;
+    };
 } data_type_t;
 
-static char *operators = "+-*/";
+static char *operators = "+-*/ab";
 
 static int cmp(const void *a, const void *b) {
     return *( int * )a - *( int * )b;
@@ -40,79 +45,54 @@ static int gcd(int a, int b) {
 static int lcm(int a, int b) {
     return a / gcd(a, b) * b;
 }
-data_type_t operater(data_type_t first, data_type_t second, char op) {
-    data_type_t result = first;
-    if (op == '*' || op == '/') {
-        if (op == '/') {
-            int tmp         = second.divisor;
-            second.divisor  = second.dividend;
-            second.dividend = tmp;
-        }
-        result.dividend *= second.dividend;
-        result.divisor *= second.divisor;
-    } else {
-        if (result.divisor != second.divisor) {
-            result.divisor = lcm(result.divisor, second.divisor);
-            result.dividend *= result.divisor / first.divisor;
-            second.dividend *= result.divisor / second.divisor;
-        }
-        if (op == '-') second.dividend = -second.dividend;
-        result.dividend += second.dividend;
+data_type_t operater(data_type_t a, data_type_t b, char op) {
+    if (op == 'a' || op == 'b') {
+        data_type_t tmp;
+        tmp = a, a = b, b = tmp;
+        op  = op == 'a' ? '-' : '/';
     }
-    return result;
+    if (op == '*' || op == '/') {
+        for (int tmp = b.dividend; op == '/' && tmp != b.divisor; b.dividend = b.divisor, b.divisor = tmp) {}
+        a.dividend *= b.dividend, a.divisor *= b.divisor;
+    } else {
+        if (a.divisor != b.divisor) {
+            int base = lcm(a.divisor, b.divisor);
+            a.dividend *= base / a.divisor, a.divisor = base;
+            b.dividend *= base / b.divisor;
+        }
+        if (op == '-') b.dividend = -b.dividend;
+        a.dividend += b.dividend;
+    }
+    return a;
 }
-bool check24(const char *s) {
-    int top              = -1;
-    data_type_t stack[4] = { 0 };
+bool dfs(data_type_t data[], int len) {
+    if (len <= 1) return data[0].dividend == 24 * data[0].divisor;
 
-    for (int i = 0; s[i]; ++i) {
-        if (isdigit(s[i])) {
-            stack[++top] = (data_type_t) { s[i] - '0', 1 };
-        } else {
-            data_type_t a = stack[top--], b = stack[top--];
-            stack[++top] = operater(b, a, s[i]);
-            if (!stack[top].divisor) {
-                return false;
+    data_type_t new_data[len - 1];
+    for (int i = 0; i < len; ++i) {
+        if (i > 0 && data[i].d == data[i - 1].d) continue;
+        for (int j = i + 1; j < len; ++j) {
+            if (j > i + 1 && data[j].d == data[j - 1].d) continue;
+            for (int k = 0, l = 0; k < len; ++k) {
+                if (k == i || k == j) continue;
+                new_data[l++] = data[k];
+            }
+            for (int k = 0; operators[k]; ++k) {
+                new_data[len - 2] = operater(data[i], data[j], operators[k]);
+                if (!new_data[len - 2].divisor) continue;
+                if (dfs(new_data, len - 1)) return true;
             }
         }
     }
-    return 24 * stack[top].divisor == stack[top].dividend;
-}
-bool dfs(int *nums, int numLeft, char *s, int len, int chLeft) {
-    if (numLeft <= 0 && chLeft <= 0) {
-        s[len] = '\0';
-        return check24(s);
-    }
-    if (numLeft > 0) {
-        s[len] = *nums + '0';
-        if (dfs(nums + 1, numLeft - 1, s, len + 1, chLeft)) return true;
-    }
-    if (numLeft < chLeft) {
-        for (int i = 0; operators[i]; ++i) {
-            s[len] = operators[i];
-            if (dfs(nums, numLeft, s, len + 1, chLeft - 1)) return true;
-        }
-    }
     return false;
 }
-
 bool judgePoint24(int *nums, int size) {
-    char str[8] = { '\0' };
+    data_type_t data[size];
 
     qsort(nums, size, sizeof(int), cmp);
-    while (true) {
-        // do sth.
-        if (dfs(nums, size, str, 0, 3)) return true;
-
-        // query next permutation
-        int m, n; // 最后一个比后驱小的数，最后一个比m大的数
-        for (m = size - 2; m >= 0 && nums[m] >= nums[m + 1]; --m) {}
-        if (m < 0) break;
-        for (n = size - 1; nums[n] <= nums[m]; --n) {}
-        for (int t = -1; t < 0; t = nums[n], nums[n] = nums[m], nums[m] = t) {}
-        for (int l = m, r = size, t; ++l < --r;) {
-            t = nums[l], nums[l] = nums[r], nums[r] = t;
-        }
+    for (int i = 0; i < size; ++i) {
+        data[i].dividend = nums[i], data[i].divisor = 1;
     }
-    return false;
+
+    return dfs(data, size);
 }
