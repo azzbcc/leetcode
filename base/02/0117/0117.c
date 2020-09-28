@@ -45,7 +45,7 @@
 //
 // Related Topics 树 深度优先搜索
 // 👍 247 👎 0
-
+#if 0
 void dfs(struct Node *root, struct Node *arr[], int depth) {
     if (!root) return;
 
@@ -60,3 +60,22 @@ struct Node *connect(struct Node *root) {
 
     return root;
 }
+#else
+void resolve(struct Node **new_head, struct Node **prev, struct Node *next) {
+    if (!next) return;
+    if (!*new_head) *new_head = next;
+    if (*prev) (*prev)->next = next;
+    *prev = next;
+}
+struct Node *connect(struct Node *root) {
+    for (struct Node *cur = root, *next; cur; cur = next) {
+        next = NULL;
+        for (struct Node *prev = NULL; cur; cur = cur->next) {
+            resolve(&next, &prev, cur->left);
+            resolve(&next, &prev, cur->right);
+        }
+    }
+
+    return root;
+}
+#endif
