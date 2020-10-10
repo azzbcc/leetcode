@@ -18,7 +18,7 @@ START_TEST(test_official) {
     int cols[]      = { 1, 2, 3, 1 };
     int target[][3] = { { 1 }, { 2, 3 }, { 4, 5, 7 }, { 8 } };
 
-    tree_t t    = tree_create(arr, sizeof(arr) / sizeof(arr[0]));
+    tree_t t    = tree_create(arr);
     list_t *ans = listOfDepth(t, &len);
 
     ck_assert_int_eq(len, sizeof(target) / sizeof(target[0]));
@@ -39,7 +39,7 @@ START_TEST(test_failed) {
     int cols[]      = { 1 };
     int target[][1] = { { 5 } };
 
-    tree_t t    = tree_create(arr, sizeof(arr) / sizeof(arr[0]));
+    tree_t t    = tree_create(arr);
     list_t *ans = listOfDepth(t, &len);
 
     ck_assert_int_eq(len, sizeof(target) / sizeof(target[0]));

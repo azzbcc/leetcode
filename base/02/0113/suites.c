@@ -15,7 +15,7 @@
 START_TEST(test_official) {
     int sum = 22, arr[]        = { 5, 4, 8, 11, null, 13, 4, 7, 2, null, null, 5, 1 };
     int len, *returncolumnsize = NULL;
-    tree_t t = tree_create(arr, sizeof(arr) / sizeof(arr[0]));
+    tree_t t = tree_create(arr);
 
     int col[] = { 4, 4 }, target[][4] = { { 5, 4, 11, 2 }, { 5, 8, 4, 5 } };
     int **ans = pathSum(t, sum, &len, &returncolumnsize);

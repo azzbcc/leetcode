@@ -13,8 +13,8 @@
 #include "0538.c"
 
 START_TEST(test_official) {
-    tree_t ta     = tree_create((int[]) { 5, 2, 13 }, 3);
-    tree_t target = tree_create((int[]) { 18, 20, 13 }, 3);
+    tree_t ta     = tree_create(((int[]) { 5, 2, 13 }));
+    tree_t target = tree_create(((int[]) { 18, 20, 13 }));
 
     tree_t ans = convertBST(ta);
 

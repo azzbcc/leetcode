@@ -14,7 +14,7 @@
 
 START_TEST(test_official) {
     int arr[] = { 3, 9, 20, null, null, 15, 7 }, target = 3;
-    tree_t tree = tree_create(arr, sizeof(arr) / sizeof(arr[0]));
+    tree_t tree = tree_create(arr);
 
     int depth = maxDepth(tree);
     ck_assert_msg(depth == target, "error, except %d but got %d on maxDepth(3, 9, 20, null, null, 15, 7).", target,

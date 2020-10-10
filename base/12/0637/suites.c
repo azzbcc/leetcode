@@ -14,7 +14,7 @@
 
 START_TEST(test_official) {
     int len, arr[] = { 3, 9, 20, null, null, 15, 7 };
-    tree_t t = tree_create(arr, sizeof(arr) / sizeof(arr[0]));
+    tree_t t = tree_create(arr);
 
     double target[] = {3, 14.5, 11}, *ans = averageOfLevels(t, &len);
 

@@ -19,7 +19,8 @@ typedef struct TreeNode {
     struct TreeNode *left;
     struct TreeNode *right;
 } * tree_t;
-tree_t tree_create(const int *, size_t);
+#define tree_create(array) tree_create_size(array, LEN(array))
+tree_t tree_create_size(const int *, size_t);
 void tree_free(tree_t);
 bool tree_equal(tree_t, tree_t);
 tree_t tree_find(tree_t, int);

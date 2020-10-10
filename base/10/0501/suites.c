@@ -14,7 +14,7 @@
 
 START_TEST(test_official) {
     int len, arr[] = { 1, null, 2, 2 };
-    tree_t t = tree_create(arr, sizeof(arr) / sizeof(arr[0]));
+    tree_t t = tree_create(arr);
 
     int target[] = { 2 }, *ans = findMode(t, &len);
 

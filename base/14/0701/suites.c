@@ -14,8 +14,8 @@
 
 START_TEST(test_official) {
     int arr[] = { 4, 2, 7, 1, 3 }, target[] = { 4, 2, 7, 1, 3, 5 };
-    tree_t ta = tree_create(arr, sizeof(arr) / sizeof(arr[0]));
-    tree_t tt = tree_create(target, sizeof(target) / sizeof(target[0]));
+    tree_t ta = tree_create(arr);
+    tree_t tt = tree_create(target);
 
     tree_t ans = insertIntoBST(ta, 5);
 

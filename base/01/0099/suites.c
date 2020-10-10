@@ -15,8 +15,8 @@
 START_TEST(test_official_1) {
     int arr[] = { 1, 3, null, null, 2 }, target[] = { 3, 1, null, null, 2 };
 
-    tree_t ta = tree_create(arr, sizeof(arr) / sizeof(arr[0]));
-    tree_t tt = tree_create(target, sizeof(target) / sizeof(target[0]));
+    tree_t ta = tree_create(arr);
+    tree_t tt = tree_create(target);
 
     recoverTree(ta);
 
@@ -29,8 +29,8 @@ START_TEST(test_official_1) {
 START_TEST(test_official_2) {
     int arr[] = { 3, 1, 4, null, null, 2 }, target[] = { 2, 1, 4, null, null, 3 };
 
-    tree_t ta = tree_create(arr, sizeof(arr) / sizeof(arr[0]));
-    tree_t tt = tree_create(target, sizeof(target) / sizeof(target[0]));
+    tree_t ta = tree_create(arr);
+    tree_t tt = tree_create(target);
 
     recoverTree(ta);
 

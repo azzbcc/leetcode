@@ -15,8 +15,8 @@
 START_TEST(test_official_1) {
     int arr1[] = { 1, 2, 3 }, arr2[] = { 1, 2, 3 };
 
-    tree_t t1 = tree_create(arr1, sizeof(arr1) / sizeof(arr1[0]));
-    tree_t t2 = tree_create(arr2, sizeof(arr2) / sizeof(arr2[0]));
+    tree_t t1 = tree_create(arr1);
+    tree_t t2 = tree_create(arr2);
 
     bool target = true, ans = isSameTree(t1, t2);
 
@@ -29,8 +29,8 @@ START_TEST(test_official_1) {
 START_TEST(test_official_2) {
     int arr1[] = { 1, 2 }, arr2[] = { 1, null, 2 };
 
-    tree_t t1 = tree_create(arr1, sizeof(arr1) / sizeof(arr1[0]));
-    tree_t t2 = tree_create(arr2, sizeof(arr2) / sizeof(arr2[0]));
+    tree_t t1 = tree_create(arr1);
+    tree_t t2 = tree_create(arr2);
 
     bool target = false, ans = isSameTree(t1, t2);
 
@@ -43,8 +43,8 @@ START_TEST(test_official_2) {
 START_TEST(test_official_3) {
     int arr1[] = { 1, 2, 1 }, arr2[] = { 1, 1, 2 };
 
-    tree_t t1 = tree_create(arr1, sizeof(arr1) / sizeof(arr1[0]));
-    tree_t t2 = tree_create(arr2, sizeof(arr2) / sizeof(arr2[0]));
+    tree_t t1 = tree_create(arr1);
+    tree_t t2 = tree_create(arr2);
 
     bool target = false, ans = isSameTree(t1, t2);
 

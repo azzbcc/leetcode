@@ -14,7 +14,7 @@
 
 START_TEST(test_official) {
     int len, arr[] = { 1, null, 2, 3 };
-    tree_t t = tree_create(arr, sizeof(arr) / sizeof(arr[0]));
+    tree_t t = tree_create(arr);
 
     int target[] = { 3, 2, 1 }, *ans = postorderTraversal(t, &len);
 
@@ -27,7 +27,7 @@ START_TEST(test_official) {
 
 START_TEST(test_own) {
     int len, arr[] = { 1, 2, 3, 4, 5, 6, 7 };
-    tree_t t = tree_create(arr, sizeof(arr) / sizeof(arr[0]));
+    tree_t t = tree_create(arr);
 
     int target[] = { 4, 5, 2, 6, 7, 3, 1 }, *ans = postorderTraversal(t, &len);
 

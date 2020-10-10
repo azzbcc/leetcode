@@ -14,7 +14,7 @@
 
 START_TEST(test_official_1) {
     int arr[]  = { 0, 0, null, 0, 0 };
-    tree_t t   = tree_create(arr, sizeof(arr) / sizeof(arr[0]));
+    tree_t t   = tree_create(arr);
     int target = 1, ans = minCameraCover(t);
 
     ck_assert_int_eq(target, ans);
@@ -22,7 +22,7 @@ START_TEST(test_official_1) {
 }
 START_TEST(test_official_2) {
     int arr[]  = { 0, 0, null, 0, null, 0, null, null, 0 };
-    tree_t t   = tree_create(arr, sizeof(arr) / sizeof(arr[0]));
+    tree_t t   = tree_create(arr);
     int target = 2, ans = minCameraCover(t);
 
     ck_assert_int_eq(target, ans);
@@ -30,7 +30,7 @@ START_TEST(test_official_2) {
 }
 START_TEST(test_failed_1) {
     int arr[]  = { 0 };
-    tree_t t   = tree_create(arr, sizeof(arr) / sizeof(arr[0]));
+    tree_t t   = tree_create(arr);
     int target = 1, ans = minCameraCover(t);
 
     ck_assert_int_eq(target, ans);
@@ -38,7 +38,7 @@ START_TEST(test_failed_1) {
 }
 START_TEST(test_failed_2) {
     int arr[]  = { 0, 0, null, null, 0, 0, null, null, 0, 0 };
-    tree_t t   = tree_create(arr, sizeof(arr) / sizeof(arr[0]));
+    tree_t t   = tree_create(arr);
     int target = 2, ans = minCameraCover(t);
 
     ck_assert_int_eq(target, ans);
@@ -46,7 +46,7 @@ START_TEST(test_failed_2) {
 }
 START_TEST(test_failed_3) {
     int arr[]  = { 0, null, 0, null, 0, null, 0 };
-    tree_t t   = tree_create(arr, sizeof(arr) / sizeof(arr[0]));
+    tree_t t   = tree_create(arr);
     int target = 2, ans = minCameraCover(t);
 
     ck_assert_int_eq(target, ans);
@@ -54,7 +54,7 @@ START_TEST(test_failed_3) {
 }
 START_TEST(test_failed_4) {
     int arr[]  = { 0, null, 0, 0, null, 0, 0, null, null, 0 };
-    tree_t t   = tree_create(arr, sizeof(arr) / sizeof(arr[0]));
+    tree_t t   = tree_create(arr);
     int target = 3, ans = minCameraCover(t);
 
     ck_assert_int_eq(target, ans);

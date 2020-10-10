@@ -16,7 +16,7 @@ START_TEST(test_official) {
     int arr1[] = { 9, 3, 15, 20, 7 }, arr2[] = { 9, 15, 7, 20, 3 };
     int target[] = { 3, 9, 20, null, null, 15, 7 };
 
-    tree_t tt = tree_create(target, sizeof(target) / sizeof(target[0]));
+    tree_t tt = tree_create(target);
     tree_t ta = buildTree(arr1, sizeof(arr1) / sizeof(arr1[0]), arr2, sizeof(arr2) / sizeof(arr2[0]));
 
     ck_assert(tree_equal(tt, ta));

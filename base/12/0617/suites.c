@@ -16,9 +16,9 @@ START_TEST(test_official) {
     int arr1[] = { 1, 3, 2, 5 }, arr2[] = { 2, 1, 3, null, 4, null, 7 };
     int target[] = { 3, 4, 5, 5, 4, null, 7 };
 
-    tree_t t1 = tree_create(arr1, sizeof(arr1) / sizeof(arr1[0]));
-    tree_t t2 = tree_create(arr2, sizeof(arr2) / sizeof(arr2[0]));
-    tree_t tt = tree_create(target, sizeof(target) / sizeof(target[0]));
+    tree_t t1 = tree_create(arr1);
+    tree_t t2 = tree_create(arr2);
+    tree_t tt = tree_create(target);
 
     tree_t ans = mergeTrees(t1, t2);
     ck_assert(tree_equal(tt, ans));

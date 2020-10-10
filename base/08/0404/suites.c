@@ -14,7 +14,7 @@
 
 START_TEST(test_official) {
     int arr[]  = { 3, 9, 20, null, null, 15, 7 };
-    tree_t t   = tree_create(arr, sizeof(arr) / sizeof(arr[0]));
+    tree_t t   = tree_create(arr);
     int target = 24, ans = sumOfLeftLeaves(t);
 
     ck_assert_int_eq(target, ans);

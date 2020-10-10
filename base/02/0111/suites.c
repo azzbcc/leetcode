@@ -14,7 +14,7 @@
 
 START_TEST(test_official) {
     int arr[] = { 3, 9, 20, null, null, 15, 7 };
-    tree_t t  = tree_create(arr, sizeof(arr) / sizeof(arr[0]));
+    tree_t t  = tree_create(arr);
 
     int target = 2, ans = minDepth(t);
 
@@ -25,7 +25,7 @@ START_TEST(test_official) {
 
 START_TEST(test_failed) {
     int arr[] = { 1, 2 };
-    tree_t t  = tree_create(arr, sizeof(arr) / sizeof(arr[0]));
+    tree_t t  = tree_create(arr);
 
     int target = 2, ans = minDepth(t);
 
@@ -188,7 +188,7 @@ START_TEST(test_limit) {
         0, null, 0, null, 0, null, 0, null, 0, null, 0, null, 0, null, 0, null, 0, null, 0, null, 0, null, 0, null,
         0, null, 0, null, 0, 0
     };
-    tree_t t = tree_create(arr, sizeof(arr) / sizeof(arr[0]));
+    tree_t t = tree_create(arr);
 
     int target = 1804, ans = minDepth(t);
 

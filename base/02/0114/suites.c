@@ -15,8 +15,8 @@
 START_TEST(test_official) {
     int arr[] = { 1, 2, 5, 3, 4, null, 6 }, target[] = { 1, null, 2, null, 3, null, 4, null, 5, null, 6 };
 
-    tree_t ta = tree_create(arr, sizeof(arr) / sizeof(arr[0]));
-    tree_t tt = tree_create(target, sizeof(target) / sizeof(target[0]));
+    tree_t ta = tree_create(arr);
+    tree_t tt = tree_create(target);
 
     flatten(ta);
 

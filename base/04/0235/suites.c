@@ -15,7 +15,7 @@
 START_TEST(test_official_1) {
     int p = 2, q = 8, target = 6;
     int arr[] = { 6, 2, 8, 0, 4, 7, 9, null, null, 3, 5 };
-    tree_t t  = tree_create(arr, sizeof(arr) / arr[0]);
+    tree_t t  = tree_create(arr);
 
     tree_t ans = lowestCommonAncestor(t, tree_find(t, p), tree_find(t, q));
 
@@ -27,7 +27,7 @@ START_TEST(test_official_1) {
 START_TEST(test_official_2) {
     int p = 2, q = 4, target = 2;
     int arr[] = { 6, 2, 8, 0, 4, 7, 9, null, null, 3, 5 };
-    tree_t t  = tree_create(arr, sizeof(arr) / arr[0]);
+    tree_t t  = tree_create(arr);
 
     tree_t ans = lowestCommonAncestor(t, tree_find(t, p), tree_find(t, q));
 

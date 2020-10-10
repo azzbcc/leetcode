@@ -15,7 +15,7 @@ static tree_t tree_node_new(int val) {
     t->val = val, t->left = t->right = NULL;
     return t;
 }
-tree_t tree_create(const int *data, size_t len) {
+tree_t tree_create_size(const int *data, size_t len) {
     if (len == 0) return NULL;
     tree_t t = tree_node_new(data[0]), nodes[2][0x1000] = { t };
     for (int di = 1, ni = 0, nlen = 1, now = 0; di < len && nlen; now = 1 - now, nlen = ni, ni = 0) {

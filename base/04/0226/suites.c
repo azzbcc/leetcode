@@ -14,7 +14,7 @@
 
 START_TEST(test_official) {
     int arr[][7] = { { 4, 2, 7, 1, 3, 6, 9 }, { 4, 7, 2, 9, 6, 3, 1 } };
-    tree_t ta = tree_create(arr[0], 7), tt = tree_create(arr[1], 7);
+    tree_t ta = tree_create(arr[0]), tt = tree_create(arr[1]);
 
     fail_unless(tree_equal(invertTree(ta), tt));
 

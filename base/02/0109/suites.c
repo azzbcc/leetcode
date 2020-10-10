@@ -18,7 +18,7 @@ START_TEST(test_official) {
     int arr2[] = { 0, -3, 9, -10, null, 5 };
 
     list_t l      = list_create(arr1);
-    tree_t target = tree_create(arr2, sizeof(arr2) / sizeof(arr2[0]));
+    tree_t target = tree_create(arr2);
 
     tree_t ans = sortedListToBST(l);
 

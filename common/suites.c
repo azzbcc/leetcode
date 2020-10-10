@@ -27,8 +27,8 @@ START_TEST(test_list) {
 START_TEST(test_tree) {
     int arr[] = { 3, 9, 20, null, null, 15, 7 };
 
-    tree_t t1 = tree_create((int[]) { 3, 9, 20, null, null, 15, 7 }, 7);
-    tree_t t2 = tree_create(arr, sizeof(arr) / sizeof(arr[0]));
+    tree_t t1 = tree_create(((int[]) { 3, 9, 20, null, null, 15, 7 }));
+    tree_t t2 = tree_create(arr);
 
     ck_assert(tree_equal(t1, t2));
 
