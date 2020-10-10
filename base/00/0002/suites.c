@@ -23,9 +23,9 @@ static int *split(int n) {
 }
 
 START_TEST(test_official) {
-    list_t l1  = list_create(split(342), 3);
-    list_t l2  = list_create(split(465), 3);
-    list_t sum = list_create(split(342 + 465), 3);
+    list_t l1  = list_create_size(split(342), 3);
+    list_t l2  = list_create_size(split(465), 3);
+    list_t sum = list_create_size(split(342 + 465), 3);
 
     list_t l3 = addTwoNumbers(l1, l2);
 
@@ -37,9 +37,9 @@ START_TEST(test_official) {
 }
 
 START_TEST(test_own) {
-    list_t l1 = list_create(split(9543), 4);
-    list_t l2 = list_create(split(564), 3);
-    list_t sum = list_create(split(9543 + 564), 5);
+    list_t l1 = list_create_size(split(9543), 4);
+    list_t l2 = list_create_size(split(564), 3);
+    list_t sum = list_create_size(split(9543 + 564), 5);
 
 	list_t l3 = addTwoNumbers(l1, l2);
 

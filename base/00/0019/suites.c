@@ -14,8 +14,8 @@
 
 START_TEST(test_official) {
     int input = 2, arr1[] = { 1, 2, 3, 4, 5 }, arr2[] = { 1, 2, 3, 5 };
-    list_t l1 = list_create(arr1, sizeof(arr1) / sizeof(arr1[0]));
-    list_t l2 = list_create(arr2, sizeof(arr2) / sizeof(arr2[0]));
+    list_t l1 = list_create(arr1);
+    list_t l2 = list_create(arr2);
 
     list_t l3 = removeNthFromEnd(l1, input);
 
@@ -27,8 +27,8 @@ START_TEST(test_official) {
 
 START_TEST(test_failed) {
     int input = 1, arr1[] = { 1 }, arr2[] = {};
-    list_t l1 = list_create(arr1, sizeof(arr1) / sizeof(arr1[0]));
-    list_t l2 = list_create(arr2, sizeof(arr2) / sizeof(arr2[0]));
+    list_t l1 = list_create(arr1);
+    list_t l2 = list_create(arr2);
 
     list_t l3 = removeNthFromEnd(l1, input);
 

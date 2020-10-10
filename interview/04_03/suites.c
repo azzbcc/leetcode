@@ -23,7 +23,7 @@ START_TEST(test_official) {
 
     ck_assert_int_eq(len, sizeof(target) / sizeof(target[0]));
     for (int i = 0; i < len; ++i) {
-        list_t l = list_create(target[i], cols[i]);
+        list_t l = list_create_size(target[i], cols[i]);
 
         fail_if(!list_equal(l, ans[i]));
 
@@ -44,7 +44,7 @@ START_TEST(test_failed) {
 
     ck_assert_int_eq(len, sizeof(target) / sizeof(target[0]));
     for (int i = 0; i < len; ++i) {
-        list_t l = list_create(target[i], cols[i]);
+        list_t l = list_create_size(target[i], cols[i]);
 
         fail_if(!list_equal(l, ans[i]));
 

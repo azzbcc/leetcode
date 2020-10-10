@@ -9,7 +9,7 @@
  */
 #include <list.h>
 
-list_t list_create(const int *num, size_t len) {
+list_t list_create_size(const int *num, size_t len) {
     list_t head = NULL, tail = NULL;
 
     for (size_t i = 0; i < len; ++i) {

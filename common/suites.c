@@ -14,8 +14,8 @@
 START_TEST(test_list) {
     int arr[] = { 1, 2, 3, 4, 5 };
 
-    list_t l1 = list_create((int[]) { 1, 2, 3, 4, 5 }, 5);
-    list_t l2 = list_create(arr, sizeof(arr) / sizeof(arr[0]));
+    list_t l1 = list_create(((int[]) { 1, 2, 3, 4, 5 }));
+    list_t l2 = list_create(arr);
 
     ck_assert(list_equal(l1, l2));
     ck_assert_ptr_eq(list_index(l1, 2), list_find(l1, 3));

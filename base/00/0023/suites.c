@@ -18,9 +18,9 @@ START_TEST(test_official) {
 
     list_t lists[3] = { NULL };
     for (int i = 0; i < sizeof(lists) / sizeof(lists[0]); ++i) {
-        lists[i] = list_create(arr[i] + 1, arr[i][0]);
+        lists[i] = list_create_size(arr[i] + 1, arr[i][0]);
     }
-    list_t target = list_create(arr_target, sizeof(arr_target) / sizeof(arr_target[0]));
+    list_t target = list_create(arr_target);
     list_t ans    = mergeKLists(lists, sizeof(lists) / sizeof(lists[0]));
 
     fail_if(!list_equal(target, ans));

@@ -16,8 +16,8 @@ START_TEST(test_official) {
     int arr[]        = { 1, 2, 3, 4 };
     int arr_target[] = { 2, 1, 4, 3 };
 
-    list_t l      = list_create(arr, sizeof(arr) / sizeof(arr[0]));
-    list_t target = list_create(arr_target, sizeof(arr_target) / sizeof(arr_target[0]));
+    list_t l      = list_create(arr);
+    list_t target = list_create(arr_target);
     list_t ans    = swapPairs(l);
 
     fail_if(!list_equal(target, ans));

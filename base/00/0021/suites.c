@@ -14,9 +14,9 @@
 
 START_TEST(test_official) {
     int arr1[] = { 1, 2, 4 }, arr2[] = { 1, 3, 4 }, arr3[] = { 1, 1, 2, 3, 4, 4 };
-    list_t l1     = list_create(arr1, sizeof(arr1) / sizeof(arr1[0]));
-    list_t l2     = list_create(arr2, sizeof(arr2) / sizeof(arr2[0]));
-    list_t target = list_create(arr3, sizeof(arr3) / sizeof(arr3[0]));
+    list_t l1     = list_create(arr1);
+    list_t l2     = list_create(arr2);
+    list_t target = list_create(arr3);
 
     list_t ans = mergeTwoLists(l1, l2);
 
