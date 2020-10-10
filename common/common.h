@@ -18,4 +18,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define LEN(array) (sizeof(array) / sizeof(array[0]))
+
 #endif // LEETCODE_COMMON_H
