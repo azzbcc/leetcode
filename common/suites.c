@@ -8,8 +8,47 @@
  *     Author : Clarence <xjh.azzbcc@gmail.com>
  */
 #include <common.h>
+#include <avl_tree.h>
 #include <list.h>
 #include <tree.h>
+
+static int max(int a, int b) {
+    return a > b ? a : b;
+}
+
+static void avl_tree_check(avl_tree_t t) {
+    if (!t) return;
+    int left = avl_tree_height(t->left), right = avl_tree_height(t->right) , balance = left - right;
+    ck_assert_int_le(abs(balance), 1);
+    ck_assert_int_eq(avl_tree_height(t), max(left, right) + 1);
+    avl_tree_check(t->left);
+    avl_tree_check(t->right);
+}
+
+START_TEST(test_avl_tree) {
+    int arr[]    = { 30 };
+    avl_tree_t t = avl_tree_create(arr);
+
+    for (int i = 1; i <= 10; ++i) {
+        avl_tree_add(&t, 30 + i);
+        avl_tree_check(t);
+    }
+    for (int i = 1; i <= 10; ++i) {
+        avl_tree_add(&t, 30 - i);
+        avl_tree_check(t);
+    }
+    for (int i = 0; i < 50; ++i) {
+        avl_tree_add(&t, rand() % 100);
+        avl_tree_check(t);
+    }
+
+    for (int i = 0; i < 100; ++i) {
+        avl_tree_del(&t, rand() % 100);
+        avl_tree_check(t);
+    }
+
+    avl_tree_free(t);
+}
 
 START_TEST(test_list) {
     int arr[] = { 1, 2, 3, 4, 5 };
@@ -37,6 +76,7 @@ START_TEST(test_tree) {
 }
 
 void tcase_complete(TCase *t) {
+    tcase_add_test(t, test_avl_tree);
     tcase_add_test(t, test_list);
     tcase_add_test(t, test_tree);
 }
