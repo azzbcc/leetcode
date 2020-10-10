@@ -41,3 +41,11 @@ bool tree_equal(tree_t t1, tree_t t2) {
 
     return t1->val == t2->val && tree_equal(t1->left, t2->left) && tree_equal(t1->right, t2->right);
 }
+
+tree_t tree_find(tree_t root, int val) {
+    if (!root) return NULL;
+    if (root->val == val) return root;
+    tree_t left = tree_find(root->left, val);
+    if (left) return left;
+    return tree_find(root->right, val);
+}

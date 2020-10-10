@@ -12,13 +12,6 @@
 
 #include "0235.c"
 
-static tree_t tree_find(tree_t root, int val) {
-    if (!root) return NULL;
-    if (root->val == val) return root;
-    if (root->val < val) return tree_find(root->right, val);
-    return tree_find(root->left, val);
-}
-
 START_TEST(test_official_1) {
     int p = 2, q = 8, target = 6;
     int arr[] = { 6, 2, 8, 0, 4, 7, 9, null, null, 3, 5 };

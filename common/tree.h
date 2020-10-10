@@ -22,5 +22,6 @@ typedef struct TreeNode {
 tree_t tree_create(const int *, size_t);
 void tree_free(tree_t);
 bool tree_equal(tree_t, tree_t);
+tree_t tree_find(tree_t, int);
 
 #endif // LEETCODE_TREE_H

@@ -12,14 +12,6 @@
 
 #include "0865.c"
 
-static tree_t tree_find(tree_t root, int val) {
-    if (!root) return NULL;
-    if (root->val == val) return root;
-    tree_t left = tree_find(root->left, val);
-    if (left) return left;
-    return tree_find(root->right, val);
-}
-
 START_TEST(test_official) {
     int arr[] = { 3, 5, 1, 6, 2, 0, 8, null, null, 7, 4 };
     tree_t t  = tree_create(arr, sizeof(arr) / sizeof(arr[0]));
