@@ -18,6 +18,7 @@ START_TEST(test_list) {
     list_t l2 = list_create(arr, sizeof(arr) / sizeof(arr[0]));
 
     ck_assert(list_equal(l1, l2));
+    ck_assert_ptr_eq(list_index(l1, 2), list_find(l1, 3));
 
     list_free(l1);
     list_free(l2);

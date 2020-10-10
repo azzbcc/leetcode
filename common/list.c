@@ -45,3 +45,13 @@ bool list_equal(list_t l1, list_t l2) {
 
     return l1->val == l2->val && list_equal(l1->next, l2->next);
 }
+
+list_t list_index(list_t l, size_t index) {
+    for (; l && index; index--, l = l->next) {}
+    return l;
+}
+
+list_t list_find(list_t l, int val) {
+    for (; l && l->val != val; l = l->next) {}
+    return l;
+}
