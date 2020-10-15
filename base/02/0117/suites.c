@@ -39,12 +39,25 @@ node_t node_find(node_t root, int val) {
     if (left) return left;
     return node_find(root->right, val);
 }
-bool node_equal(node_t t1, node_t t2) {
-    if (t1 == t2) return true;
-    if (!t1 || !t2) return false;
+bool node_list_equal(node_t l1, node_t l2) {
+    if (l1 == l2) return true;
+    if (!l1 || !l2) return false;
 
-    return t1->val == t2->val && node_equal(t1->next, t2->next) && node_equal(t1->left, t2->left)
-           && node_equal(t1->right, t2->right);
+    return l1->val == l2->val && node_list_equal(l1->next, l2->next);
+}
+bool node_equal(node_t t1, node_t t2) {
+    for (node_t next1, next2; t1 && t2; t1 = next1, t2 = next2) {
+        if (!node_list_equal(t1, t2)) return false;
+        for (next1 = NULL; t1; t1 = t1->next) {
+            if ((next1 = t1->left)) break;
+            if ((next1 = t1->right)) break;
+        }
+        for (next2 = NULL; t2; t2 = t2->next) {
+            if ((next2 = t2->left)) break;
+            if ((next2 = t2->right)) break;
+        }
+    }
+    return !t1 && !t2;
 }
 
 #include "0117.c"
