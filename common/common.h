@@ -17,6 +17,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <uthash.h>
 
 #define LEN(array) (sizeof(array) / sizeof(array[0]))
 
