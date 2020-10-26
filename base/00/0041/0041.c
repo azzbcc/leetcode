@@ -39,7 +39,7 @@ void update(int *nums, int size, int index) {
     update(nums, size, old - 1);
 }
 
-int firstMissingPositive(int *nums, int numsSize){
+int firstMissingPositive_1(int *nums, int numsSize) {
     for (int i = 0; i < numsSize; ++i) {
         if (nums[i] > 0 && nums[i] <= numsSize) update(nums, numsSize, nums[i] - 1);
     }
@@ -49,3 +49,18 @@ int firstMissingPositive(int *nums, int numsSize){
 
     return numsSize + 1;
 }
+
+int firstMissingPositive_2(int *nums, int numsSize) {
+    for (int i = 0; i < numsSize; ++i) {
+        for (int tmp = nums[i]; tmp > 0 && tmp <= numsSize && nums[tmp - 1] != tmp;) {
+            nums[i] = nums[tmp - 1], nums[tmp - 1] = tmp, tmp = nums[i];
+        }
+    }
+    for (int i = 0; i < numsSize; ++i) {
+        if (nums[i] != i + 1) return i + 1;
+    }
+
+    return numsSize + 1;
+}
+
+int (*firstMissingPositive)(int *, int) = firstMissingPositive_2;
