@@ -61,16 +61,17 @@
 #define MAX          1024
 #define EQUAL(ch, p) ((ch) == (p) || '.' == (p))
 bool isMatch(char *s, char *p) {
-    int lens = strlen(s);
-    int lenp = strlen(p);
+    size_t lens = strlen(s), lenp = strlen(p);
 
     // dp[i][j] =
     //     p[j] != '*': dp[i-1][j-1] && s[i] == p[j]
     //     p[j] == '*':
     //         s[i] != p[j-1]: dp[i][j-2]
     //         s[k..i] == p[j-1]: dp[k..i][j-2]
-    bool dp[MAX][MAX] = { true };
+    bool dp[lens + 1][lenp + 1];
+    memset(dp, false, sizeof(dp));
 
+    dp[0][0] = true;
     for (int i = 1; i < lenp; ++i) {
         dp[0][i + 1] = dp[0][i - 1] && '*' == p[i];
     }
@@ -79,10 +80,7 @@ bool isMatch(char *s, char *p) {
             if (p[j] != '*') {
                 dp[i + 1][j + 1] = dp[i][j] && EQUAL(s[i], p[j]);
             } else if (j > 0) {
-                dp[i + 1][j + 1] = dp[i + 1][j - 1];
-                for (int k = i; !dp[i + 1][j + 1] && k >= 0 && EQUAL(s[k], p[j - 1]); --k) {
-                    dp[i + 1][j + 1] |= dp[k][j - 1];
-                }
+                dp[i + 1][j + 1] = dp[i + 1][j - 1] || EQUAL(s[i], p[j - 1]) && dp[i][j + 1];
             }
         }
     }
