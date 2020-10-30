@@ -46,21 +46,28 @@
 // Related Topics 贪心算法
 // 👍 29 👎 0
 
+typedef struct node {
+    int c;
+    struct node *next;
+} node_t;
 int minSwaps(int **grid, int gridSize, int *gridColSize) {
-    int arr[gridSize], ans = 0;
+    int ans = 0;
+    node_t nodes[gridSize + 1];
 
-    for (int i = 0, j; i < gridSize; ++i) {
-        for (arr[i] = 0, j = gridSize; j-- && !grid[i][j]; arr[i]++) {}
+    for (int i = 0, j, c; i < gridSize; ++i) {
+        for (c = 0, j = gridSize; j-- && !grid[i][j]; c++) {}
+        nodes[i + 1].c = c, nodes[i].next = &nodes[i + 1];
     }
+    nodes[gridSize].next = NULL;
 
-    for (int i = 0, j, tmp; i < gridSize; ++i) {
-        if (arr[i] >= gridSize - i - 1) continue;
-        for (j = i + 1; j < gridSize; ++j) {
-            if (arr[j] >= gridSize - i - 1) break;
-            tmp = arr[i], arr[i] = arr[j], arr[j] = tmp;
+    for (int n = gridSize, c; n--;) {
+        node_t *prev = nodes, *cur = prev->next;
+        for (c = 0; cur; ++c) {
+            if (cur->c >= n) break;
+            prev = cur, cur = cur->next;
         }
-        if (j == gridSize) return -1;
-        ans += j - i, tmp = arr[i], arr[i] = arr[j], arr[j] = tmp;
+        if (!cur) return -1;
+        ans += c, prev->next = cur->next;
     }
 
     return ans;
