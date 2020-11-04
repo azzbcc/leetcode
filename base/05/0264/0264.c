@@ -19,6 +19,7 @@
 
 #define MAXN 1690
 
+#if 0
 typedef struct {
     long data[MAXN + 1];
     int front, rear;
@@ -54,3 +55,21 @@ int nthUglyNumber(int n) {
 
     return ans;
 }
+#else
+int min(int a, int b, int c) {
+    if (a > b) a = b;
+    if (a > c) a = c;
+    return a;
+}
+int nthUglyNumber(int n) {
+    int nums[MAXN] = { 1 }, i2 = 0, i3 = 0, i5 = 0, ans = 1;
+    for (int i = 1; i < n; ++i) {
+        nums[i] = ans = min(nums[i2] * 2, nums[i3] * 3, nums[i5] * 5);
+
+        if (ans == nums[i2] * 2) ++i2;
+        if (ans == nums[i3] * 3) ++i3;
+        if (ans == nums[i5] * 5) ++i5;
+    }
+    return ans;
+}
+#endif
