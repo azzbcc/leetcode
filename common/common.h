@@ -21,4 +21,6 @@
 
 #define LEN(array) (sizeof(array) / sizeof(array[0]))
 
+void set_execute_timeout(TCase *, double);
+
 #endif // LEETCODE_COMMON_H

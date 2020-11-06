@@ -2,6 +2,13 @@
 
 extern void tcase_complete(TCase *t);
 
+static enum fork_status default_fork_status = CK_NOFORK;
+
+void set_execute_timeout(TCase *tCase, double timeout) {
+    default_fork_status = CK_FORK;
+    tcase_set_timeout(tCase, timeout);
+}
+
 Suite *make_suite(void) {
     Suite *suite = suite_create(PROGRAM);
     TCase *tCase = tcase_create(PROGRAM);
@@ -17,6 +24,9 @@ Suite *make_suite(void) {
 int main(void) {
     // 将Suite加入到SRunner
     SRunner *sr = srunner_create(make_suite());
+
+    // 设置执行模式
+    srunner_set_fork_status(sr, default_fork_status);
 
     // 执行所有测试用例
     srunner_run_all(sr, CK_NORMAL);
