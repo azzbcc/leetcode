@@ -28,7 +28,16 @@ START_TEST(test_tle) {
     ck_assert_int_eq(target, ans);
 }
 
+START_TEST(test_failed) {
+    int arr[] = { -2147483647, 0, -2147483647, 2147483647 };
+
+    int target = 3, ans = countRangeSum(arr, LEN(arr), -564, 3864);
+
+    ck_assert_int_eq(target, ans);
+}
+
 void tcase_complete(TCase *t) {
+    tcase_add_test(t, test_failed);
     tcase_add_test(t, test_tle);
     tcase_add_test(t, test_official);
 
