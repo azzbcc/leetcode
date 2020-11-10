@@ -11,6 +11,7 @@
 // Related Topics 数组
 // 👍 601 👎 0
 
+#if 0
 void nextPermutation(int *nums, int numsSize) {
     for (int pos = --numsSize - 1; pos >= 0; --pos) {
         int tmp = nums[pos];
@@ -27,3 +28,24 @@ void nextPermutation(int *nums, int numsSize) {
         }
     }
 }
+#else
+void nextPermutation(int *nums, int numsSize) {
+    int found = numsSize - 2;
+    for (; found >= 0 && nums[found] >= nums[found + 1]; found--) {}
+    if (found >= 0) {
+        int item = numsSize - 1, tmp;
+        for (int beg = found + 1, mid; beg <= item;) {
+            mid = (beg + item) / 2;
+            if (nums[mid] > nums[found]) {
+                beg = mid + 1;
+            } else {
+                item = mid - 1;
+            }
+        }
+        tmp = nums[item], nums[item] = nums[found], nums[found] = tmp;
+    }
+    for (int beg = found + 1, end = numsSize - 1, tmp; beg < end; beg++, end--) {
+        tmp = nums[beg], nums[beg] = nums[end], nums[end] = tmp;
+    }
+}
+#endif

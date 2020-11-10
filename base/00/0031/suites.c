@@ -49,7 +49,17 @@ START_TEST(test_own) {
     ck_assert_mem_eq(arr, target, sizeof(target));
 }
 
+START_TEST(test_failed) {
+    int arr[]    = { 2, 3, 1 };
+    int target[] = { 3, 1, 2 };
+
+    nextPermutation(arr, sizeof(arr) / sizeof(arr[0]));
+
+    ck_assert_mem_eq(arr, target, sizeof(target));
+}
+
 void tcase_complete(TCase *t) {
+    tcase_add_test(t, test_failed);
     tcase_add_test(t, test_own);
     tcase_add_test(t, test_official_1);
     tcase_add_test(t, test_official_2);
