@@ -39,7 +39,8 @@
 // >b.open(4,-1) // 打开 4 号小孔，并沿 y=-x 方向照入光线，光线轨迹为 4-2-8-2-4，从 4 号小孔射出
 // >b.open(0,-1) // 打开 0 号小孔，并沿 y=-x 方向照入光线，由于 6 号小孔为开启状态，光线从 6 号小孔射出
 // >b.close(6) // 关闭 6 号小孔
-// >b.shoot(0,-1) // 从 0 号小孔沿 y=-x 方向照入光线，由于 6 号小孔为关闭状态，4 号小孔为开启状态，光线轨迹为 0-6-4，从 4 号小孔射出
+// >b.shoot(0,-1) // 从 0 号小孔沿 y=-x 方向照入光线，由于 6 号小孔为关闭状态，4 号小孔为开启状态，光线轨迹为 0-6-4，从
+// 4 号小孔射出
 //
 // **示例 2：**
 // >输入：
@@ -72,52 +73,198 @@
 // - `0 <= index < 2*(m+n)`
 // 👍 7 👎 0
 
-typedef struct ceil {
-    bool open;
-    int index;
-    struct ceil *next[2];
-} ceil_t;
+typedef struct node {
+    int index, rank, height;
+    struct node *prev, *next;
+    struct node *left, *right, *parent;
+} node_t, *balance_tree_t;
 typedef struct {
-    ceil_t *ceils;
+    int *indexes[2];
+    node_t *lines;
+    balance_tree_t *trees;
 } BlackBox;
 
+static int max(int a, int b) {
+    return a > b ? a : b;
+}
+static void point_swap(balance_tree_t *a, balance_tree_t *b) {
+    balance_tree_t tmp = *a;
+    *a = *b, *b = tmp;
+}
+static int tree_height(balance_tree_t t) {
+    return t ? t->height : 0;
+}
+static void tree_height_update(balance_tree_t t) {
+    t->height = max(tree_height(t->left), tree_height(t->right)) + 1;
+}
+static void tree_left_rotate(balance_tree_t *tree) {
+    balance_tree_t t = *tree, child = t->right;
+    *tree = child, t->right = child->left, child->left = t;
+    child->parent = t->parent, t->parent = child;
+    if (t->right) t->right->parent = t;
+    tree_height_update(t);
+}
+static void tree_right_rotate(balance_tree_t *tree) {
+    balance_tree_t t = *tree, child = t->left;
+    *tree = child, t->left = child->right, child->right = t;
+    child->parent = t->parent, t->parent = child;
+    if (t->left) t->left->parent = t;
+    tree_height_update(t);
+}
+static void tree_balance(balance_tree_t *tree) {
+    balance_tree_t t = *tree;
+    int balance      = tree_height(t->left) - tree_height(t->right);
+    if (balance < -1) {
+        if (tree_height(t->right->left) > tree_height(t->right->right)) {
+            tree_right_rotate(&t->right);
+            tree_height_update(t->right);
+        }
+        tree_left_rotate(tree);
+    } else if (balance > 1) {
+        if (tree_height(t->left->right) > tree_height(t->left->left)) {
+            tree_left_rotate(&t->left);
+            tree_height_update(t->left);
+        }
+        tree_right_rotate(tree);
+    } else {
+        tree_height_update(*tree);
+    }
+}
+static void tree_add(balance_tree_t *tree, balance_tree_t parent, balance_tree_t cur) {
+    balance_tree_t now = *tree;
+    if (!now) {
+        *tree = cur, cur->height = 1;
+        if (parent) {
+            if (cur->rank > parent->rank) {
+                cur->prev = parent, cur->next = parent->next;
+                parent->next->prev = cur, parent->next = cur;
+            } else {
+                cur->prev = parent->prev, cur->next = parent;
+                parent->prev->next = cur, parent->prev = cur;
+            }
+        } else {
+            cur->prev = cur->next = cur;
+        }
+        cur->parent = parent;
+    } else {
+        tree_add(cur->rank < now->rank ? &now->left : &now->right, now, cur);
+        tree_balance(tree);
+    }
+}
+static void tree_remove(balance_tree_t *tree, balance_tree_t cur) {
+    balance_tree_t t = *tree;
+    if (t != cur) {
+        tree_remove(cur->rank < t->rank ? &t->left : &t->right, cur);
+        goto done;
+    }
+    if (!t->left || !t->right) {
+        *tree = t->left ? t->left : t->right;
+        if (*tree) (*tree)->parent = t->parent;
+        if (t->next != t) t->prev->next = t->next, t->next->prev = t->prev;
+        t->prev = t->next = t->left = t->right = NULL;
+        goto done;
+    }
+    bool right          = tree_height(t->left) < tree_height(t->right);
+    balance_tree_t swap = right ? cur->next : cur->prev;
+
+    if (right) {
+        swap->next->prev = t, t->prev->next = swap;
+        swap->prev = t->prev, t->next = swap->next;
+        swap->next = t, t->prev = swap;
+    } else {
+        t->next->prev = swap, swap->prev->next = t;
+        t->prev = swap->prev, swap->next = t->next;
+        t->next = swap, swap->prev = t;
+    }
+    if (swap->left) swap->left->parent = t;
+    if (swap->right) swap->right->parent = t;
+    if (t->parent) {
+        if (t->parent->left == t) {
+            t->parent->left = swap;
+        } else {
+            t->parent->right = swap;
+        }
+    } else {
+        *tree = swap;
+    }
+    if (swap->parent != t) {
+        if (swap->parent->left == swap) {
+            swap->parent->left = t;
+        } else {
+            swap->parent->right = t;
+        }
+        t->left->parent = t->right->parent = swap;
+        point_swap(&t->left, &swap->left);
+        point_swap(&t->right, &swap->right);
+        point_swap(&t->parent, &swap->parent);
+    } else if (t->left == swap) {
+        t->right->parent = swap;
+        t->left = swap->left, swap->left = t;
+        point_swap(&t->right, &swap->right);
+        swap->parent = t->parent, t->parent = swap;
+    } else {
+        t->left->parent = swap;
+        point_swap(&t->left, &swap->left);
+        t->right = swap->right, swap->right = t;
+        swap->parent = t->parent, t->parent = swap;
+    }
+
+    tree_remove(right ? &swap->right : &swap->left, cur);
+
+done:
+    if (*tree) tree_balance(tree);
+}
+
 BlackBox *blackBoxCreate(int n, int m) {
-    int sum       = (n + m) * 2;
-    ceil_t *ceils = calloc(sum, sizeof(ceil_t));
-
-    for (int i = 0; i < sum; ++i) {
-        ceils[i].index = i;
-    }
-    for (int i = m + 1, other = m - 1; i < 2 * m + n; ++i, other = (other + sum - 1) % sum) {
-        ceils[i].next[0] = &ceils[other], ceils[other].next[0] = &ceils[i];
-    }
-    for (int i = 1, other = sum - 1; i < n + m; ++i, --other) {
-        ceils[i].next[1] = &ceils[other], ceils[other].next[1] = &ceils[i];
-    }
-
     BlackBox *box = malloc(sizeof(BlackBox));
-    box->ceils    = ceils;
+
+    int sum = (n + m) * 2, index = 0;
+    box->indexes[0] = malloc(sum * sizeof(int));
+    box->indexes[1] = malloc(sum * sizeof(int));
+    box->lines      = calloc((n + m) * 4, sizeof(node_t));
+
+    for (int direction = 0; direction < 2; ++direction) {
+        for (int i = 0; i <= m; ++i) {
+            node_t *cur = &box->lines[i * 2 + direction];
+            if (cur->rank) continue;
+            for (int now = i, d = direction, rank = 0; !cur->rank; d = 1 - d, cur = &box->lines[now * 2 + d]) {
+                cur->index = now, cur->rank = ++rank, box->indexes[d][now] = index;
+                if (d) {
+                    if (now) now = sum - now;
+                } else if (now <= m * 2) {
+                    now = m * 2 - now;
+                } else {
+                    now = m * 4 + n * 2 - now;
+                }
+            }
+            index += 1;
+        }
+    }
+    box->trees = calloc(index, sizeof(balance_tree_t));
 
     return box;
 }
 
-int blackBoxOpen(BlackBox *box, int index, int d) {
-    ceil_t *cur = &box->ceils[index];
+int blackBoxOpen(BlackBox *box, int cur, int d) {
     if (d < 0) d = 0;
 
-    cur->open = true;
-    while (!cur->next[d]->open) {
-        cur = cur->next[d], d = 1 - d;
-        if (!cur->next[d]) d = 1 - d;
+    node_t *l = &box->lines[2 * cur + d];
+    if (!l->next) {
+        tree_add(&box->trees[box->indexes[d][cur]], NULL, l);
+        tree_add(&box->trees[box->indexes[1 - d][cur]], NULL, &box->lines[2 * cur + 1 - d]);
     }
-    return cur->next[d]->index;
+    return l->next->index;
 }
 
-void blackBoxClose(BlackBox *box, int index) {
-    box->ceils[index].open = false;
+void blackBoxClose(BlackBox *box, int cur) {
+    tree_remove(&box->trees[box->indexes[0][cur]], &box->lines[2 * cur]);
+    tree_remove(&box->trees[box->indexes[1][cur]], &box->lines[2 * cur + 1]);
 }
 
 void blackBoxFree(BlackBox *box) {
-    free(box->ceils);
+    free(box->indexes[0]);
+    free(box->indexes[1]);
+    free(box->trees);
+    free(box->lines);
     free(box);
 }

@@ -1930,7 +1930,36 @@ START_TEST(test_tle) {
     blackBoxFree(box);
 }
 
-void tcase_complete(TCase *t) {
+START_TEST(test_failed) {
+    int n = 1, m = 6;
+    BlackBox* box    = blackBoxCreate(n, m);
+    char* commands[] = { "open", "open",  "close", "open",  "open",  "open",  "close", "open", "open",  "close",
+                         "open", "open",  "open",  "open",  "close", "open",  "open",  "open", "open",  "open",
+                         "open", "open",  "close", "open",  "open",  "open",  "open",  "open", "close", "open",
+                         "open", "close", "open",  "open",  "open",  "open",  "open",  "open", "open",  "close",
+                         "open", "open",  "open",  "close", "close", "close", "close", "open", "open",  "open",
+                         "open", "close", "open",  "open",  "open",  "open",  "open",  "open" };
+    int args[][2]    = { { 7, -1 },  { 7, -1 }, { 7 },     { 3, -1 }, { 3, 1 },  { 1, -1 },  { 1 },     { 6, 1 },
+                      { 12, -1 }, { 6 },     { 13, 1 }, { 2, 1 },  { 13, 1 }, { 12, -1 }, { 3 },     { 5, 1 },
+                      { 11, -1 }, { 1, -1 }, { 1, -1 }, { 6, 1 },  { 9, -1 }, { 9, -1 },  { 6 },     { 5, -1 },
+                      { 8, -1 },  { 13, 1 }, { 1, -1 }, { 13, 1 }, { 11 },    { 3, -1 },  { 0, -1 }, { 2 },
+                      { 7, -1 },  { 11, 1 }, { 13, 1 }, { 0, -1 }, { 4, -1 }, { 11, -1 }, { 2, -1 }, { 2 },
+                      { 2, 1 },   { 9, 1 },  { 2, -1 }, { 12 },    { 7 },     { 3 },      { 9 },     { 11, 1 },
+                      { 13, 1 },  { 13, 1 }, { 3, 1 },  { 13 },    { 6, 1 },  { 5, 1 },   { 7, -1 }, { 13, 1 },
+                      { 11, -1 }, { 13, 1 } };
+    for (int i = 0; i < LEN(commands); ++i) {
+        if (!strcmp(commands[i], "open")) {
+            blackBoxOpen(box, args[i][0], args[i][1]);
+        } else {
+            blackBoxClose(box, args[i][0]);
+        }
+    }
+
+    blackBoxFree(box);
+}
+
+void tcase_complete(TCase* t) {
+    tcase_add_test(t, test_failed);
     tcase_add_test(t, test_tle);
     tcase_add_test(t, test_official_1);
     tcase_add_test(t, test_official_2);
