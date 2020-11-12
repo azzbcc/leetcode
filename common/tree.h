@@ -24,5 +24,6 @@ tree_t tree_create_size(const int *, size_t);
 void tree_free(tree_t);
 bool tree_equal(tree_t, tree_t);
 tree_t tree_find(tree_t, int);
+void tree_print(tree_t);
 
 #endif // LEETCODE_TREE_H

@@ -8,6 +8,7 @@
  *     Author : Clarence <xjh.azzbcc@gmail.com>
  */
 #include <list.h>
+#include <print.h>
 
 list_t list_create_size(const int *num, size_t len) {
     list_t head = NULL, tail = NULL;
@@ -54,4 +55,13 @@ list_t list_index(list_t l, size_t index) {
 list_t list_find(list_t l, int val) {
     for (; l && l->val != val; l = l->next) {}
     return l;
+}
+
+static void list_node_print(void *list) {
+    list_t l = list;
+    printf("%d", l->val);
+}
+void list_print(list_t l) {
+    int offsets[] = { offsetof(struct ListNode, next) };
+    print_static_tree(l, offsets, LEN(offsets), 0x1000, list_node_print);
 }

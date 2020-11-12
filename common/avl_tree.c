@@ -8,6 +8,7 @@
  *     Author : Clarence <xjh.azzbcc@gmail.com>
  */
 #include <avl_tree.h>
+#include <print.h>
 
 static int max(int a, int b) {
     return a > b ? a : b;
@@ -122,4 +123,13 @@ bool avl_tree_equal(avl_tree_t t1, avl_tree_t t2) {
 avl_tree_t avl_tree_find(avl_tree_t t, int val) {
     if (!t || t->val == val) return t;
     return avl_tree_find(val < t->val ? t->left : t->right, val);
+}
+
+static void avl_tree_node_print(void *tree) {
+    avl_tree_t t = tree;
+    printf("[%d, %d]", t->val, t->height);
+}
+void avl_tree_print(avl_tree_t t) {
+    int offsets[] = { offsetof(struct AVLTreeNode, left), offsetof(struct AVLTreeNode, right) };
+    print_static_tree(t, offsets, LEN(offsets), avl_tree_height(t), avl_tree_node_print);
 }

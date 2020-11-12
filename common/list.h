@@ -23,5 +23,6 @@ void list_free(list_t);
 bool list_equal(list_t, list_t);
 list_t list_index(list_t, size_t);
 list_t list_find(list_t, int);
+void list_print(list_t);
 
 #endif // LEETCODE_LIST_H

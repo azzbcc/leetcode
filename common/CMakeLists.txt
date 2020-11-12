@@ -1,6 +1,13 @@
+add_library(common SHARED print.c)
+
 add_library(avl_tree SHARED avl_tree.c)
+target_link_libraries(avl_tree common)
+
 add_library(list SHARED list.c)
+target_link_libraries(list common)
+
 add_library(tree SHARED tree.c)
+target_link_libraries(tree common)
 
 add_executable(test_common ${CMAKE_SOURCE_DIR}/main.c suites.c)
 target_compile_definitions(test_common PRIVATE -DPROGRAM="test_common")

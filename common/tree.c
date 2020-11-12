@@ -8,6 +8,7 @@
  *     Author : Clarence <xjh.azzbcc@gmail.com>
  */
 #include <tree.h>
+#include <print.h>
 
 static tree_t tree_node_new(int val) {
     if (val == null) return NULL;
@@ -48,4 +49,13 @@ tree_t tree_find(tree_t root, int val) {
     tree_t left = tree_find(root->left, val);
     if (left) return left;
     return tree_find(root->right, val);
+}
+
+static void tree_node_print(void *tree) {
+    tree_t t = tree;
+    printf("%d", t->val);
+}
+void tree_print(tree_t root) {
+    int offsets[] = { offsetof(struct TreeNode, left), offsetof(struct TreeNode, right) };
+    print_static_tree(root, offsets, LEN(offsets), 0x1000, tree_node_print);
 }

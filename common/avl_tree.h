@@ -26,5 +26,6 @@ int avl_tree_height(avl_tree_t);
 void avl_tree_free(avl_tree_t);
 bool avl_tree_equal(avl_tree_t, avl_tree_t);
 avl_tree_t avl_tree_find(avl_tree_t, int);
+void avl_tree_print(avl_tree_t);
 
 #endif // LEETCODE_AVL_TREE_H
