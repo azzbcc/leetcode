@@ -126,9 +126,8 @@ static void tree_balance(balance_tree_t *tree) {
             tree_height_update(t->left);
         }
         tree_right_rotate(tree);
-    } else {
-        tree_height_update(*tree);
     }
+    tree_height_update(*tree);
 }
 static void tree_add(balance_tree_t *tree, balance_tree_t parent, balance_tree_t cur) {
     balance_tree_t now = *tree;
