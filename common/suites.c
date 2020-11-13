@@ -11,6 +11,7 @@
 #include <23_tree.h>
 #include <avl_tree.h>
 #include <list.h>
+#include <rb_tree.h>
 #include <tree.h>
 
 static int max(int a, int b) {
@@ -115,6 +116,65 @@ START_TEST(test_list) {
     list_free(l2);
 }
 
+static void rb_tree_check(rb_tree_t t) {
+    if (!t) return;
+
+    const int MAXN = 0x1000;
+    int front = 0, rear = 0, black_count = -1;
+    struct node {
+        rb_tree_t tree;
+        int count;
+    } queue[MAXN];
+
+    ck_assert_int_eq(BLACK, rb_tree_color(t));
+    ck_assert_ptr_eq(t->parent, NULL);
+    queue[rear++] = (struct node) { t, 1 };
+    while (front < rear) {
+        struct node now = queue[front];
+        front           = (front + 1) % MAXN;
+
+        if (RED == rb_tree_color(now.tree)) {
+            ck_assert_int_eq(BLACK, rb_tree_color(now.tree->left));
+            ck_assert_int_eq(BLACK, rb_tree_color(now.tree->right));
+        }
+        if (!now.tree) {
+            if (black_count < 0) black_count = now.count;
+            ck_assert_int_eq(black_count, now.count);
+        } else {
+            queue[rear] = (struct node) { now.tree->left, now.count + !rb_tree_color(now.tree->left) };
+            rear        = (rear + 1) % MAXN;
+            queue[rear] = (struct node) { now.tree->right, now.count + !rb_tree_color(now.tree->right) };
+            rear        = (rear + 1) % MAXN;
+        }
+    }
+}
+
+START_TEST(test_rb_tree) {
+    int arr[]   = { 30 };
+    rb_tree_t t = rb_tree_create(arr);
+    rb_tree_check(t);
+
+    for (int i = 1; i <= 10; ++i) {
+        rb_tree_add(&t, 30 + i);
+        rb_tree_check(t);
+    }
+    for (int i = 1; i <= 10; ++i) {
+        rb_tree_add(&t, 30 - i);
+        rb_tree_check(t);
+    }
+    for (int i = 0; i < 200; ++i) {
+        rb_tree_add(&t, rand() % 100);
+        rb_tree_check(t);
+    }
+
+    for (int i = 0; i < 500; ++i) {
+        rb_tree_del(&t, rand() % 100);
+        rb_tree_check(t);
+    }
+
+    rb_tree_free(t);
+}
+
 START_TEST(test_tree) {
     int arr[] = { 3, 9, 20, null, null, 15, 7 };
 
@@ -131,5 +191,6 @@ void tcase_complete(TCase *t) {
     tcase_add_test(t, test_23_tree);
     tcase_add_test(t, test_avl_tree);
     tcase_add_test(t, test_list);
+    tcase_add_test(t, test_rb_tree);
     tcase_add_test(t, test_tree);
 }

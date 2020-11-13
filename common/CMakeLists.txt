@@ -9,6 +9,9 @@ target_link_libraries(avl_tree common)
 add_library(list SHARED list.c)
 target_link_libraries(list common)
 
+add_library(rb_tree SHARED rb_tree.c)
+target_link_libraries(rb_tree common)
+
 add_library(tree SHARED tree.c)
 target_link_libraries(tree common)
 
@@ -18,4 +21,5 @@ target_link_libraries(test_common ${CHECK_LIBRARIES})
 target_link_libraries(test_common 23_tree)
 target_link_libraries(test_common avl_tree)
 target_link_libraries(test_common list)
+target_link_libraries(test_common rb_tree)
 target_link_libraries(test_common tree)
