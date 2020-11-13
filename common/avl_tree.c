@@ -51,9 +51,8 @@ static void avl_tree_balance(avl_tree_t *tree) {
             avl_tree_update_height(t->left);
         }
         avl_tree_right_rotate(tree);
-    } else {
-        avl_tree_update_height(*tree);
     }
+    avl_tree_update_height(*tree);
 }
 
 avl_tree_t avl_tree_create_size(const int arr[], size_t len) {
