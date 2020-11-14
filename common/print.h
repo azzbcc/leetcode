@@ -13,5 +13,6 @@
 #include <common.h>
 
 void print_static_tree(void *, int[], int, int, void (*)(void *));
+void print_dynamic_tree(void *, int, int, int, void (*)(void *));
 
 #endif // LEETCODE_PRINT_H
