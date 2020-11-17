@@ -12,7 +12,6 @@
 #include "0037.c"
 
 START_TEST(test_official) {
-    const int len     = 9;
     char sudoku[][10] = { "53..7....", "6..195...", ".98....6.", "8...6...3", "4..8.3..1",
                           "7...2...6", ".6....28.", "...419..5", "....8..79" };
     char *grid[]      = {
@@ -21,9 +20,9 @@ START_TEST(test_official) {
     char target[][10] = { "534678912", "672195348", "198342567", "859761423", "426853791",
                           "713924856", "961537284", "287419635", "345286179" };
 
-    solveSudoku(grid, sizeof(grid) / sizeof(grid[0]), &len);
+    solveSudoku(grid, LEN(grid), NULL);
 
-    for (int i = 0; i < len; ++i) {
+    for (int i = 0; i < LEN(target); ++i) {
         ck_assert_str_eq(target[i], sudoku[i]);
     }
 }

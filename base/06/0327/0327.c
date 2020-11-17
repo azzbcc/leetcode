@@ -14,10 +14,10 @@
 // 👍 184 👎 0
 
 int cmp(const void *a, const void *b) {
-    long *pa = a, *pb = b;
-    if (*pa == *pb) {
+    long la = *( long * )a, lb = *( long * )b;
+    if (la == lb) {
         return 0;
-    } else if (*pa > *pb) {
+    } else if (la > lb) {
         return 1;
     } else {
         return -1;

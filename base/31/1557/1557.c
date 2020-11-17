@@ -40,9 +40,9 @@
 // 👍 5 👎 0
 
 static int cmp(const void *a, const void *b) {
-    int **pa = a, **pb = b;
+    int *pa = *( int ** )a, *pb = *( int ** )b;
 
-    return pa[0][1] - pb[0][1];
+    return pa[1] - pb[1];
 }
 int *findSmallestSetOfVertices(int n, int **edges, int edgesSize, int *edgesColSize, int *returnSize) {
     int *ans = NULL, arr[n], len = 0;
