@@ -38,7 +38,7 @@ endmacro()
 # 公共头文件夹
 include_directories(common)
 
-enable_testing()
+include(CTest)
 
 dir_programs(demo "")
 add_subdirectory(common)
