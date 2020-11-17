@@ -31,36 +31,36 @@
 struct st_node {
     uint8_t val, count;
 } nodes[MAXN];
-uint8_t node_size = 0;
+int dp[MAXN][MAXN][MAXN];
 int max(int a, int b) {
     return a > b ? a : b;
 }
-int cal(int size, int dp[size][size][size], int l, int r, int n) {
+int cal(int size, int l, int r, int n) {
     if (l > r) return 0;
     if (!dp[l][r][n]) {
-        dp[l][r][n] = cal(size, dp, l + 1, r, 0) + (n + nodes[l].count) * (n + nodes[l].count);
+        dp[l][r][n] = cal(size, l + 1, r, 0) + (n + nodes[l].count) * (n + nodes[l].count);
         for (int i = l + 1; i <= r; i++) {
             if (nodes[i].val != nodes[l].val) continue;
-            dp[l][r][n] = max(dp[l][r][n], cal(size, dp, l + 1, i - 1, 0) + cal(size, dp, i, r, n + nodes[l].count));
+            dp[l][r][n] = max(dp[l][r][n], cal(size, l + 1, i - 1, 0) + cal(size, i, r, n + nodes[l].count));
         }
     }
     return dp[l][r][n];
 }
 int removeBoxes(int *boxes, int boxesSize) {
+    int size = 1;
+
     // data initial
-    node_size = 1, nodes[0].val = boxes[0], nodes[0].count = 1;
+    nodes[0].val = boxes[0], nodes[0].count = 1;
     for (int i = 1; i < boxesSize; ++i) {
-        if (boxes[i] == nodes[node_size - 1].val) {
-            nodes[node_size - 1].count += 1;
+        if (boxes[i] == nodes[size - 1].val) {
+            nodes[size - 1].count += 1;
         } else {
-            node_size += 1;
-            nodes[node_size - 1].val = boxes[i], nodes[node_size - 1].count = 1;
+            size += 1;
+            nodes[size - 1].val = boxes[i], nodes[size - 1].count = 1;
         }
     }
 
-    int dp[node_size][node_size][node_size];
-
     // calculate
     memset(dp, 0, sizeof(dp));
-    return cal(node_size, dp, 0, node_size - 1, 0);
+    return cal(size, 0, size - 1, 0);
 }

@@ -21,7 +21,7 @@ START_TEST(test_official) {
     ck_assert_int_eq(len, sizeof(target) / sizeof(target[0]));
     for (int i = 0; i < len; ++i) {
         ck_assert_int_eq(col[i], returnColumnSizes[i]);
-        ck_assert_mem_eq(ans[i], target[i], sizeof(target[i]));
+        ck_assert_mem_eq(ans[i], target[i], col[i] * sizeof(int));
         free(ans[i]);
     }
     free(ans);

@@ -23,6 +23,7 @@ START_TEST(test_official) {
     ck_assert_mem_eq(ans, target, sizeof(target));
 
     tree_free(t);
+    free(ans);
 }
 
 START_TEST(test_own) {
@@ -36,6 +37,7 @@ START_TEST(test_own) {
     ck_assert_mem_eq(ans, target, sizeof(target));
 
     tree_free(t);
+    free(ans);
 }
 
 void tcase_complete(TCase *t) {

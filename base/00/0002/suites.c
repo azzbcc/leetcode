@@ -34,6 +34,7 @@ START_TEST(test_official) {
     list_free(l1);
     list_free(l2);
     list_free(l3);
+    list_free(sum);
 }
 
 START_TEST(test_own) {
@@ -48,6 +49,7 @@ START_TEST(test_own) {
 	list_free(l1);
 	list_free(l2);
 	list_free(l3);
+    list_free(sum);
 }
 
 void tcase_complete(TCase *t) {

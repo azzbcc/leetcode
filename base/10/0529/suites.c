@@ -60,7 +60,6 @@ START_TEST(test_failed) {
 
     ck_assert_int_eq(ans_len, sizeof(target) / sizeof(target[0]));
     for (int i = 0; i < ans_len; ++i) {
-        ck_assert_str_eq(ans[i], target[i]);
         ck_assert_mem_eq(ans[i], target[i], sizeof(char) * returnColumnSizes[i]);
         free(ans[i]);
     }
