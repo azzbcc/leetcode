@@ -74,144 +74,227 @@
 // 👍 7 👎 0
 
 typedef struct node {
-    int index, rank, height;
+    bool red;
+    int index, rank;
     struct node *prev, *next;
     struct node *left, *right, *parent;
-} node_t, *balance_tree_t;
+} node_t, *rb_tree_t;
 typedef struct {
     int *indexes[2];
     node_t *lines;
-    balance_tree_t *trees;
+    rb_tree_t *trees;
 } BlackBox;
 
 static int max(int a, int b) {
     return a > b ? a : b;
 }
-static void point_swap(balance_tree_t *a, balance_tree_t *b) {
-    balance_tree_t tmp = *a;
-    *a = *b, *b = tmp;
-}
-static int tree_height(balance_tree_t t) {
-    return t ? t->height : 0;
-}
-static void tree_height_update(balance_tree_t t) {
-    t->height = max(tree_height(t->left), tree_height(t->right)) + 1;
-}
-static void tree_left_rotate(balance_tree_t *tree) {
-    balance_tree_t t = *tree, child = t->right;
-    *tree = child, t->right = child->left, child->left = t;
-    child->parent = t->parent, t->parent = child;
-    if (t->right) t->right->parent = t;
-    tree_height_update(t);
-}
-static void tree_right_rotate(balance_tree_t *tree) {
-    balance_tree_t t = *tree, child = t->left;
-    *tree = child, t->left = child->right, child->right = t;
-    child->parent = t->parent, t->parent = child;
-    if (t->left) t->left->parent = t;
-    tree_height_update(t);
-}
-static void tree_balance(balance_tree_t *tree) {
-    balance_tree_t t = *tree;
-    int balance      = tree_height(t->left) - tree_height(t->right);
-    if (balance < -1) {
-        if (tree_height(t->right->left) > tree_height(t->right->right)) {
-            tree_right_rotate(&t->right);
-            tree_height_update(t->right);
-        }
-        tree_left_rotate(tree);
-    } else if (balance > 1) {
-        if (tree_height(t->left->right) > tree_height(t->left->left)) {
-            tree_left_rotate(&t->left);
-            tree_height_update(t->left);
-        }
-        tree_right_rotate(tree);
-    }
-    tree_height_update(*tree);
-}
-static void tree_add(balance_tree_t *tree, balance_tree_t parent, balance_tree_t cur) {
-    balance_tree_t now = *tree;
-    if (!now) {
-        *tree = cur, cur->height = 1;
-        if (parent) {
-            if (cur->rank > parent->rank) {
-                cur->prev = parent, cur->next = parent->next;
-                parent->next->prev = cur, parent->next = cur;
-            } else {
-                cur->prev = parent->prev, cur->next = parent;
-                parent->prev->next = cur, parent->prev = cur;
-            }
-        } else {
-            cur->prev = cur->next = cur;
-        }
-        cur->parent = parent;
-    } else {
-        tree_add(cur->rank < now->rank ? &now->left : &now->right, now, cur);
-        tree_balance(tree);
-    }
-}
-static void tree_remove(balance_tree_t *tree, balance_tree_t cur) {
-    balance_tree_t t = *tree;
-    if (t != cur) {
-        tree_remove(cur->rank < t->rank ? &t->left : &t->right, cur);
-        goto done;
-    }
-    if (!t->left || !t->right) {
-        *tree = t->left ? t->left : t->right;
-        if (*tree) (*tree)->parent = t->parent;
-        if (t->next != t) t->prev->next = t->next, t->next->prev = t->prev;
-        t->prev = t->next = t->left = t->right = NULL;
-        goto done;
-    }
-    bool right          = tree_height(t->left) < tree_height(t->right);
-    balance_tree_t swap = right ? cur->next : cur->prev;
+static void tree_node_swap_next(rb_tree_t *tree, rb_tree_t t) {
+    rb_tree_t a = t, b = t->next;
 
-    if (right) {
-        swap->next->prev = t, t->prev->next = swap;
-        swap->prev = t->prev, t->next = swap->next;
-        swap->next = t, t->prev = swap;
-    } else {
-        t->next->prev = swap, swap->prev->next = t;
-        t->prev = swap->prev, swap->next = t->next;
-        t->next = swap, swap->prev = t;
+    if (a != b->next) {
+        a->prev->next = b, b->next->prev = a;
+        a->next = b->next, b->prev = a->prev;
+        a->prev = b, b->next = a;
     }
-    if (swap->left) swap->left->parent = t;
-    if (swap->right) swap->right->parent = t;
+
+#define SWAP(type_t, member)                                                                                           \
+    do {                                                                                                               \
+        type_t member = a->member;                                                                                     \
+        a->member     = b->member;                                                                                     \
+        b->member     = member;                                                                                        \
+    } while (0)
+    SWAP(bool, red);
+
+    int relation = 0;
+    if (a->right == b) relation = 1;
+    if (b->left == a) relation = 2;
+    if (relation != 2) {
+        if (!a->parent) {
+            *tree = b;
+        } else if (a->parent->left == a) {
+            a->parent->left = b;
+        } else {
+            a->parent->right = b;
+        }
+    }
+    if (a->left) a->left->parent = b;
+    if (relation != 1 && a->right) a->right->parent = b;
+    if (relation != 1) {
+        if (!b->parent) {
+            *tree = a;
+        } else if (b->parent->left == b) {
+            b->parent->left = a;
+        } else {
+            b->parent->right = a;
+        }
+    }
+    if (relation != 2 && b->left) b->left->parent = a;
+    if (b->right) b->right->parent = a;
+    if (relation != 2) SWAP(rb_tree_t, left);
+    if (relation != 1) SWAP(rb_tree_t, right);
+    if (relation == 0) SWAP(rb_tree_t, parent);
+    if (relation == 1) {
+        b->parent = a->parent, a->parent = b;
+        a->right = b->right, b->right = a;
+    } else if (relation == 2) {
+        a->parent = b->parent, b->parent = a;
+        b->left = a->left, a->left = b;
+    }
+#undef SWAP
+}
+static void tree_node_reset(rb_tree_t t) {
     if (t->parent) {
         if (t->parent->left == t) {
-            t->parent->left = swap;
+            t->parent->left = NULL;
         } else {
-            t->parent->right = swap;
+            t->parent->right = NULL;
         }
-    } else {
-        *tree = swap;
     }
-    if (swap->parent != t) {
-        if (swap->parent->left == swap) {
-            swap->parent->left = t;
+    t->prev->next = t->next, t->next->prev = t->prev;
+    t->red = false, t->left = t->right = t->parent = t->prev = t->next = NULL;
+}
+static bool tree_color_red(rb_tree_t t) {
+    return t ? t->red : false;
+}
+static void tree_left_rotate(rb_tree_t t) {
+    rb_tree_t child = t->right;
+    if (t->parent) {
+        if (t->parent->left == t) {
+            t->parent->left = child;
         } else {
-            swap->parent->right = t;
+            t->parent->right = child;
         }
-        t->left->parent = t->right->parent = swap;
-        point_swap(&t->left, &swap->left);
-        point_swap(&t->right, &swap->right);
-        point_swap(&t->parent, &swap->parent);
-    } else if (t->left == swap) {
-        t->right->parent = swap;
-        t->left = swap->left, swap->left = t;
-        point_swap(&t->right, &swap->right);
-        swap->parent = t->parent, t->parent = swap;
-    } else {
-        t->left->parent = swap;
-        point_swap(&t->left, &swap->left);
-        t->right = swap->right, swap->right = t;
-        swap->parent = t->parent, t->parent = swap;
+    }
+    t->right = child->left, child->left = t;
+    child->parent = t->parent, t->parent = child;
+    if (t->right) t->right->parent = t;
+}
+static void tree_right_rotate(rb_tree_t t) {
+    rb_tree_t child = t->left;
+    if (t->parent) {
+        if (t->parent->left == t) {
+            t->parent->left = child;
+        } else {
+            t->parent->right = child;
+        }
+    }
+    t->left = child->right, child->right = t;
+    child->parent = t->parent, t->parent = child;
+    if (t->left) t->left->parent = t;
+}
+static void tree_add(rb_tree_t *tree, rb_tree_t cur) {
+    rb_tree_t now = *tree, parent = NULL;
+    if (!now) {
+        cur->next = cur->prev = cur, *tree = cur;
+        return;
     }
 
-    tree_remove(right ? &swap->right : &swap->left, cur);
+    cur->red = true;
+    for (; now; parent = now, now = now->rank > cur->rank ? now->left : now->right) {}
 
-done:
-    if (*tree) tree_balance(tree);
+    if (cur->rank < parent->rank) {
+        parent->left = cur, cur->parent = parent;
+        cur->prev = parent->prev, cur->next = parent;
+        parent->prev->next = cur, parent->prev = cur;
+    } else {
+        parent->right = cur, cur->parent = parent;
+        cur->next = parent->next, cur->prev = parent;
+        parent->next->prev = cur, parent->next = cur;
+    }
+
+    while (tree_color_red(parent)) {
+        rb_tree_t grand_parent = parent->parent, uncle = NULL;
+        uncle = grand_parent->left != parent ? grand_parent->left : grand_parent->right;
+
+        if (tree_color_red(uncle)) {
+            parent->red = uncle->red = false, grand_parent->red = true;
+            cur = grand_parent, parent = cur->parent;
+            // 回溯到根节点，将根节点改为黑色
+            if (!parent) cur->red = false;
+            continue;
+        }
+        if (grand_parent->left == parent) {
+            if (parent->right == cur) {
+                tree_left_rotate(parent);
+                parent = cur;
+            }
+            tree_right_rotate(grand_parent);
+        } else {
+            if (parent->right != cur) {
+                tree_right_rotate(parent);
+                parent = cur;
+            }
+            tree_left_rotate(grand_parent);
+        }
+        parent->red = false, grand_parent->red = true;
+        if (!parent->parent) *tree = parent;
+    }
+}
+static void tree_remove(rb_tree_t *tree, rb_tree_t cur) {
+    // 保证待删除节点最多拥有一个孩子
+    if (cur->left && cur->right) tree_node_swap_next(tree, cur);
+
+    // 当前节点有孩子？孩子节点为单独的红色叶子节点
+    if (cur->left) tree_node_swap_next(tree, cur->prev);
+    if (cur->right) tree_node_swap_next(tree, cur);
+
+    // 当前为红色？直接删除
+    if (tree_color_red(cur)) {
+        tree_node_reset(cur);
+        return;
+    }
+
+    for (rb_tree_t current = cur, brother, parent; current->parent;) {
+        parent = current->parent, brother = current == parent->left ? parent->right : parent->left;
+
+        /// 红兄，此时父侄必然黑色，对父亲节点旋转，转换为黑兄情况
+        if (tree_color_red(brother)) {
+            if (brother == parent->left) {
+                tree_right_rotate(parent);
+            } else {
+                tree_left_rotate(parent);
+            }
+            if (!brother->parent) *tree = brother;
+            parent->red = true, brother->red = false;
+            continue;
+        }
+
+        /// 黑兄红侄
+        if (tree_color_red(brother->left) || tree_color_red(brother->right)) {
+            if (brother == parent->right) {
+                if (!tree_color_red(brother->right)) {
+                    brother->red = true, brother->left->red = false;
+                    tree_right_rotate(brother);
+                    brother = brother->parent;
+                }
+                tree_left_rotate(parent);
+                brother->right->red = false;
+            } else {
+                if (!tree_color_red(brother->left)) {
+                    brother->red = true, brother->right->red = false;
+                    tree_left_rotate(brother);
+                    brother = brother->parent;
+                }
+                tree_right_rotate(parent);
+                brother->left->red = false;
+            }
+            if (!brother->parent) *tree = brother;
+            brother->red = parent->red, parent->red = false;
+            break;
+        }
+
+        /// 黑兄黑侄红父
+        if (tree_color_red(parent)) {
+            brother->red = true, parent->red = false;
+            break;
+        }
+
+        /// 黑兄黑侄黑父，无法平衡，向祖先回溯
+        brother->red = true, current = current->parent;
+    }
+
+    if (!cur->parent) *tree = NULL;
+    tree_node_reset(cur);
 }
 
 BlackBox *blackBoxCreate(int n, int m) {
@@ -239,7 +322,7 @@ BlackBox *blackBoxCreate(int n, int m) {
             index += 1;
         }
     }
-    box->trees = calloc(index, sizeof(balance_tree_t));
+    box->trees = calloc(index, sizeof(rb_tree_t));
 
     return box;
 }
@@ -249,8 +332,8 @@ int blackBoxOpen(BlackBox *box, int cur, int d) {
 
     node_t *l = &box->lines[2 * cur + d];
     if (!l->next) {
-        tree_add(&box->trees[box->indexes[d][cur]], NULL, l);
-        tree_add(&box->trees[box->indexes[1 - d][cur]], NULL, &box->lines[2 * cur + 1 - d]);
+        tree_add(&box->trees[box->indexes[d][cur]], l);
+        tree_add(&box->trees[box->indexes[1 - d][cur]], &box->lines[2 * cur + 1 - d]);
     }
     return l->next->index;
 }
