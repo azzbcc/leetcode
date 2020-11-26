@@ -23,6 +23,7 @@
 // Related Topics 排序
 // 👍 264 👎 0
 
+#if 0
 static int cmp(const void *a, const void *b) {
     return *( int * )a - *( int * )b;
 }
@@ -37,3 +38,42 @@ int maximumGap(int *nums, int numsSize) {
     }
     return ans;
 }
+#else
+typedef struct {
+    bool exists;
+    int min, max;
+} bucket_t;
+
+int maximumGap(int *nums, int numsSize) {
+    if (numsSize < 2) return 0;
+
+    bucket_t buckets[numsSize + 1];
+    int min = nums[0], max = nums[0], len, ans = 0;
+
+    for (int i = 1; i < numsSize; ++i) {
+        if (min > nums[i]) min = nums[i];
+        if (max < nums[i]) max = nums[i];
+    }
+    if (min == max) return 0;
+
+    len = (max - min) / (numsSize + 1) + 1;
+    memset(buckets, 0, sizeof(buckets));
+    for (int i = 0; i < numsSize; ++i) {
+        int index = (nums[i] - min) / len;
+        if (buckets[index].exists) {
+            if (buckets[index].max < nums[i]) buckets[index].max = nums[i];
+            if (buckets[index].min > nums[i]) buckets[index].min = nums[i];
+        } else {
+            buckets[index] = (bucket_t) { true, nums[i], nums[i] };
+        }
+    }
+
+    numsSize = (max - min) / len;
+    for (int cur = 0, next; cur < numsSize; cur = next) {
+        for (next = cur; !buckets[++next].exists;) {}
+        if (ans < buckets[next].min - buckets[cur].max) ans = buckets[next].min - buckets[cur].max;
+    }
+
+    return ans;
+}
+#endif
