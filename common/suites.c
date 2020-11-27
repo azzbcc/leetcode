@@ -9,6 +9,7 @@
  */
 #include <common.h>
 #include <23_tree.h>
+#include <234_tree.h>
 #include <avl_tree.h>
 #include <list.h>
 #include <rb_tree.h>
@@ -67,6 +68,74 @@ START_TEST(test_23_tree) {
     }
 
     _23_tree_free(t);
+}
+
+static void _234_tree_check(_234_tree_t t) {
+    if (!t) return;
+
+    const int MAXN = 0x1000;
+    int front = 0, rear = 0, black_count = -1;
+    struct node {
+        _234_tree_t tree;
+        int count;
+    } queue[MAXN];
+
+    ck_assert_ptr_eq(t->parent, NULL);
+    queue[rear++] = (struct node) { t, 1 };
+    while (front < rear) {
+        _234_tree_t tree = queue[front].tree;
+        int c = 0, count = queue[front].count;
+
+        front = (front + 1) % MAXN;
+        for (int i = 0; i < tree->count; ++i) {
+            c += tree->children[i] != NULL;
+        }
+
+        for (int i = 1; i < tree->count - 1; ++i) {
+            ck_assert_int_gt(tree->val[i], tree->val[i - 1]);
+        }
+        ck_assert(c == 0 || c == tree->count);
+
+        if (!c) {
+            if (black_count < 0) black_count = count;
+            ck_assert_int_eq(black_count, count);
+            continue;
+        }
+        for (int i = 0; i < c - 1; ++i) {
+            ck_assert_int_gt(tree->val[i], tree->children[i]->val[tree->children[i]->count - 2]);
+            ck_assert_int_lt(tree->val[i], tree->children[i + 1]->val[0]);
+        }
+        for (int i = 0; i < c; ++i) {
+            ck_assert_ptr_eq(tree->children[i]->parent, tree);
+            queue[rear] = (struct node) { tree->children[i], count + 1 };
+            rear        = (rear + 1) % MAXN;
+        }
+    }
+}
+
+START_TEST(test_234_tree) {
+    int arr[]     = { 30 };
+    _234_tree_t t = _234_tree_create(arr);
+
+    for (int i = 1; i <= 10; ++i) {
+        _234_tree_add(&t, 30 + i);
+        _234_tree_check(t);
+    }
+    for (int i = 1; i <= 10; ++i) {
+        _234_tree_add(&t, 30 - i);
+        _234_tree_check(t);
+    }
+    for (int i = 0; i < 200; ++i) {
+        _234_tree_add(&t, rand() % 100);
+        _234_tree_check(t);
+    }
+
+    for (int i = 0; i < 500; ++i) {
+        _234_tree_del(&t, rand() % 100);
+        _234_tree_check(t);
+    }
+
+    _234_tree_free(t);
 }
 
 static void avl_tree_check(avl_tree_t t) {
@@ -189,6 +258,7 @@ START_TEST(test_tree) {
 
 void tcase_complete(TCase *t) {
     tcase_add_test(t, test_23_tree);
+    tcase_add_test(t, test_234_tree);
     tcase_add_test(t, test_avl_tree);
     tcase_add_test(t, test_list);
     tcase_add_test(t, test_rb_tree);
