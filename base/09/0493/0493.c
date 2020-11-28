@@ -73,7 +73,7 @@ int reversePairs(int *nums, int numsSize) {
 
     return ans;
 }
-#else
+#elif 0
 int merge_sort(int *nums, int beg, int end) {
     if (beg >= end) return 0;
     int mid = (beg + end) / 2, lc = mid - beg + 1, rc = end - mid;
@@ -102,5 +102,35 @@ int merge_sort(int *nums, int beg, int end) {
 }
 int reversePairs(int *nums, int numsSize) {
     return merge_sort(nums, 0, numsSize - 1);
+}
+#else
+int reversePairs(int *nums, int numsSize) {
+    if (!numsSize) return 0;
+
+    int help[numsSize], ans = 0;
+    for (int cur = 1, next = 2; cur < numsSize; cur = next, next *= 2) {
+        memcpy(help, nums, sizeof(help));
+        for (int i = 0; i < numsSize; i += next) {
+            int lc = cur, rc = cur;
+            if (i + cur >= numsSize) break;
+            if (i + next >= numsSize) rc = numsSize - i - cur;
+            for (int l = 0, r = 0; r < rc; ++r) {
+                for (long tmp = 2L * help[i + cur + r]; l < lc && help[i + l] <= tmp; l++) {}
+                if (l >= lc) break;
+                ans += lc - l;
+            }
+            if (next >= numsSize) break;
+            for (int l = 0, r = 0, k = i; l < lc || r < rc; ++k) {
+                if (l >= lc) {
+                    nums[k] = help[i + cur + r++];
+                } else if (r >= rc || help[i + l] <= help[i + cur + r]) {
+                    nums[k] = help[i + l++];
+                } else {
+                    nums[k] = help[i + cur + r++];
+                }
+            }
+        }
+    }
+    return ans;
 }
 #endif
