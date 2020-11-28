@@ -25,6 +25,7 @@
 // Related Topics 排序 树状数组 线段树 二分查找 分治算法
 // 👍 182 👎 0
 
+#if 0
 static int cmp(const void *a, const void *b) {
     long la = *( long * )a, lb = *( long * )b;
     if (la == lb) return 0;
@@ -72,3 +73,34 @@ int reversePairs(int *nums, int numsSize) {
 
     return ans;
 }
+#else
+int merge_sort(int *nums, int beg, int end) {
+    if (beg >= end) return 0;
+    int mid = (beg + end) / 2, lc = mid - beg + 1, rc = end - mid;
+    int ans = merge_sort(nums, beg, mid) + merge_sort(nums, mid + 1, end);
+
+    int left[lc], right[rc];
+    memcpy(left, nums + beg, lc * sizeof(int));
+    memcpy(right, nums + mid + 1, rc * sizeof(int));
+    for (int l = 0, r = 0; r < rc; ++r) {
+        for (long tmp = 2L * right[r]; l < lc && left[l] <= tmp; l++) {}
+        if (l >= lc) break;
+        ans += lc - l;
+    }
+
+    for (int l = 0, r = 0, k = beg; k <= end; ++k) {
+        if (l >= lc) {
+            nums[k] = right[r++];
+        } else if (r >= rc || left[l] <= right[r]) {
+            nums[k] = left[l++];
+        } else {
+            nums[k] = right[r++];
+        }
+    }
+
+    return ans;
+}
+int reversePairs(int *nums, int numsSize) {
+    return merge_sort(nums, 0, numsSize - 1);
+}
+#endif
