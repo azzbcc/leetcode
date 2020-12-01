@@ -17,29 +17,37 @@
 // 👍 625 👎 0
 
 int *searchRange(int *nums, int numsSize, int target, int *returnSize) {
-    int beg = 0, end = numsSize - 1, *ans = calloc(2, sizeof(int));
+    int beg = 0, end = numsSize - 1, mid;
+    int *ans = calloc(*returnSize = 2, sizeof(int));
 
-    *returnSize = 2, ans[0] = ans[1] = -1;
-    while (beg < end) {
-        int mid = (beg + end) / 2;
-        if (nums[mid] >= target) {
-            end = mid;
+    for (ans[0] = ans[1] = -1; beg <= end;) {
+        mid = (beg + end) / 2;
+        if (nums[mid] == target) break;
+        if (nums[mid] > target) {
+            end = mid - 1;
         } else {
             beg = mid + 1;
         }
     }
-    if (beg < numsSize && nums[beg] == target) {
-        ans[0] = beg, beg = 0, end = numsSize - 1;
-        while (beg < end) {
-            int mid = (beg + end + 1) / 2;
-            if (nums[mid] <= target) {
-                beg = mid;
-            } else {
-                end = mid - 1;
-            }
+    if (beg > end) return ans;
+
+    for (int m, r = mid; beg <= r;) {
+        m = (beg + r) / 2;
+        if (nums[m] < target) {
+            beg = m + 1;
+        } else {
+            r = m - 1;
         }
-        ans[1] = beg;
     }
+    for (int m, l = mid; l <= end;) {
+        m = (l + end) / 2;
+        if (nums[m] > target) {
+            end = m - 1;
+        } else {
+            l = m + 1;
+        }
+    }
+    ans[0] = beg, ans[1] = end;
 
     return ans;
 }
