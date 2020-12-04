@@ -47,6 +47,7 @@
 // Related Topics 堆 贪心算法
 // 👍 183 👎 0
 
+#if 0
 static int cmp(const void *a, const void *b) {
     return *( int * )a - *( int * )b;
 }
@@ -79,3 +80,23 @@ bool isPossible(int *nums, int numsSize) {
     }
     return true;
 }
+#else
+int min(int a, int b) {
+    return a < b ? a : b;
+}
+bool isPossible(int *nums, int numsSize) {
+    int l1 = 0, l2 = 0;
+    for (int i = 0, c, ln = 0; i < numsSize; i += c) {
+        for (c = 1; i + c < numsSize && nums[i + c] == nums[i]; ++c) {}
+        if (i && nums[i] > nums[i - 1] + 1) {
+            if (l1 + l2 > 0) return false;
+            l1 = c, l2 = ln = 0;
+        } else {
+            if (l1 + l2 > c) return false;
+            int left = c - l1 - l2, new = min(left, ln);
+            ln = l2 + new, l2 = l1, l1 = left - new;
+        }
+    }
+    return l1 + l2 == 0;
+}
+#endif
