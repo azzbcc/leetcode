@@ -33,15 +33,9 @@
 
 int matrixScore(int **A, int ASize, int *AColSize) {
     int m = ASize, n = *AColSize - 1, ans = m << n;
-    for (int i = 0; i < m; ++i) {
-        if (A[i][0]) continue;
-        for (int j = 0; j <= n; ++j) {
-            A[i][j] = 1 - A[i][j];
-        }
-    }
     for (int i = 1, c, j; i <= n; ++i) {
         for (j = c = 0; j < m; ++j) {
-            c += A[j][i];
+            c += A[j][i] ^ A[j][0];
         }
         if (c < m - c) c = m - c;
         ans += c << (n - i);
