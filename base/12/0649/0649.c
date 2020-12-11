@@ -64,6 +64,7 @@
 // Related Topics 贪心算法
 // 👍 149 👎 0
 
+#if 0
 typedef struct node {
     char person;
     struct node *next;
@@ -88,3 +89,43 @@ char *predictPartyVictory(char *senate) {
         }
     }
 }
+#else
+#define MAXN 10001
+
+typedef struct {
+    int data[MAXN];
+    int front, rear;
+} queue_t;
+
+bool queue_empty(queue_t *q) {
+    return q->front == q->rear;
+}
+void queue_push(queue_t *q, int val) {
+    q->data[q->rear] = val, q->rear = (q->rear + 1) % MAXN;
+}
+int queue_pop(queue_t *q) {
+    int ans  = q->data[q->front];
+    q->front = (q->front + 1) % MAXN;
+    return ans;
+}
+
+char *predictPartyVictory(char *senate) {
+    int len;
+    queue_t q[2] = { 0 };
+
+    for (len = 0; senate[len]; ++len) {
+        queue_push(&q[senate[len] == 'R'], len);
+    }
+
+    while (!queue_empty(&q[0]) && !queue_empty(&q[1])) {
+        int d = queue_pop(&q[0]), r = queue_pop(&q[1]);
+        if (d < r) {
+            queue_push(&q[0], d + len);
+        } else {
+            queue_push(&q[1], r + len);
+        }
+    }
+
+    return queue_empty(q) ? "Radiant" : "Dire";
+}
+#endif
