@@ -22,6 +22,7 @@
 // Related Topics 数组 哈希表
 // 👍 317 👎 0
 
+#if 0
 typedef struct {
     int num;
     UT_hash_handle hh;
@@ -46,3 +47,17 @@ bool containsDuplicate(int *nums, int numsSize) {
     HASH_CLEAR(hh, hash);
     return ans;
 }
+#else
+static int cmp(const void *a, const void *b) {
+    return *( int * )a < *( int * )b ? -1 : 1;
+}
+bool containsDuplicate(int *nums, int numsSize) {
+    qsort(nums, numsSize, sizeof(int), cmp);
+
+    for (int i = 1; i < numsSize; ++i) {
+        if (nums[i] == nums[i - 1]) return true;
+    }
+
+    return false;
+}
+#endif
