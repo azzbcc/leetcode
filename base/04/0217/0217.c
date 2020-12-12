@@ -47,7 +47,7 @@ bool containsDuplicate(int *nums, int numsSize) {
     HASH_CLEAR(hh, hash);
     return ans;
 }
-#else
+#elif 0
 static int cmp(const void *a, const void *b) {
     return *( int * )a < *( int * )b ? -1 : 1;
 }
@@ -58,6 +58,50 @@ bool containsDuplicate(int *nums, int numsSize) {
         if (nums[i] == nums[i - 1]) return true;
     }
 
+    return false;
+}
+#else
+#define SIZE 9973
+
+typedef struct node {
+    int val;
+    struct node *next;
+} node_t;
+typedef node_t *hash_t[SIZE];
+
+static uint32_t h(int val) {
+    val %= SIZE;
+    if (val < 0) val += SIZE;
+    return val;
+}
+static bool hash_add(hash_t t, node_t *n) {
+    node_t *cur = t[h(n->val)];
+    if (!cur || cur->val > n->val) {
+        n->next = cur, t[h(n->val)] = n;
+    } else if (cur->val == n->val) {
+        return false;
+    } else {
+        while (cur->next && cur->next->val < n->val) {
+            cur = cur->next;
+        }
+        if (cur->next && cur->next->val == n->val) {
+            return false;
+        } else {
+            n->next = cur->next, cur->next = n;
+        }
+    }
+    return true;
+}
+bool containsDuplicate(int *nums, int numsSize) {
+    if (!numsSize) return false;
+
+    hash_t hash = { NULL };
+    node_t nodes[numsSize];
+
+    for (int i = 0; i < numsSize; ++i) {
+        nodes[i] = (node_t) { nums[i] };
+        if (!hash_add(hash, &nodes[i])) return true;
+    }
     return false;
 }
 #endif
