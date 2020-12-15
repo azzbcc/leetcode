@@ -27,27 +27,13 @@
 // Related Topics 动态规划
 // 👍 238 👎 0
 
-#define MAXN 1000
-
-static int steps[MAXN + 1] = { 0 };
-
-static void init() {
-    static bool done = false;
-
-    if (done) return;
-    for (int i = 2; i <= MAXN; ++i) {
-        steps[i] = i;
-    }
-    for (int i = 2; i * 2 <= MAXN; ++i) {
-        for (int c = 2; i * c <= MAXN; ++c) {
-            int next = c * i;
-            if (steps[next] > steps[i] + c) steps[next] = steps[i] + c;
+int minSteps(int n) {
+    int ans = 0;
+    for (int d = 2; d < 32 && n > 1; ++d) {
+        while (n % d == 0) {
+            ans += d, n /= d;
         }
     }
-    done = true;
-}
-int minSteps(int n) {
-    init();
-
-    return steps[n];
+    if (n > 1) ans += n;
+    return ans;
 }
