@@ -17,6 +17,7 @@
 // Related Topics 哈希表 字符串
 // 👍 327 👎 0
 
+#if 0
 #define WIDTH 26
 
 int firstUniqChar(char *s) {
@@ -30,3 +31,20 @@ int firstUniqChar(char *s) {
 
     return -1;
 }
+#else
+#define WIDTH 26
+typedef struct {
+    char ch;
+    int index;
+} node_t;
+int firstUniqChar(char *s) {
+    int count[WIDTH] = { 0 };
+    node_t queue[WIDTH], *front = queue, *rear = queue;
+    for (int i = 0; s[i]; ++i) {
+        if (!count[s[i] - 'a']++) *rear++ = (node_t) { s[i], i };
+        for (; front != rear && count[front->ch - 'a'] > 1; front++) {}
+    }
+
+    return front == rear ? -1 : front->index;
+}
+#endif
