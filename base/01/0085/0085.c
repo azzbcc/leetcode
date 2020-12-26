@@ -97,7 +97,7 @@ int maximalRectangle(char **matrix, int size, int *colSize) {
 
     return ans;
 }
-#else
+#elif 0
 int maximalRectangle(char **matrix, int size, int *colSize) {
     if (!size || !*colSize) return 0;
 
@@ -115,6 +115,41 @@ int maximalRectangle(char **matrix, int size, int *colSize) {
             for (int k = 0; k < top; ++k) {
                 if (stack[k] > heights[j]) stack[k] = heights[j];
                 if (ans < (top - k) * stack[k]) ans = (top - k) * stack[k];
+            }
+        }
+    }
+
+    return ans;
+}
+#else
+typedef struct {
+    int height, position;
+} node_t;
+int maximalRectangle(char **matrix, int size, int *colSize) {
+    if (!size || !*colSize) return 0;
+
+    node_t stack[*colSize + 1];
+    int top = 0, ans = 0, heights[*colSize];
+
+    memset(heights, 0, sizeof(heights));
+    stack[0] = (node_t) { 0, -1 };
+    for (int i = 0; i < size; ++i) {
+        for (int j = 0, h; j < *colSize; ++j) {
+            if (matrix[i][j] == '0') {
+                heights[j] = 0;
+            } else {
+                heights[j] += 1;
+            }
+            for (h = heights[j]; top && h <= stack[top].height; --top) {
+                if (ans < stack[top].height * (j - stack[top - 1].position - 1)) {
+                    ans = stack[top].height * (j - stack[top - 1].position - 1);
+                }
+            }
+            stack[++top] = (node_t) { h, j };
+        }
+        for (; top; --top) {
+            if (ans < stack[top].height * (*colSize - stack[top - 1].position - 1)) {
+                ans = stack[top].height * (*colSize - stack[top - 1].position - 1);
             }
         }
     }
