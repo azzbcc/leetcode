@@ -52,6 +52,7 @@
 // Related Topics 栈 数组 哈希表 动态规划
 // 👍 718 👎 0
 
+#if 0
 typedef struct {
     int row, col, ans;
 } node_t;
@@ -96,3 +97,28 @@ int maximalRectangle(char **matrix, int size, int *colSize) {
 
     return ans;
 }
+#else
+int maximalRectangle(char **matrix, int size, int *colSize) {
+    if (!size || !*colSize) return 0;
+
+    int heights[*colSize], ans = 0;
+
+    memset(heights, 0, sizeof(heights));
+    for (int i = 0; i < size; ++i) {
+        int stack[*colSize], top = 0;
+        for (int j = 0; j < *colSize; ++j) {
+            if (matrix[i][j] == '0') {
+                top = 0, heights[j] = 0;
+                continue;
+            }
+            stack[top++] = heights[j] += 1;
+            for (int k = 0; k < top; ++k) {
+                if (stack[k] > heights[j]) stack[k] = heights[j];
+                if (ans < (top - k) * stack[k]) ans = (top - k) * stack[k];
+            }
+        }
+    }
+
+    return ans;
+}
+#endif
