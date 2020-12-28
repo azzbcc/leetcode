@@ -34,6 +34,7 @@
 // Related Topics 动态规划
 // 👍 370 👎 0
 
+#if 0
 typedef struct {
     int min, max;
 } node_t;
@@ -87,3 +88,26 @@ int maxProfit(int K, int *prices, int size) {
 
     return dp[last][len - 1];
 }
+#else
+int max(int a, int b) {
+    return a > b ? a : b;
+}
+int maxProfit(int K, int *prices, int size) {
+    if (K > size / 2) K = size / 2;
+    if (!K) return 0;
+
+    int dp[K + 1][2];
+
+    for (int i = 0; i <= K; ++i) {
+        dp[i][0] = 0, dp[i][1] = -*prices;
+    }
+    for (int i = 1; i < size; ++i) {
+        for (int j = K; j; --j) {
+            dp[j][0] = max(dp[j][0], dp[j][1] + prices[i]);
+            dp[j][1] = max(dp[j][1], dp[j - 1][0] - prices[i]);
+        }
+    }
+
+    return dp[K][0];
+}
+#endif
