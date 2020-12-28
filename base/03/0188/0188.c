@@ -38,30 +38,6 @@ typedef struct {
     int min, max;
 } node_t;
 
-int dp[500][500][500];
-int dfs(node_t nodes[], int left, int right, int k) {
-    int ans = 0;
-    if (dp[k - 1][left][right]) return dp[k - 1][left][right];
-    if (k == 1) {
-        int min = nodes[left].min, max = nodes[left].max;
-        for (int i = left + 1; i <= right; i++) {
-            if (min > nodes[i].min) {
-                if (ans < max - min) ans = max - min;
-                min = nodes[i].min, max = nodes[i].max;
-            } else if (max < nodes[i].max) {
-                max = nodes[i].max;
-            }
-        }
-        if (ans < max - min) ans = max - min;
-    } else {
-        for (int i = left; i + k - 1 <= right; ++i) {
-            int l = dfs(nodes, left, i, 1), r = dfs(nodes, i + 1, right, k - 1);
-            if (ans < l + r) ans = l + r;
-        }
-    }
-
-    return dp[k - 1][left][right] = ans;
-}
 int maxProfit(int K, int *prices, int size) {
     if (!K || size < 2) return 0;
 
@@ -79,6 +55,35 @@ int maxProfit(int K, int *prices, int size) {
 
     if (K >= len) return ans;
 
-    memset(dp, 0, sizeof(dp));
-    return dfs(nodes, 0, len - 1, K);
+    int one[len][len];
+    for (int i = 0; i < len; ++i) {
+        int min = nodes[i].min, max = nodes[i].max;
+        one[i][i] = max - min;
+        for (int j = i + 1; j < len; ++j) {
+            one[i][j] = one[i][j - 1];
+            if (min > nodes[j].min) {
+                min = nodes[j].min, max = nodes[j].max;
+            } else if (max < nodes[j].max) {
+                max = nodes[j].max;
+            }
+            if (one[i][j] < max - min) one[i][j] = max - min;
+        }
+    }
+
+    int dp[2][len], last = 0;
+    // dp[now][len] = max(dp[last][k] + one[k+1][len], ..., dp[last][len-1] + one[len][len])
+
+    memcpy(dp[last], one[0], sizeof(one[0]));
+    for (int now = 1, k = 1; k < K; k++, last = now, now = 1 - now) {
+        for (int i = len - 1; i >= k; --i) {
+            dp[now][i] = dp[last][k - 1] + one[k][i];
+            for (int j = k; j < i; ++j) {
+                if (dp[now][i] < dp[last][j] + one[j + 1][i]) {
+                    dp[now][i] = dp[last][j] + one[j + 1][i];
+                }
+            }
+        }
+    }
+
+    return dp[last][len - 1];
 }
