@@ -27,30 +27,17 @@
 // Related Topics 贪心算法
 // 👍 181 👎 0
 
-#define BIT_WIDTH  8
-#define BIT_SET(n) flag[(n) / BIT_WIDTH] |= 0x1 << ((n) % BIT_WIDTH)
-#define BIT_GET(n) flag[(n) / BIT_WIDTH] & (0x1 << ((n) % BIT_WIDTH))
-
 int minPatches(int *nums, int numsSize, int n) {
-    uint8_t *flag = calloc(n / BIT_WIDTH + 1, sizeof(uint8_t));
+    int ans   = 0;
+    long need = 1;
 
-    BIT_SET(0);
-    for (int i = 0; i < numsSize; ++i) {
-        for (int j = n - nums[i]; j >= 0; --j) {
-            if (BIT_GET(j)) BIT_SET(nums[i] + j);
+    for (int pos = 0; need <= n;) {
+        for (; need <= n && pos < numsSize && nums[pos] <= need; pos++) {
+            need += nums[pos];
         }
+        if (need > n) break;
+        ans += 1, need += need;
     }
-
-    int ans = 0;
-    for (int i = 1; i <= n; ++i) {
-        if (BIT_GET(i)) continue;
-        ans += 1;
-        for (int j = n - i; j >= 0; --j) {
-            if (BIT_GET(j)) BIT_SET(i + j);
-        }
-    }
-
-    free(flag);
 
     return ans;
 }
