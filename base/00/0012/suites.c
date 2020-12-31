@@ -19,27 +19,27 @@ START_TEST(test_official_1) {
 }
 
 START_TEST(test_official_2) {
-	int input = 4;
-	char *target = "IV", *ans = intToRoman(input);
-	ck_assert_msg(!strcmp(target, ans), "error, except %s but got %s on intToRoman(%d).", target, ans, input);
+    int input = 4;
+    char *target = "IV", *ans = intToRoman(input);
+    ck_assert_msg(!strcmp(target, ans), "error, except %s but got %s on intToRoman(%d).", target, ans, input);
 }
 
 START_TEST(test_official_3) {
-	int input = 9;
-	char *target = "IX", *ans = intToRoman(input);
-	ck_assert_msg(!strcmp(target, ans), "error, except %s but got %s on intToRoman(%d).", target, ans, input);
+    int input = 9;
+    char *target = "IX", *ans = intToRoman(input);
+    ck_assert_msg(!strcmp(target, ans), "error, except %s but got %s on intToRoman(%d).", target, ans, input);
 }
 
 START_TEST(test_official_4) {
-	int input = 58;
-	char *target = "LVIII", *ans = intToRoman(input);
-	ck_assert_msg(!strcmp(target, ans), "error, except %s but got %s on intToRoman(%d).", target, ans, input);
+    int input = 58;
+    char *target = "LVIII", *ans = intToRoman(input);
+    ck_assert_msg(!strcmp(target, ans), "error, except %s but got %s on intToRoman(%d).", target, ans, input);
 }
 
 START_TEST(test_official_5) {
-	int input = 1994;
-	char *target = "MCMXCIV", *ans = intToRoman(input);
-	ck_assert_msg(!strcmp(target, ans), "error, except %s but got %s on intToRoman(%d).", target, ans, input);
+    int input = 1994;
+    char *target = "MCMXCIV", *ans = intToRoman(input);
+    ck_assert_msg(!strcmp(target, ans), "error, except %s but got %s on intToRoman(%d).", target, ans, input);
 }
 
 START_TEST(test_own) {

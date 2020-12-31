@@ -32,7 +32,7 @@
 
 int divide(int dividend, int divisor) {
     int pos;
-	bool flag = true;
+    bool flag = true;
     long d0 = dividend, dt = divisor, divs[33], ans = 0;
 
     if (d0 < 0) flag = !flag, d0 = -d0;

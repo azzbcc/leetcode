@@ -42,13 +42,13 @@ START_TEST(test_own) {
     list_t l2 = list_create_size(split(564), 3);
     list_t sum = list_create_size(split(9543 + 564), 5);
 
-	list_t l3 = addTwoNumbers(l1, l2);
+    list_t l3 = addTwoNumbers(l1, l2);
 
-	ck_assert(list_equal(sum, l3));
+    ck_assert(list_equal(sum, l3));
 
-	list_free(l1);
-	list_free(l2);
-	list_free(l3);
+    list_free(l1);
+    list_free(l2);
+    list_free(l3);
     list_free(sum);
 }
 

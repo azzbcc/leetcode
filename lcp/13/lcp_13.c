@@ -205,15 +205,15 @@ int minimalSteps(char **maze, int m) {
         }
     }
 
-	// 定义S为任意个机关点组成的集合
+    // 定义S为任意个机关点组成的集合
     // dists[S][k] = min(
     //     dists[S-k][1] + costs[1][k],
     //     dists[S-k][2] + costs[2][k],
     //     ...
-	//     dists[S-k][i] + costs[i][k],
+    //     dists[S-k][i] + costs[i][k],
     // )
     for (int i = 0; i < mechanism_count; ++i) {
-		dists[0x1 << i][i] = costs[0][i + 1];
+        dists[0x1 << i][i] = costs[0][i + 1];
     }
     for (size_t i = 0x3; i < 0x1 << mechanism_count; ++i) {
         for (int j = 0; j < mechanism_count; ++j) {
@@ -223,13 +223,13 @@ int minimalSteps(char **maze, int m) {
 
             // 剔除集合中任意一点，动态规划最短路径
             for (int k = 0; k < mechanism_count; ++k) {
-				// 目的地不可被剔除
-				if (k == j) continue;
+                // 目的地不可被剔除
+                if (k == j) continue;
                 int tk = 0x1 << k;
                 if (0 == (i & tk)) continue;
 
                 if (dists[i][j] > dists[i - tj][k] + costs[k + 1][j + 1]) {
-					dists[i][j] = dists[i - tj][k] + costs[k + 1][j + 1];
+                    dists[i][j] = dists[i - tj][k] + costs[k + 1][j + 1];
                 }
             }
         }
@@ -238,11 +238,11 @@ int minimalSteps(char **maze, int m) {
     if (mechanism_count <= 0) {
         ans = costs[0][mechanism_count + 1];
     } else {
-		for (int i = 0; i < mechanism_count; ++i) {
-			if (ans > dists[last][i] + costs[i + 1][mechanism_count + 1]) {
-				ans = dists[last][i] + costs[i + 1][mechanism_count + 1];
-			}
-		}
+        for (int i = 0; i < mechanism_count; ++i) {
+            if (ans > dists[last][i] + costs[i + 1][mechanism_count + 1]) {
+                ans = dists[last][i] + costs[i + 1][mechanism_count + 1];
+            }
+        }
     }
 
     return ans >= INF ? -1 : ans;
