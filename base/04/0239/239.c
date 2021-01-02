@@ -60,6 +60,7 @@
 // Related Topics 堆 Sliding Window
 // 👍 725 👎 0
 
+#ifdef USE_QUEUE
 typedef struct {
     int size, front, rear;
     int data[];
@@ -104,3 +105,32 @@ int *maxSlidingWindow(int *nums, int size, int k, int *returnSize) {
 
     return ans;
 }
+#else
+int max(int a, int b) {
+    return a > b ? a : b;
+}
+int *maxSlidingWindow(int *nums, int size, int k, int *returnSize) {
+    int prefix[size], suffix[size];
+    for (int i = 0; i < size; ++i) {
+        if (i % k) {
+            prefix[i] = max(prefix[i - 1], nums[i]);
+        } else {
+            prefix[i] = nums[i];
+        }
+    }
+    for (int i = size - 1; i >= 0; --i) {
+        if (i + 1 < size && (i + 1) % k) {
+            suffix[i] = max(suffix[i + 1], nums[i]);
+        } else {
+            suffix[i] = nums[i];
+        }
+    }
+
+    int *ans = malloc((*returnSize = size - k + 1) * sizeof(int));
+    for (int i = 0; i + k <= size; ++i) {
+        ans[i] = max(suffix[i], prefix[i + k - 1]);
+    }
+
+    return ans;
+}
+#endif

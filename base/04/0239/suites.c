@@ -11,6 +11,7 @@
 
 #include "239.c"
 
+#ifdef USE_QUEUE
 int queue_length(queue_t *q) {
     return (q->rear + q->size - q->front) % q->size;
 }
@@ -26,6 +27,7 @@ START_TEST(test_queue) {
         ck_assert_int_eq(queue_length(q), i + 1);
     }
 }
+#endif
 
 START_TEST(test_official_1) {
     int nums[] = { 1, 3, -1, -3, 5, 3, 6, 7 }, k = 3;
@@ -83,7 +85,9 @@ START_TEST(test_official_5) {
 }
 
 void tcase_complete(TCase *t) {
+#ifdef USE_QUEUE
     tcase_add_test(t, test_queue);
+#endif
     tcase_add_test(t, test_official_1);
     tcase_add_test(t, test_official_2);
     tcase_add_test(t, test_official_3);
