@@ -44,6 +44,7 @@
 // Related Topics 深度优先搜索 并查集
 // 👍 420 👎 0
 
+#if 0
 int find(int ancestor[], int n) {
     if (ancestor[n] == n) return n;
     return ancestor[n] = find(ancestor, ancestor[n]);
@@ -69,3 +70,25 @@ int findCircleNum(int **isConnected, int size, int *isConnectedColSize) {
 
     return ans;
 }
+#else
+void dfs(int **isConnected, int size, int now, bool visited[]) {
+    if (visited[now]) return;
+    visited[now] = true;
+    for (int i = 0; i < size; ++i) {
+        if (i == now || !isConnected[now][i]) continue;
+        dfs(isConnected, size, i, visited);
+    }
+}
+int findCircleNum(int **isConnected, int size, int *isConnectedColSize) {
+    int ans = 0;
+    bool visited[size];
+
+    memset(visited, false, sizeof(visited));
+    for (int i = 0; i < size; ++i) {
+        ans += !visited[i];
+        dfs(isConnected, size, i, visited);
+    }
+
+    return ans;
+}
+#endif
