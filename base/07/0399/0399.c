@@ -112,16 +112,11 @@ ancestor_t *find(ancestor_t *ancestor, int n) {
     return &ancestor[n];
 }
 void merge(ancestor_t ancestor[], int from, int to, double value) {
-    if (from > to) return merge(ancestor, to, from, 1. / value);
     find(ancestor, from), find(ancestor, to);
 
     int a = ancestor[from].ancestor, b = ancestor[to].ancestor;
 
-    if (a < b) {
-        ancestor[b].ancestor = a, ancestor[b].value = ancestor[from].value * value / ancestor[to].value;
-    } else if (a > b) {
-        ancestor[a].ancestor = b, ancestor[a].value = ancestor[to].value / value / ancestor[from].value;
-    }
+    ancestor[b].ancestor = a, ancestor[b].value = ancestor[from].value * value / ancestor[to].value;
 }
 double *calcEquation(char ***equations, int equationsSize, int *equationsColSize, double *values, int valuesSize,
                      char ***queries, int queriesSize, int *queriesColSize, int *returnSize) {
