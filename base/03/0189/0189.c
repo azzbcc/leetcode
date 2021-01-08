@@ -58,7 +58,7 @@ void rotate(int *nums, int size, int k) {
         left(nums, size, size - k);
     }
 }
-#else
+#elif 0
 void rotate(int *nums, int size, int k) {
     int beg = 0, end = size, offset = k % size;
     if (!offset) return;
@@ -81,5 +81,16 @@ void rotate(int *nums, int size, int k) {
             }
         }
     }
+}
+#else
+void reverse(int *nums, int beg, int end) {
+    for (; beg < end; beg++, end--) {
+        swap(nums, beg, end);
+    }
+}
+void rotate(int *nums, int size, int k) {
+    reverse(nums, 0, size - 1);
+    reverse(nums, 0, k - 1);
+    reverse(nums, k, size - 1);
 }
 #endif
