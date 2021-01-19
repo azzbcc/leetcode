@@ -61,6 +61,7 @@
 
 #define DIST(pa, pb) abs(pa[0] - pb[0]) + abs(pa[1] - pb[1])
 
+#if 0
 typedef struct {
     int from, to, dist;
 } line_t;
@@ -96,3 +97,32 @@ int minCostConnectPoints(int **points, int size, int *colSize) {
 
     return sum;
 }
+#else
+typedef struct {
+    int from, dist;
+    UT_hash_handle hh;
+} hash_t;
+int minCostConnectPoints(int **points, int size, int *colSize) {
+    int sum = 0;
+    hash_t distances[size], *hash = NULL, *cur, *next;
+    for (int i = 1; i < size; ++i) {
+        distances[i] = (hash_t) { i, DIST(points[0], points[i]) };
+        HASH_ADD_INT(hash, from, &distances[i]);
+    }
+    for (hash_t *min; (min = hash);) {
+        HASH_ITER(hh, hash, cur, next) {
+            if (min->dist > cur->dist) min = cur;
+        }
+
+        sum += min->dist;
+        HASH_DEL(hash, min);
+
+        HASH_ITER(hh, hash, cur, next) {
+            int dist = DIST(points[cur->from], points[min->from]);
+            if (cur->dist > dist) cur->dist = dist;
+        }
+    }
+
+    return sum;
+}
+#endif
