@@ -35,6 +35,7 @@
 // Related Topics 数学
 // 👍 5 👎 0
 
+#if 0
 #define MOD  1000000007
 #define MAXN 10020
 
@@ -62,3 +63,45 @@ int *waysToFillArray(int **queries, int size, int *colSize, int *returnSize) {
     }
     return ans;
 }
+#else
+#define MOD  1000000007
+#define MAXN 10000
+
+int inverse[MAXN + 1];
+int quick_power(int n, int p) {
+    int ans = 1;
+    for (; p; p /= 2) {
+        if (p & 1) ans = ( long )ans * n % MOD;
+        n = ( long )n * n % MOD;
+    }
+    return ans;
+}
+int inv(int n) {
+    if (inverse[n]) return inverse[n];
+    return inverse[n] = quick_power(n, MOD - 2);
+}
+int C(int m, int n) {
+    int ans = 1;
+    if (m - n < n) n = m - n;
+    for (int i = 0; i < n; i++) {
+        ans = ( long )ans * (m - i) % MOD * inv(i + 1) % MOD;
+    }
+    return ans;
+}
+int count(int n, int mul) {
+    int ans = 1;
+    for (int i = 2, cur; i <= mul; ++i) {
+        if (mul % i) continue;
+        for (cur = 0; mul % i == 0; cur++, mul /= i) {}
+        ans = ( long )ans * C(n + cur - 1, cur) % MOD;
+    }
+    return ans;
+}
+int *waysToFillArray(int **queries, int size, int *colSize, int *returnSize) {
+    int *ans = malloc((*returnSize = size) * sizeof(int));
+    for (int i = 0; i < size; i++) {
+        ans[i] = count(queries[i][0], queries[i][1]);
+    }
+    return ans;
+}
+#endif
