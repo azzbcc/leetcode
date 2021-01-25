@@ -63,7 +63,7 @@ int *waysToFillArray(int **queries, int size, int *colSize, int *returnSize) {
     }
     return ans;
 }
-#else
+#elif 0
 #define MOD  1000000007
 #define MAXN 10000
 
@@ -79,6 +79,42 @@ int quick_power(int n, int p) {
 int inv(int n) {
     if (inverse[n]) return inverse[n];
     return inverse[n] = quick_power(n, MOD - 2);
+}
+int C(int m, int n) {
+    int ans = 1;
+    if (m - n < n) n = m - n;
+    for (int i = 0; i < n; i++) {
+        ans = ( long )ans * (m - i) % MOD * inv(i + 1) % MOD;
+    }
+    return ans;
+}
+int count(int n, int mul) {
+    int ans = 1;
+    for (int i = 2, cur; i <= mul; ++i) {
+        if (mul % i) continue;
+        for (cur = 0; mul % i == 0; cur++, mul /= i) {}
+        ans = ( long )ans * C(n + cur - 1, cur) % MOD;
+    }
+    return ans;
+}
+int *waysToFillArray(int **queries, int size, int *colSize, int *returnSize) {
+    int *ans = malloc((*returnSize = size) * sizeof(int));
+    for (int i = 0; i < size; i++) {
+        ans[i] = count(queries[i][0], queries[i][1]);
+    }
+    return ans;
+}
+#else
+#define MOD  1000000007
+#define MAXN 10000
+
+int inverse[MAXN + 1] = { 0, 1 };
+int inv(int n) {
+    static int next = 2;
+    for (; n >= next; ++next) {
+        inverse[next] = ( long )inverse[MOD % next] * (MOD - MOD / next) % MOD;
+    }
+    return inverse[n];
 }
 int C(int m, int n) {
     int ans = 1;
