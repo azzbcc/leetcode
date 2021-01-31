@@ -22,8 +22,8 @@ char *shortestPalindrome(char *s) {
         *++ps = '#';
     }
 
-    int manachers[len + 1], max = 0;
-    for (int mid = 0, end = 0, i = 0; i <= len; i++) {
+    int manachers[2 * len + 1], max = 0;
+    for (int mid = 0, end = 0, i = 0; str[i]; i++) {
         if (i < end) {
             manachers[i] = MIN(manachers[mid * 2 - i], end - i);
             if (manachers[mid * 2 - i] != end - i) continue;

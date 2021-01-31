@@ -34,6 +34,7 @@ int countSubstrings(char *s) {
     char str[MAXN + 1] = "#", *ps = str;
 
     while ((*++ps = *s++) && (*++ps = '#')) {}
+    *ps = '\0'; // 重要，保证39行以及48行循环终止
 
     for (int mid = 0, end = 0, i = 1; str[i]; sum += (manachers[i++] + 1) / 2) {
         if (i < end) {
