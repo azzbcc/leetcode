@@ -31,6 +31,8 @@
 //
 // Related Topics 哈希表 双指针 Sliding Window
 // 👍 111 👎 0
+
+#if 0
 #define SIZE 9973
 typedef struct node {
     int val;
@@ -119,3 +121,23 @@ int subarraysWithKDistinct(int *A, int ASize, int K) {
 
     return sum;
 }
+#else
+int subarraysWithKDistinct(int *A, int size, int K) {
+    int count[size + 1], left = 0, right = 0, cur = 0;
+
+    memset(count, 0, sizeof(count));
+    for (; cur < size && K; cur++) {
+        if (!count[A[cur]]) K--;
+        for (count[A[cur]]++; count[A[right]] > 1; count[A[right++]]--) {}
+    }
+    if (K) return 0;
+
+    int ans = right - left + 1;
+    for (; cur < size; cur++) {
+        if (!count[A[cur]]) count[A[right++]]--, left = right;
+        for (count[A[cur]]++; count[A[right]] > 1; count[A[right++]]--) {}
+        ans += right - left + 1;
+    }
+    return ans;
+}
+#endif
