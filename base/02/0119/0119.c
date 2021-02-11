@@ -16,6 +16,7 @@
 // Related Topics 数组
 // 👍 196 👎 0
 
+#if 0
 int *getRow(int k, int *returnSize) {
     int *ans = malloc((*returnSize = k + 1) * sizeof(int));
     for (int i = 0; i <= k; ans[i++] = 1) {
@@ -26,3 +27,19 @@ int *getRow(int k, int *returnSize) {
 
     return ans;
 }
+#else
+int C(int m, int n) {
+    long ans = 1;
+    for (int i = 0; i < n; i++) {
+        ans = ans * (m - i) / (i + 1);
+    }
+    return ans;
+}
+int *getRow(int k, int *returnSize) {
+    int *ans = malloc((*returnSize = k + 1) * sizeof(int));
+    for (int i = 0; i <= k; ++i) {
+        ans[i] = C(k, i);
+    }
+    return ans;
+}
+#endif
