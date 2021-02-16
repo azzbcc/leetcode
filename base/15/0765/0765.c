@@ -46,10 +46,8 @@ int minSwapsCouples(int *row, int size) {
     for (int i = 0; i < size / 2; ++i) {
         ancestor[i] = i;
     }
-    for (int i = 0; i < size; ++i) {
-        for (int j = i + 1; j < size; ++j) {
-            if (row[i] / 2 == row[j] / 2) count += merge(ancestor, i / 2, j / 2);
-        }
+    for (int i = 0; i < size; i += 2) {
+        count += merge(ancestor, row[i] / 2, row[i + 1] / 2);
     }
     return count;
 }
