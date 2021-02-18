@@ -44,6 +44,7 @@
 // Related Topics 贪心算法 Sliding Window
 // 👍 83 👎 0
 
+#if 0
 int minKBitFlips(int *A, int size, int K) {
     int ans = 0;
     for (int i = 0, offset = 1; i + K < size; i += offset, offset = 1) {
@@ -68,3 +69,17 @@ int minKBitFlips(int *A, int size, int K) {
     }
     return ans + !A[size - 1];
 }
+#else
+int minKBitFlips(int *A, int size, int K) {
+    int diff[size], ans = 0;
+
+    memset(diff, 0, sizeof(diff));
+    for (int i = 0, flip = 0; i < size; flip += diff[i++]) {
+        if ((A[i] + flip) % 2) continue;
+        if (i + K > size) return -1;
+        ans++, diff[i] += 1, diff[i + K - 1] -= 1;
+    }
+
+    return ans;
+}
+#endif
