@@ -34,6 +34,7 @@
 // Related Topics 数组
 // 👍 263 👎 0
 
+#if 0
 #define MAXN 50000
 int findShortestSubArray(int *nums, int size) {
     int max = 0, ans = size;
@@ -51,3 +52,23 @@ int findShortestSubArray(int *nums, int size) {
     }
     return ans + 1;
 }
+#else
+#define MAXN 50000
+int findShortestSubArray(int *nums, int size) {
+    int max = 0, ans = 0;
+    int times[MAXN] = { 0 }, first[MAXN];
+
+    for (int i = 0, num; i < size; ++i) {
+        if (times[num = nums[i]]++) {
+            if (max < times[num]) {
+                max = times[num], ans = i - first[num];
+            } else if (max == times[num]) {
+                if (ans > i - first[num]) ans = i - first[num];
+            }
+        } else {
+            first[num] = i;
+        }
+    }
+    return ans + 1;
+}
+#endif
