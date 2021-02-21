@@ -48,6 +48,7 @@
 // Related Topics 数组 Sliding Window
 // 👍 83 👎 0
 
+#if 0
 typedef struct {
     int key, count;
     UT_hash_handle hh;
@@ -134,3 +135,56 @@ int longestSubarray(int *nums, int size, int limit) {
     heap_destroy(min_heap), heap_destroy(max_heap);
     return ans;
 }
+#else
+typedef struct {
+    int val, pos;
+} node_t;
+typedef struct {
+    int l, r;
+    bool (*cmp)(node_t a, node_t b);
+    node_t data[];
+} sorted_queue_t;
+bool max(node_t a, node_t b) {
+    return a.val > b.val;
+}
+bool min(node_t a, node_t b) {
+    return a.val < b.val;
+}
+sorted_queue_t *queue_init(int size, bool (*cmp)(node_t, node_t)) {
+    sorted_queue_t *ans = malloc(sizeof(sorted_queue_t) + size * sizeof(node_t));
+    ans->l = ans->r = 0, ans->cmp = cmp;
+    return ans;
+}
+void queue_push(sorted_queue_t *q, node_t n) {
+    for (; q->r > q->l && q->cmp(n, q->data[q->r - 1]); q->r--) {}
+    q->data[q->r++] = n;
+}
+node_t queue_left(sorted_queue_t *q) {
+    return q->data[q->l];
+}
+void queue_pop(sorted_queue_t *q) {
+    q->l++;
+}
+int longestSubarray(int *nums, int size, int limit) {
+    int ans                   = 0;
+    sorted_queue_t *min_queue = queue_init(size, min);
+    sorted_queue_t *max_queue = queue_init(size, max);
+
+    for (int beg = 0, end = 0; end < size; ++end) {
+        queue_push(min_queue, (node_t) { nums[end], end });
+        queue_push(max_queue, (node_t) { nums[end], end });
+
+        for (node_t a = queue_left(min_queue), b = queue_left(max_queue); b.val - a.val > limit;) {
+            if (a.pos < b.pos) {
+                beg = a.pos + 1, queue_pop(min_queue), a = queue_left(min_queue);
+            } else {
+                beg = b.pos + 1, queue_pop(max_queue), b = queue_left(max_queue);
+            }
+        }
+        if (ans < end - beg + 1) ans = end - beg + 1;
+    }
+
+    free(min_queue), free(max_queue);
+    return ans;
+}
+#endif
