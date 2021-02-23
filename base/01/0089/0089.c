@@ -35,6 +35,7 @@
 // Related Topics 回溯算法
 // 👍 265 👎 0
 
+#if 0
 int *grayCode(int n, int *returnSize) {
     int *ans = malloc((*returnSize = 1 << n) * sizeof(int));
 
@@ -48,3 +49,13 @@ int *grayCode(int n, int *returnSize) {
 
     return ans;
 }
+#else
+int *grayCode(int n, int *returnSize) {
+    int m = 1 << n, *ans = malloc((*returnSize = m) * sizeof(int));
+
+    for (int i = 0; i < m; ++i) {
+        ans[i] = i >> 1 ^ i;
+    }
+    return ans;
+}
+#endif
