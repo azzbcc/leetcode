@@ -1,0 +1,38 @@
+---
+kind: pipeline
+type: docker
+name: default
+
+steps:
+  - name: cmake
+    image: azzbcc/cmake
+    volumes:
+      - name: build
+        path: /drone/build
+    commands:
+    - cd /drone/build
+    - cmake /drone/src
+
+  - name: compile
+    image: azzbcc/cmake
+    pull: never
+    volumes:
+      - name: build
+        path: /drone/build
+    commands:
+    - cd /drone/build
+    - make -j$(nproc)
+
+  - name: test
+    image: azzbcc/cmake
+    pull: never
+    volumes:
+      - name: build
+        path: /drone/build
+    commands:
+    - cd /drone/build
+    - ctest
+
+volumes:
+  - name: build
+    temp: {}
