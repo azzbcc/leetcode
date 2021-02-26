@@ -8,14 +8,13 @@
  *     Author : Clarence <xjh.azzbcc@gmail.com>
  */
 
-#include <check.h>
-#include <assert.h>
-#include <stdlib.h>
+#include <common.h>
 
 #include "0022.c"
 
-int compare(const char **a, const char **b) {
-    return strcmp(*a, *b);
+int cmp(const void *a, const void *b) {
+    char *pa = *( char ** )a, *pb = *( char ** )b;
+    return strcmp(pa, pb);
 }
 
 START_TEST(test_official) {
@@ -25,11 +24,10 @@ START_TEST(test_official) {
     char **ans = generateParenthesis(n, &size);
 
     ck_assert(target == size);
-    qsort(ans, target, sizeof(ans[0]), ( __compar_fn_t )compare);
+    qsort(ans, target, sizeof(ans[0]), cmp);
 
     for (int i = 0; i < target; ++i) {
-        ck_assert_msg(!strcmp(results[i], ans[i]), "error, except %s but got %s on generateParenthesis(%d).", results[i],
-                      ans[i], n);
+        ck_assert_str_eq(ans[i], results[i]);
         free(ans[i]);
     }
     free(ans);
