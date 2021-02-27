@@ -48,6 +48,8 @@ typedef struct {
 } node_t;
 static int cmp(const void *a, const void *b) {
     node_t *pa = ( node_t * )a, *pb = ( node_t * )b;
+    if (pa->dist == pb->dist && pa->r == pb->r) return pa->c - pb->c;
+    if (pa->dist == pb->dist) return pa->r - pb->r;
     return pa->dist - pb->dist;
 }
 int **allCellsDistOrder(int R, int C, int r0, int c0, int *returnSize, int **returnColumnSizes) {
