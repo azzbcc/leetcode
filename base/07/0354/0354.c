@@ -15,6 +15,7 @@
 // Related Topics 二分查找 动态规划
 // 👍 360 👎 0
 
+#if 0
 int max(int a, int b) {
     return a > b ? a : b;
 }
@@ -38,3 +39,35 @@ int maxEnvelopes(int **envelopes, int size, int *colSize) {
 
     return ans + 1;
 }
+#else
+int cmp(const void *a, const void *b) {
+    int *pa = *( int ** )a, *pb = *( int ** )b;
+    if (pa[0] == pb[0]) return pb[1] - pa[1];
+    return pa[0] - pb[0];
+}
+int maxEnvelopes(int **envelopes, int size, int *colSize) {
+    if (!size) return 0;
+
+    int dp[size], top = 0;
+    qsort(envelopes, size, sizeof(int **), cmp);
+
+    dp[0] = envelopes[0][1];
+    for (int i = 1; i < size; ++i) {
+        if (envelopes[i][1] > dp[top]) {
+            dp[++top] = envelopes[i][1];
+        } else {
+            int l = 0;
+            for (int mid, r = top; l <= r;) {
+                mid = (l + r) / 2;
+                if (dp[mid] < envelopes[i][1]) {
+                    l = mid + 1;
+                } else {
+                    r = mid - 1;
+                }
+            }
+            dp[l] = envelopes[i][1];
+        }
+    }
+    return top + 1;
+}
+#endif
