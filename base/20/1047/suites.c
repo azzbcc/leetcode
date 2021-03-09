@@ -7,14 +7,14 @@
  * Modified   :
  *     Author : Clarence <xjh.azzbcc@gmail.com>
  */
-#include <check.h>
+#include <common.h>
 
 #include "1047.c"
 
 START_TEST(test_official) {
     char *target = "ca", *ans = removeDuplicates("abbaca");
 
-    ck_assert(!strcmp(target, ans));
+    ck_assert_str_eq(ans, target);
 }
 
 void tcase_complete(TCase *t) {
