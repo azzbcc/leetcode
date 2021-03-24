@@ -45,6 +45,7 @@
 // Related Topics 栈
 // 👍 383 👎 0
 
+#if 0
 typedef struct {
     int min, max
 } node_t;
@@ -67,3 +68,17 @@ bool find132pattern(int *nums, int size) {
 
     return false;
 }
+#else
+bool find132pattern(int *nums, int size) {
+    int max = INT32_MIN;
+    int stack[size], top = -1;
+
+    stack[++top] = nums[size - 1];
+    for (int i = size - 2; i >= 0; --i) {
+        if (nums[i] < max) return true;
+        for (; top > -1 && nums[i] > stack[top]; max = stack[top--]) {}
+        if (nums[i] > max) stack[++top] = nums[i];
+    }
+    return false;
+}
+#endif
