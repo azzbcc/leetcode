@@ -23,6 +23,7 @@
 // Related Topics 位运算
 // 👍 134 👎 0
 
+#if 0
 int totalHammingDistance(int *nums, int size) {
     int sum = 0;
     for (uint32_t mask = 0x80000000, c; mask > 0; mask >>= 1) {
@@ -34,3 +35,19 @@ int totalHammingDistance(int *nums, int size) {
     }
     return sum;
 }
+#else
+int totalHammingDistance(int *nums, int size) {
+    int max = 0, sum = 0, c;
+    for (int i = 0; i < size; ++i) {
+        if (max < nums[i]) max = nums[i];
+    }
+    for (uint32_t mask = 1; mask <= max; mask <<= 1) {
+        c = 0;
+        for (int j = 0; j < size; ++j) {
+            if (mask & nums[j]) c++;
+        }
+        sum += (size - c) * c;
+    }
+    return sum;
+}
+#endif
