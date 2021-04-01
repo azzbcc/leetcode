@@ -31,8 +31,9 @@ tree_t tree_create_size(const int *data, size_t len) {
 }
 
 void tree_free(tree_t t) {
-    if (t->left) tree_free(t->left);
-    if (t->right) tree_free(t->right);
+    if (!t) return;
+    tree_free(t->left);
+    tree_free(t->right);
     free(t);
 }
 
