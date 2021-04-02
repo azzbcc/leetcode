@@ -12,6 +12,7 @@
 // Related Topics 栈 数组 双指针
 // 👍 145 👎 0
 
+#if 0
 int min(int a, int b) {
     return a < b ? a : b;
 }
@@ -47,3 +48,19 @@ int trap(int *height, int size) {
 
     return ans;
 }
+#else
+int trap(int *height, int size) {
+    if (!size) return 0;
+    int ans = 0;
+    for (int l = 0, r = size - 1, lmax = height[l], rmax = height[r]; l < r;) {
+        if (height[l] < height[r]) {
+            ans += lmax - height[l++];
+            if (lmax < height[l]) lmax = height[l];
+        } else {
+            ans += rmax - height[r--];
+            if (rmax < height[r]) rmax = height[r];
+        }
+    }
+    return ans;
+}
+#endif
