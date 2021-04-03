@@ -3,9 +3,13 @@ project(leetcode C)
 
 set(CMAKE_C_STANDARD 99)
 
+# 定义公共依赖库
+set(COMMON_LIBRARIES m pthread)
+
 # 使用pkg-config检查check依赖
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(CHECK REQUIRED check)
+list(APPEND COMMON_LIBRARIES ${CHECK_LIBRARIES})
 
 # 宏定义 加载目录下所有程序
 macro(DIR_PROGRAMS _regexp)
@@ -29,7 +33,7 @@ macro(DIR_PROGRAMS _regexp)
         set(program_name ${prefix}${folder})
         add_executable(${program_name} ${CMAKE_SOURCE_DIR}${separator}main.c ${child})
         target_compile_definitions(${program_name} PRIVATE -DPROGRAM="${program_name}")
-        target_link_libraries(${program_name} ${CHECK_LIBRARIES} ${${folder}_libraries})
+        target_link_libraries(${program_name} ${COMMON_LIBRARIES} ${${folder}_libraries})
 
         add_test(NAME ${program_name} COMMAND ${program_name})
     endforeach(child)
