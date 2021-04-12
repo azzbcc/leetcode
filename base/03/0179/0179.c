@@ -42,6 +42,7 @@
 // Related Topics 排序
 // 👍 580 👎 0
 
+#if 0
 #define MAXN 100
 #define MAXM (10 + 1)
 
@@ -71,3 +72,24 @@ char *largestNumber(int *nums, int size) {
 
     return ans;
 }
+#else
+int cmp(const void *a, const void *b) {
+    char sa[2][21];
+    int pa = *( int * )a, pb = *( int * )b;
+    sprintf(sa[0], "%d%d", pa, pb);
+    sprintf(sa[1], "%d%d", pb, pa);
+    return strcmp(sa[1], sa[0]);
+}
+char *largestNumber(int *nums, int size) {
+    static char ans[1010];
+    qsort(nums, size, sizeof(int), cmp);
+
+    char *p = ans;
+    for (int i = 0; i < size; ++i) {
+        p += sprintf(p, "%d", nums[i]);
+    }
+    if (ans[0] == '0') ans[1] = '\0';
+
+    return ans;
+}
+#endif
