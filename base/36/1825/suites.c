@@ -115,7 +115,15 @@ START_TEST(test_failed_2) {
     run_test(create, LEN(commands), commands, argv);
 }
 
+START_TEST(test_random_tle) {
+    int create[] = { 50000, 1000 };
+#include "tle.c"
+
+    run_test(create, LEN(commands), commands, argv);
+}
+
 void tcase_complete(TCase *t) {
+    tcase_add_test(t, test_random_tle);
     tcase_add_test(t, test_failed_2);
     tcase_add_test(t, test_failed_1);
     tcase_add_test(t, test_official);
