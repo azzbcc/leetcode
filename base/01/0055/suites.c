@@ -29,7 +29,14 @@ START_TEST(test_own) {
     ck_assert_int_eq(ans, target);
 }
 
+START_TEST(test_failed) {
+    int arr[]   = { 0 };
+    bool target = true, ans = canJump(arr, LEN(arr));
+    ck_assert_int_eq(ans, target);
+}
+
 void tcase_complete(TCase *t) {
+    tcase_add_test(t, test_failed);
     tcase_add_test(t, test_own);
     tcase_add_test(t, test_official_1);
     tcase_add_test(t, test_official_2);

@@ -33,6 +33,7 @@
 // Related Topics 贪心算法 数组
 // 👍 1149 👎 0
 
+#if 0
 bool canJump(int *nums, int size) {
     int max = 0;
     for (int i = 0; i <= max && i < size; ++i) {
@@ -40,3 +41,14 @@ bool canJump(int *nums, int size) {
     }
     return max + 1 >= size;
 }
+#else
+bool canJump(int *nums, int size) {
+    int max = 0;
+    for (int i = 0; i <= max && i < size; ++i) {
+        if (max < i + nums[i]) {
+            if (max = i + nums[i], max + 1 >= size) break;
+        }
+    }
+    return max + 1 >= size;
+}
+#endif
