@@ -32,6 +32,7 @@
 // Related Topics 位运算
 // 👍 631 👎 0
 
+#if 0
 int singleNumber(int *nums, int size) {
     int ans = 0;
     for (int i = 0; i < 32; ++i) {
@@ -43,3 +44,13 @@ int singleNumber(int *nums, int size) {
     }
     return ans;
 }
+#else
+int singleNumber(int *nums, int size) {
+    int a = 0, b = 0;
+    for (int i = 0; i < size; i++) {
+        b = ~a & (b ^ nums[i]);
+        a = ~b & (a ^ nums[i]);
+    }
+    return b;
+}
+#endif
