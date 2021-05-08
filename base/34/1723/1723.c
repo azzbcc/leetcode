@@ -36,6 +36,7 @@
 // Related Topics 递归 回溯算法
 // 👍 113 👎 0
 
+#if 0
 int min(int a, int b) {
     return a < b ? a : b;
 }
@@ -67,3 +68,40 @@ int minimumTimeRequired(int *jobs, int size, int k) {
 
     return dp[cur][(0x1 << size) - 1];
 }
+#else
+bool dfs(int jobs[], int size, int res[], int k, int target) {
+    if (!size) return true;
+    for (int i = 0; i < k; ++i) {
+        if (res[i] + *jobs > target) continue;
+        res[i] += *jobs;
+        if (dfs(jobs + 1, size - 1, res, k, target)) return true;
+        res[i] -= *jobs;
+        if (!res[i]) break;
+    }
+    return false;
+}
+bool check(int jobs[], int size, int k, int target) {
+    int res[12] = { 0 };
+    return dfs(jobs, size, res, k, target);
+}
+int cmp(const void *a, const void *b) {
+    return *( int * )b - *( int * )a;
+}
+int minimumTimeRequired(int *jobs, int size, int k) {
+    int min = 0, max = 0;
+    qsort(jobs, size, sizeof(int), cmp);
+    for (int i = 0; i < size; ++i) {
+        if (min < jobs[i]) min = jobs[i];
+        max += jobs[i];
+    }
+    while (min <= max) {
+        int mid = (min + max) / 2;
+        if (check(jobs, size, k, mid)) {
+            max = mid - 1;
+        } else {
+            min = mid + 1;
+        }
+    }
+    return min;
+}
+#endif
