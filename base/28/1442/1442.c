@@ -77,7 +77,7 @@ int countTriplets(int *arr, int size) {
 
     return ans;
 }
-#else
+#elif 0
 int countTriplets(int *arr, int size) {
     int prefix[size + 1], ans = 0;
 
@@ -89,6 +89,40 @@ int countTriplets(int *arr, int size) {
         for (int k = i + 1; k < size; ++k) {
             if (prefix[i] == prefix[k + 1]) ans += k - i;
         }
+    }
+
+    return ans;
+}
+#else
+typedef struct {
+    int key, count, last, ans;
+    UT_hash_handle hh;
+} * hash_t;
+int hash_record(hash_t *t, int key, int index) {
+    int ans    = 0;
+    hash_t cur = NULL;
+    HASH_FIND_INT(*t, &key, cur);
+    if (!cur) {
+        cur = calloc(1, sizeof(*cur)), cur->key = key;
+        HASH_ADD_INT(*t, key, cur);
+    } else {
+        ans = cur->ans, cur->ans += cur->count * (index - cur->last - 1) + cur->count - 1;
+    }
+    cur->last = index, cur->count += 1;
+    return ans;
+}
+int countTriplets(int *arr, int size) {
+    int prefix = 0, ans = 0;
+    hash_t hash = NULL, cur, next;
+
+    hash_record(&hash, prefix, 0);
+    for (int i = 0; i < size; ++i) {
+        ans += hash_record(&hash, prefix ^= arr[i], i + 1);
+    }
+    HASH_ITER(hh, hash, cur, next) {
+        ans += cur->ans;
+        HASH_DEL(hash, cur);
+        free(cur);
     }
 
     return ans;
