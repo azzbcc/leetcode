@@ -67,6 +67,7 @@
 // Related Topics 链表
 // 👍 1183 👎 0
 
+#if 0
 struct ListNode *getIntersectionNode(struct ListNode *headA, struct ListNode *headB) {
     if (!headA || !headB) return NULL;
 
@@ -87,3 +88,16 @@ struct ListNode *getIntersectionNode(struct ListNode *headA, struct ListNode *he
     tail->next = NULL;
     return ans;
 }
+#else
+struct ListNode *getIntersectionNode(struct ListNode *headA, struct ListNode *headB) {
+    if (!headA || !headB) return NULL;
+
+    struct ListNode *pa = headA, *pb = headB;
+    while (pa != pb) {
+        pa = pa ? pa->next : headB;
+        pb = pb ? pb->next : headA;
+    }
+
+    return pa;
+}
+#endif
