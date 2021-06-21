@@ -29,52 +29,18 @@
 // Related Topics 位运算 回溯算法
 // 👍 155 👎 0
 
-int help_len    = 0;
-char *help[256] = { NULL };
-void search(int num, int hour, int minute) {
-    if (hour > 11 || minute >= 60) return;
-    if (num <= 0) {
-        help[help_len] = calloc(6, sizeof(char));
-        sprintf(help[help_len++], "%d:%02d", hour, minute);
-        return;
-    }
-
-    for (int i = 0; !minute && i < 4; ++i) {
-        if (hour >= 1 << i) continue;
-        search(num - 1, hour + (1 << i), minute);
-    }
-    for (int i = 0; i < 6; ++i) {
-        if (minute >= 1 << i) continue;
-        search(num - 1, hour, minute + (1 << i));
-    }
-}
-
-void dfs(int num, int pos, int hour, int minute) {
-    static int array[] = { 1, 2, 4, 8, 1, 2, 4, 8, 16, 32 };
-
-    if (hour > 11 || minute >= 60) return;
-    if (num <= 0) {
-        help[help_len] = calloc(6, sizeof(char));
-        sprintf(help[help_len++], "%d:%02d", hour, minute);
-        return;
-    }
-
-    for (int i = pos; i + num <= sizeof(array) / sizeof(array[0]); ++i) {
-        if (i < 4) {
-            dfs(num - 1, i + 1, hour + array[i], minute);
-        } else {
-            dfs(num - 1, i + 1, hour, minute + array[i]);
-        }
-    }
-}
-
 char **readBinaryWatch(int num, int *returnSize) {
-    help_len = 0;
-    dfs(num, 0, 0, 0);
+    int len         = 0;
+    char *help[256] = { NULL };
+    for (int i = 0, h, m; i < 1024; ++i) {
+        h = i >> 6, m = i & 63;
+        if (h >= 12 || m >= 60 || __builtin_popcount(i) != num) continue;
+        help[len] = malloc(6 * sizeof(char));
+        sprintf(help[len++], "%d:%02d", h, m);
+    }
 
-    *returnSize = help_len;
-    char **ans  = calloc(help_len, sizeof(char *));
-    memcpy(ans, help, help_len * sizeof(char *));
+    char **ans = calloc(*returnSize = len, sizeof(char *));
+    memcpy(ans, help, len * sizeof(char *));
 
     return ans;
 }
