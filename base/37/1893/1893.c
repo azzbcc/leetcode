@@ -39,6 +39,7 @@
 // Related Topics 数组 哈希表 前缀和
 // 👍 49 👎 0
 
+#if 0
 #define MAXN 50
 bool isCovered(int **ranges, int size, int *colSize, int left, int right) {
     bool flag[MAXN + 1] = { false };
@@ -52,3 +53,17 @@ bool isCovered(int **ranges, int size, int *colSize, int left, int right) {
     }
     return true;
 }
+#else
+#define MAXN 50
+bool isCovered(int **ranges, int size, int *colSize, int left, int right) {
+    int diff[MAXN + 2] = { 0 };
+    for (int i = 0; i < size; ++i) {
+        diff[ranges[i][0]]++, diff[ranges[i][1] + 1]--;
+    }
+    for (int i = 0, cur = 0;i <= right;i++) {
+        cur += diff[i];
+        if (i >= left && cur <= 0) return false;
+    }
+    return true;
+}
+#endif
