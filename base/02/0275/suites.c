@@ -19,7 +19,7 @@ START_TEST(test_official) {
 
 START_TEST(test_own) {
     int arr[]  = { 6, 6, 6, 6, 6, 6 };
-    int target = 3, ans = hIndex(arr, LEN(arr));
+    int target = 6, ans = hIndex(arr, LEN(arr));
     ck_assert_int_eq(ans, target);
 }
 
