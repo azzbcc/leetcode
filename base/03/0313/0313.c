@@ -40,6 +40,7 @@
 // Related Topics 数组 哈希表 数学 动态规划 堆（优先队列）
 // 👍 209 👎 0
 
+#if 0
 typedef struct node {
     long val;
     struct node *next;
@@ -98,3 +99,38 @@ int nthSuperUglyNumber(int n, int *primes, int size) {
     }
     return ans;
 }
+#else
+typedef struct {
+    int pos, num, base;
+} node_t;
+void swap(node_t *a, node_t *b) {
+    node_t tmp = *a;
+    *a = *b, *b = tmp;
+}
+void heap_adjust(node_t data[], int size, int pos) {
+    int new_pos = pos * 2 + 1;
+    if (new_pos + 1 < size && data[new_pos].num > data[new_pos + 1].num) new_pos += 1;
+    if (new_pos < size && data[pos].num > data[new_pos].num) {
+        swap(&data[pos], &data[new_pos]);
+        heap_adjust(data, size, new_pos);
+    }
+}
+int nthSuperUglyNumber(int n, int *primes, int size) {
+    int dp[n];
+    node_t nodes[size];
+
+    dp[0] = 1;
+    for (int i = 0; i < size; ++i) {
+        nodes[i] = (node_t) { 0, primes[i], primes[i] };
+    }
+    for (int i = size / 2 - 1; i >= 0; heap_adjust(nodes, size, i--)) {}
+    for (int i = 1; i < n; ++i) {
+        dp[i] = nodes[0].num;
+        while (nodes[0].num == dp[i]) {
+            nodes[0].num = nodes[0].base * dp[++nodes[0].pos];
+            heap_adjust(nodes, size, 0);
+        }
+    }
+    return dp[n - 1];
+}
+#endif
