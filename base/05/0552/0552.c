@@ -51,6 +51,7 @@
 //
 // Related Topics 动态规划 👍 211 👎 0
 
+#if 0
 #define MOD 1000000007
 int checkRecord(int n) {
     int dp[2][2][3] = { 1 }, cur = 0;
@@ -83,3 +84,38 @@ int checkRecord(int n) {
     }
     return ans;
 }
+#else
+#define MOD 1000000007
+typedef struct {
+    int row, col;
+    long data[6][6];
+} matrix_t;
+matrix_t mul(matrix_t a, matrix_t b) {
+    matrix_t result = { a.row, b.col };
+    for (int i = 0; i < a.row; ++i) {
+        for (int j = 0; j < b.col; ++j) {
+            for (int k = 0; k < a.col; ++k) {
+                result.data[i][j] += a.data[i][k] * b.data[k][j];
+            }
+            result.data[i][j] %= MOD;
+        }
+    }
+    return result;
+}
+int checkRecord(int n) {
+    matrix_t ans  = { 1, 6, .data[0][0] = 1 };
+    matrix_t base = { 6,
+                      6,
+                      { { 1, 1, 0, 1, 0, 0 },
+                        { 1, 0, 1, 1, 0, 0 },
+                        { 1, 0, 0, 1, 0, 0 },
+                        { 0, 0, 0, 1, 1, 0 },
+                        { 0, 0, 0, 1, 0, 1 },
+                        { 0, 0, 0, 1, 0, 0 } } };
+    for (n++; n > 0; n /= 2) {
+        if (n & 1) ans = mul(ans, base);
+        base = mul(base, base);
+    }
+    return ans.data[0][3];
+}
+#endif
