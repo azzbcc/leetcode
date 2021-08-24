@@ -49,6 +49,7 @@
 //
 // Related Topics 深度优先搜索 广度优先搜索 图 动态规划 最短路 堆（优先队列） 👍 331 👎 0
 
+#if 0
 typedef struct edge_node {
     int from, to, weight;
     struct edge_node *next;
@@ -99,3 +100,19 @@ int findCheapestPrice(int n, int **flights, int size, int *colSize, int src, int
 
     return ans;
 }
+#else
+int findCheapestPrice(int n, int **flights, int size, int *colSize, int src, int dst, int k) {
+    int now = 0, dp[2][n], ans = 0x3f3f3f3f;
+
+    memset(dp[now], 0x3f, sizeof(dp[now])), dp[now][src] = 0;
+    for (int i = 0; i <= k; ++i, now = 1 - now) {
+        memset(dp[1 - now], 0x3f, sizeof(dp[1 - now]));
+        for (int j = 0; j < size; ++j) {
+            int from = flights[j][0], to = flights[j][1], weight = flights[j][2];
+            dp[1 - now][to] = fmin(dp[1 - now][to], dp[now][from] + weight);
+        }
+        ans = fmin(ans, dp[1 - now][dst]);
+    }
+    return ans == 0x3f3f3f3f ? -1 : ans;
+}
+#endif
