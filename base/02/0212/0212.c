@@ -69,21 +69,21 @@ int help_len;
 char *help[MAXN];
 const point_t wards[] = { -1, 0, 1, 0, 0, -1, 0, 1 };
 void dfs(int m, int n, char **board, trie_t t, point_t now, bool visited[m][n]) {
-    trie_t cur, next;
-    if (t->str) help[help_len++] = t->str, t->str = NULL;
+    trie_t cur;
+    HASH_FIND(hh, t, &board[now.x][now.y], sizeof(char), cur);
+    if (!cur) return;
+
     visited[now.x][now.y] = true;
-    HASH_ITER(hh, t->next, cur, next) {
-        for (int i = 0; i < sizeof(wards) / sizeof(wards[0]); ++i) {
-            point_t ne = (point_t) { now.x + wards[i].x, now.y + wards[i].y };
-            if (ne.x < 0 || ne.x >= m || ne.y < 0 || ne.y >= n) continue;
-            if (visited[ne.x][ne.y] || board[ne.x][ne.y] != cur->ch) continue;
-            dfs(m, n, board, cur, ne, visited);
-        }
+    if (cur->str) help[help_len++] = cur->str, cur->str = NULL;
+    for (int i = 0; cur->next && i < sizeof(wards) / sizeof(wards[0]); ++i) {
+        point_t next = (point_t) { now.x + wards[i].x, now.y + wards[i].y };
+        if (next.x < 0 || next.x >= m || next.y < 0 || next.y >= n || visited[next.x][next.y]) continue;
+        dfs(m, n, board, cur->next, next, visited);
     }
     visited[now.x][now.y] = false;
 }
 char **findWords(char **board, int size, int *colSize, char **words, int wordsSize, int *returnSize) {
-    trie_t trie = NULL, cur;
+    trie_t trie = NULL;
     bool visited[size][*colSize];
 
     help_len = 0;
@@ -93,9 +93,7 @@ char **findWords(char **board, int size, int *colSize, char **words, int wordsSi
     }
     for (int i = 0; i < size; ++i) {
         for (int j = 0; j < *colSize; ++j) {
-            HASH_FIND(hh, trie, &board[i][j], sizeof(char), cur);
-            if (!cur) continue;
-            dfs(size, *colSize, board, cur, (point_t) { i, j }, visited);
+            dfs(size, *colSize, board, trie, (point_t) { i, j }, visited);
         }
     }
     trie_free(trie);
