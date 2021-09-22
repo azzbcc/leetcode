@@ -17,6 +17,7 @@ START_TEST(test_official_1) {
     int len, *ans = waysToFillArray(arr, LEN(arr), NULL, &len);
     ck_assert_int_eq(len, LEN(target));
     ck_assert_mem_eq(ans, target, sizeof(target));
+    free(ans);
 }
 
 START_TEST(test_official_2) {
@@ -25,6 +26,7 @@ START_TEST(test_official_2) {
     int len, *ans = waysToFillArray(arr, LEN(arr), NULL, &len);
     ck_assert_int_eq(len, LEN(target));
     ck_assert_mem_eq(ans, target, sizeof(target));
+    free(ans);
 }
 
 START_TEST(test_failed) {
@@ -33,6 +35,7 @@ START_TEST(test_failed) {
     int len, *ans = waysToFillArray(arr, LEN(arr), NULL, &len);
     ck_assert_int_eq(len, LEN(target));
     ck_assert_mem_eq(ans, target, sizeof(target));
+    free(ans);
 }
 
 void tcase_complete(TCase *t) {
