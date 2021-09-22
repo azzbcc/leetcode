@@ -5,8 +5,10 @@ extern void tcase_complete(TCase *t);
 static enum fork_status default_fork_status = CK_NOFORK;
 
 void set_execute_timeout(TCase *tCase, double timeout) {
+#ifndef ENABLE_MEMORY_CHECK
     default_fork_status = CK_FORK;
     tcase_set_timeout(tCase, timeout);
+#endif
 }
 
 Suite *make_suite(void) {

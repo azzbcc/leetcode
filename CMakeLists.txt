@@ -39,6 +39,13 @@ macro(DIR_PROGRAMS _regexp)
     endforeach(child)
 endmacro()
 
+# memory check
+option(ENABLE_MEMORY_CHECK "Enable Memory Leak Check." OFF)
+if (ENABLE_MEMORY_CHECK)
+    message("Enable Memory Leak Check.")
+    add_definitions(-DENABLE_MEMORY_CHECK)
+endif (ENABLE_MEMORY_CHECK)
+
 # 公共头文件夹
 include_directories(common)
 

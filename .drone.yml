@@ -36,3 +36,43 @@ steps:
 volumes:
   - name: build
     temp: {}
+
+---
+kind: pipeline
+type: docker
+name: memcheck
+
+steps:
+  - name: cmake
+    image: azzbcc/cmake
+    volumes:
+      - name: build
+        path: /drone/build
+    commands:
+      - cd /drone/build
+      - cmake -DENABLE_MEMORY_CHECK=ON /drone/src
+
+  - name: compile
+    image: azzbcc/cmake
+    pull: never
+    volumes:
+      - name: build
+        path: /drone/build
+    commands:
+      - cd /drone/build
+      - make -j$(nproc)
+
+  - name: test
+    image: azzbcc/cmake
+    pull: never
+    volumes:
+      - name: build
+        path: /drone/build
+    commands:
+      - cd /drone/build
+      - ctest -T memcheck
+
+volumes:
+  - name: build
+    temp: {}
+
