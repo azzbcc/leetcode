@@ -10,8 +10,8 @@ steps:
       - name: build
         path: /drone/build
     commands:
-    - cd /drone/build
-    - cmake /drone/src
+      - cd /drone/build
+      - cmake /drone/src
 
   - name: compile
     image: azzbcc/cmake
@@ -20,8 +20,8 @@ steps:
       - name: build
         path: /drone/build
     commands:
-    - cd /drone/build
-    - make -j$(nproc)
+      - cd /drone/build
+      - make -j$(nproc)
 
   - name: test
     image: azzbcc/cmake
@@ -30,12 +30,12 @@ steps:
       - name: build
         path: /drone/build
     commands:
-    - cd /drone/build
-    - ctest
+      - cd /drone/build
+      - ctest
 
 volumes:
   - name: build
-    temp: {}
+    temp: { }
 
 ---
 kind: pipeline
@@ -74,5 +74,5 @@ steps:
 
 volumes:
   - name: build
-    temp: {}
+    temp: { }
 
