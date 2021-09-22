@@ -17,6 +17,7 @@ START_TEST(test_official) {
     int len, *ans = findDisappearedNumbers(arr, LEN(arr), &len);
     ck_assert_int_eq(len, LEN(target));
     ck_assert_mem_eq(ans, target, sizeof(target));
+    free(ans);
 }
 
 START_TEST(test_failed_1) {
@@ -25,6 +26,7 @@ START_TEST(test_failed_1) {
     int len, *ans = findDisappearedNumbers(arr, LEN(arr), &len);
     ck_assert_int_eq(len, LEN(target));
     ck_assert_mem_eq(ans, target, sizeof(target));
+    free(ans);
 }
 
 START_TEST(test_failed_2) {
@@ -33,6 +35,7 @@ START_TEST(test_failed_2) {
     int len, *ans = findDisappearedNumbers(arr, LEN(arr), &len);
     ck_assert_int_eq(len, LEN(target));
     ck_assert_mem_eq(ans, target, sizeof(target));
+    free(ans);
 }
 
 START_TEST(test_failed_3) {
@@ -41,6 +44,7 @@ START_TEST(test_failed_3) {
     int len, *ans = findDisappearedNumbers(arr, LEN(arr), &len);
     ck_assert_int_eq(len, LEN(target));
     ck_assert_mem_eq(ans, target, sizeof(target));
+    free(ans);
 }
 
 void tcase_complete(TCase *t) {
