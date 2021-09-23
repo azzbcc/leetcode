@@ -7,9 +7,7 @@
  * Modified   :
  *     Author : Clarence <xjh.azzbcc@gmail.com>
  */
-#include <check.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include <common.h>
 
 #include "0043.c"
 

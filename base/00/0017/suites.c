@@ -7,10 +7,7 @@
  * Modified   :
  *     Author : Clarence <xjh.azzbcc@gmail.com>
  */
-#include <check.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <assert.h>
+#include <common.h>
 
 #include "0017.c"
 

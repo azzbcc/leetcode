@@ -1,4 +1,4 @@
-#include <check.h>
+#include <common.h>
 
 #include "add.c"
 #include "sub.c"

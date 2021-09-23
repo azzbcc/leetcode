@@ -7,8 +7,7 @@
  * Modified   :
  *     Author : Clarence <xjh.azzbcc@gmail.com>
  */
-#include <check.h>
-#include <stdio.h>
+#include <common.h>
 
 #include "0647.c"
 

@@ -7,9 +7,7 @@
  * Modified   :
  *     Author : Clarence <xjh.azzbcc@gmail.com>
  */
-#include <check.h>
-#include <stdbool.h>
-#include <stdio.h>
+#include <common.h>
 
 #include "0202.c"
 

@@ -7,7 +7,7 @@
  * Modified   :
  *     Author : Clarence <xjh.azzbcc@gmail.com>
  */
-#include <check.h>
+#include <common.h>
 
 #include "08_03.c"
 

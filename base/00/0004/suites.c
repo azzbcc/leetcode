@@ -8,8 +8,7 @@
  *     Author : Clarence <xjh.azzbcc@gmail.com>
  */
 
-#include <check.h>
-#include <stdbool.h>
+#include <common.h>
 
 #include "0004.c"
 

@@ -7,10 +7,7 @@
  * Modified   :
  *     Author : Clarence <xjh.azzbcc@gmail.com>
  */
-#include <check.h>
-#include <stdio.h>
-#include <stdbool.h>
-#include <stdlib.h>
+#include <common.h>
 
 #define SIZE 100
 

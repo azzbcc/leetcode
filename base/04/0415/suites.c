@@ -8,7 +8,7 @@
  *     Author : Clarence <xjh.azzbcc@gmail.com>
  */
 
-#include <check.h>
+#include <common.h>
 
 #include "0415.c"
 

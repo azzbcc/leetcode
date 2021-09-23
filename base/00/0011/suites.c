@@ -7,10 +7,7 @@
  * Modified   :
  *     Author : Clarence <xjh.azzbcc@gmail.com>
  */
-#include <check.h>
-#include <stdlib.h>
-#include <check_stdint.h>
-#include <stdbool.h>
+#include <common.h>
 
 #include "0011.c"
 
