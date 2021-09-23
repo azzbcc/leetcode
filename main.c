@@ -1,5 +1,6 @@
 #include <check.h>
 
+extern const char *program;
 extern void tcase_complete(TCase *t);
 
 static enum fork_status default_fork_status = CK_NOFORK;
@@ -12,8 +13,8 @@ void set_execute_timeout(TCase *tCase, double timeout) {
 }
 
 Suite *make_suite(void) {
-    Suite *suite = suite_create(PROGRAM);
-    TCase *tCase = tcase_create(PROGRAM);
+    Suite *suite = suite_create(program);
+    TCase *tCase = tcase_create(program);
 
     // 添加测试用例
     suite_add_tcase(suite, tCase);

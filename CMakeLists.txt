@@ -31,7 +31,7 @@ macro(DIR_PROGRAMS _regexp)
             continue()
         endif ()
         set(program_name ${prefix}${folder})
-        add_executable(${program_name} ${CMAKE_SOURCE_DIR}${separator}main.c ${child})
+        add_executable(${program_name} ${child})
         target_compile_definitions(${program_name} PRIVATE -DPROGRAM="${program_name}")
         target_link_libraries(${program_name} ${COMMON_LIBRARIES} ${${folder}_libraries})
 
@@ -50,6 +50,9 @@ endif (ENABLE_MEMORY_CHECK)
 include_directories(common)
 
 include(CTest)
+
+add_library(main SHARED ${CMAKE_CURRENT_SOURCE_DIR}/main.c)
+list(APPEND COMMON_LIBRARIES main)
 
 dir_programs(demo "")
 add_subdirectory(common)
