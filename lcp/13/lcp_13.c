@@ -65,7 +65,7 @@ typedef struct {
 } point_t;
 
 #define INF   99999999
-#define LEN   100
+#define MAX_N 100
 #define MAX_M 16
 #define MAX_O 40
 
@@ -116,8 +116,8 @@ void init(char **maze, int m, int n) {
 
 // calculate the distances from one stone to every mechanism
 void bfs(char **maze, int m, int n, point_t beg, int *result) {
-    point_t queue[LEN * LEN] = { 0 };
-    int front = 0, rear = 1, map[LEN][LEN] = { 0 };
+    point_t queue[MAX_N * MAX_N] = { 0 };
+    int front = 0, rear = 1, map[MAX_N][MAX_N] = { 0 };
 
     queue[0] = beg, map[beg.x][beg.y] = 1;
     while (front < rear) {

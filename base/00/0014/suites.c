@@ -13,14 +13,14 @@
 
 START_TEST(test_official_1) {
     char *input[] = { "flower", "flow", "flight" };
-    char *target = "fl", *ans = longestCommonPrefix(input, sizeof(input) / sizeof(input[0]));
-    ck_assert_msg(!strcmp(target, ans), "error, except %d but got %d on longestCommonPrefix().", target, ans);
+    char *target = "fl", *ans = longestCommonPrefix(input, LEN(input));
+    ck_assert_str_eq(ans, target);
 }
 
 START_TEST(test_official_2) {
     char *input[] = { "dog", "racecar", "car" };
-    char *target = "", *ans = longestCommonPrefix(input, sizeof(input) / sizeof(input[0]));
-    ck_assert_msg(!strcmp(target, ans), "error, except %d but got %d on longestCommonPrefix().", target, ans);
+    char *target = "", *ans = longestCommonPrefix(input, LEN(input));
+    ck_assert_str_eq(ans, target);
 }
 
 void tcase_complete(TCase *t) {

@@ -19,23 +19,23 @@ static long getMicrotime() {
 }
 
 static void releaseHydrogen() {
-    printf("%6lu: thread-%lu 'H'\n", getMicrotime(), pthread_self());
+    printf("%6lu: thread-%ld 'H'\n", getMicrotime(), ( long )pthread_self());
     usleep(100);
 }
 
 static void releaseOxygen() {
-    printf("%6lu: thread-%lu 'O'\n", getMicrotime(), pthread_self());
+    printf("%6lu: thread-%ld 'O'\n", getMicrotime(), ( long )pthread_self());
     usleep(100);
 }
 
 #include "1117.c"
 
 static void *othread(void *ptr) {
-    printf("%6lu: thread-%lu would print 'O'\n", getMicrotime(), pthread_self());
+    printf("%6lu: thread-%ld would print 'O'\n", getMicrotime(), ( long )pthread_self());
     oxygen(ptr);
 }
 static void *hthread(void *ptr) {
-    printf("%6lu: thread-%lu would print 'H'\n", getMicrotime(), pthread_self());
+    printf("%6lu: thread-%ld would print 'H'\n", getMicrotime(), ( long )pthread_self());
     hydrogen(ptr);
 }
 
