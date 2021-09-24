@@ -78,6 +78,7 @@
 //
 // Related Topics 深度优先搜索 链表 双向链表 👍 254 👎 0
 
+#if 0
 node_t flatten(node_t root) {
     if (!root) return NULL;
     node_t next = root->next;
@@ -94,3 +95,22 @@ node_t flatten(node_t root) {
 
     return root;
 }
+#else
+node_t dfs(node_t root) {
+    node_t last = NULL;
+    for (node_t cur = root, next; cur; cur = next) {
+        next = cur->next;
+        if (cur->child) {
+            last = dfs(cur->next = cur->child), cur->child = NULL, cur->next->prev = cur;
+            if (next) last->next = next, next->prev = last;
+        } else {
+            last = cur;
+        }
+    }
+    return last;
+}
+node_t flatten(node_t root) {
+    dfs(root);
+    return root;
+}
+#endif
