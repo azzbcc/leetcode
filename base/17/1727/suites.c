@@ -9,7 +9,7 @@
  */
 #include <common.h>
 
-#include "5655.c"
+#include "1727.c"
 
 START_TEST(test_official_1) {
     int col = 3, *arr[] = { (int[]) { 0, 0, 1 }, (int[]) { 1, 1, 1 }, (int[]) { 1, 0, 1 } };
