@@ -5,7 +5,7 @@ name: default
 
 steps:
   - name: cmake
-    image: azzbcc/cmake
+    image: registry.cn-beijing.aliyuncs.com/azzbcc/cmake
     volumes:
       - name: build
         path: /drone/build
@@ -14,7 +14,7 @@ steps:
       - cmake /drone/src
 
   - name: compile
-    image: azzbcc/cmake
+    image: registry.cn-beijing.aliyuncs.com/azzbcc/cmake
     pull: never
     volumes:
       - name: build
@@ -23,7 +23,7 @@ steps:
       - cmake --build /drone/build -- -j $(nproc)
 
   - name: test
-    image: azzbcc/cmake
+    image: registry.cn-beijing.aliyuncs.com/azzbcc/cmake
     pull: never
     volumes:
       - name: build
@@ -43,7 +43,7 @@ name: memcheck
 
 steps:
   - name: cmake
-    image: azzbcc/cmake
+    image: registry.cn-beijing.aliyuncs.com/azzbcc/cmake
     volumes:
       - name: build
         path: /drone/build
@@ -52,7 +52,7 @@ steps:
       - cmake -DENABLE_MEMORY_CHECK=ON /drone/src
 
   - name: compile
-    image: azzbcc/cmake
+    image: registry.cn-beijing.aliyuncs.com/azzbcc/cmake
     pull: never
     volumes:
       - name: build
@@ -61,7 +61,7 @@ steps:
       - cmake --build /drone/build -- -j $(nproc)
 
   - name: test
-    image: azzbcc/cmake
+    image: registry.cn-beijing.aliyuncs.com/azzbcc/cmake
     pull: never
     volumes:
       - name: build
