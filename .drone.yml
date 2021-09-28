@@ -20,8 +20,7 @@ steps:
       - name: build
         path: /drone/build
     commands:
-      - cd /drone/build
-      - make -j$(nproc)
+      - cmake --build /drone/build -- -j $(nproc)
 
   - name: test
     image: azzbcc/cmake
@@ -59,8 +58,7 @@ steps:
       - name: build
         path: /drone/build
     commands:
-      - cd /drone/build
-      - make -j$(nproc)
+      - cmake --build /drone/build -- -j $(nproc)
 
   - name: test
     image: azzbcc/cmake
