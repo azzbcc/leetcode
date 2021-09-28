@@ -31,6 +31,7 @@
 //
 // Related Topics 数组 动态规划 👍 1674 👎 0
 
+#if 0
 int rob(int *nums, int size) {
     if (!size) return 0;
     int cur = 0, dp[2][2] = { *nums };
@@ -41,3 +42,14 @@ int rob(int *nums, int size) {
     }
     return fmax(dp[cur][0], dp[cur][1]);
 }
+#else
+int rob(int *nums, int size) {
+    if (!size) return 0;
+    if (size == 1) return *nums;
+    int a = nums[0], b = fmax(a, nums[1]);
+    for (int i = 2, t; i < size; ++i) {
+        t = fmax(a + nums[i], b), a = b, b = t;
+    }
+    return b;
+}
+#endif

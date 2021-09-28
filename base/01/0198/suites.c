@@ -23,7 +23,21 @@ START_TEST(test_official_2) {
     ck_assert_int_eq(ans, target);
 }
 
+START_TEST(test_failed_1) {
+    int arr[]  = { 0 };
+    int target = 0, ans = rob(arr, LEN(arr));
+    ck_assert_int_eq(ans, target);
+}
+
+START_TEST(test_failed_2) {
+    int arr[]  = { 2, 1 };
+    int target = 2, ans = rob(arr, LEN(arr));
+    ck_assert_int_eq(ans, target);
+}
+
 void tcase_complete(TCase *t) {
+    tcase_add_test(t, test_failed_2);
+    tcase_add_test(t, test_failed_1);
     tcase_add_test(t, test_official_1);
     tcase_add_test(t, test_official_2);
 }
