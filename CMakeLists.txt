@@ -4,7 +4,7 @@ project(leetcode C)
 set(CMAKE_C_STANDARD 99)
 
 # 定义公共依赖库
-set(COMMON_LIBRARIES m pthread)
+set(COMMON_LIBRARIES common m pthread)
 
 # 使用pkg-config检查check依赖
 find_package(PkgConfig REQUIRED)
