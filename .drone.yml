@@ -13,9 +13,8 @@ steps:
       - name: build
         path: /drone/build
     commands:
-      - git init
-      - git fetch https://proxy.ananwork.com/github.com/$DRONE_REPO.git
-      - git checkout $DRONE_COMMIT -b $DRONE_BRANCH
+      - git clone https://proxy.ananwork.com/github.com/$DRONE_REPO.git .
+      - git checkout $DRONE_COMMIT
 
   - name: cmake
     image: registry.cn-beijing.aliyuncs.com/azzbcc/cmake
@@ -64,9 +63,8 @@ steps:
       - name: build
         path: /drone/build
     commands:
-      - git init
-      - git fetch https://proxy.ananwork.com/github.com/$DRONE_REPO.git
-      - git checkout $DRONE_COMMIT -b $DRONE_BRANCH
+      - git clone https://proxy.ananwork.com/github.com/$DRONE_REPO.git .
+      - git checkout $DRONE_COMMIT
 
   - name: cmake
     image: registry.cn-beijing.aliyuncs.com/azzbcc/cmake
