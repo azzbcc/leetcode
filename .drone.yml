@@ -3,7 +3,20 @@ kind: pipeline
 type: docker
 name: default
 
+clone:
+  disable: true
+
 steps:
+  - name: clone
+    image: alpine/git
+    volumes:
+      - name: build
+        path: /drone/build
+    commands:
+      - git init
+      - git fetch https://proxy.ananwork.com/github.com/$DRONE_REPO.git
+      - git checkout $DRONE_COMMIT -b $DRONE_BRANCH
+
   - name: cmake
     image: registry.cn-beijing.aliyuncs.com/azzbcc/cmake
     volumes:
@@ -41,7 +54,20 @@ kind: pipeline
 type: docker
 name: memcheck
 
+clone:
+  disable: true
+
 steps:
+  - name: clone
+    image: alpine/git
+    volumes:
+      - name: build
+        path: /drone/build
+    commands:
+      - git init
+      - git fetch https://proxy.ananwork.com/github.com/$DRONE_REPO.git
+      - git checkout $DRONE_COMMIT -b $DRONE_BRANCH
+
   - name: cmake
     image: registry.cn-beijing.aliyuncs.com/azzbcc/cmake
     volumes:
