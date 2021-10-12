@@ -82,19 +82,19 @@ static void print_dynamic_tree_real(void *tree, int count_offset, int point_offs
     print_tree_node(*( void ** )tree);
     printf("\n");
 
-    int size = *((*( int ** )tree) + count_offset);
+    int size = *(int *)((*( void ** )tree) + count_offset);
 
 #if 1
     bool has_child = false;
     for (int i = 0; !has_child && i < size; ++i) {
         void *next = (*( void ** )tree) + point_offset + i * sizeof(void *);
-        has_child  = *( void ** )next;
+        has_child  = *( void  **)next;
     }
     if (!has_child) return;
 #endif
 
     for (int i = 0; i < size; ++i) {
-        void *next   = (*( void ** )tree) + point_offset + i * sizeof(void *);
+        void *next   = (*( void   **)tree) + point_offset + i * sizeof(void *);
         flags[depth] = i + 1 < size;
         print_dynamic_tree_real(next, count_offset, point_offset, depth + 1, flags, print_tree_node);
     }
