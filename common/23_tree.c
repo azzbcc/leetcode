@@ -18,10 +18,11 @@ static int min(int a, int b) {
 }
 static _23_tree_t _23_tree_node_new(int val, _23_tree_t parent) {
     _23_tree_t t = calloc(1, sizeof(struct _23_TreeNode));
-    t->val[0] = val, t->count = 2, t->parent = parent;
+    t->val[0] = val, t->count = 2, t->parent = parent, t->children = calloc(3, sizeof(_23_tree_t));
     return t;
 }
 static void _23_tree_node_destroy(_23_tree_t *tree) {
+    free((*tree)->children);
     free(*tree);
     *tree = NULL;
 }
