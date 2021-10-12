@@ -12,7 +12,7 @@
 
 static _234_tree_t _234_tree_node_new(int val, _234_tree_t parent) {
     _234_tree_t t = calloc(1, sizeof(struct _234_TreeNode));
-    t->val[0] = val, t->count = 2, t->parent = parent;
+    t->val[0] = val, t->count = 2, t->parent = parent, t->children = calloc(4, sizeof(_234_tree_t));
     return t;
 }
 static int _234_tree_find_index(_234_tree_t tree, int val) {
@@ -21,6 +21,7 @@ static int _234_tree_find_index(_234_tree_t tree, int val) {
     return index;
 }
 static void _234_tree_node_destroy(_234_tree_t *tree) {
+    free((*tree)->children);
     free(*tree);
     *tree = NULL;
 }
@@ -80,16 +81,18 @@ bool _234_tree_del(_234_tree_t *tree, int val) {
 
     // 保证孩子至少有一个不是2节点
     if (cur->count == 2 && cur->children[0] && cur->children[0]->count == 2 && cur->children[1]->count == 2) {
-        struct _234_TreeNode node =
-            (struct _234_TreeNode) { .count    = 4,
-                                     .val      = { cur->children[0]->val[0], cur->val[0], cur->children[1]->val[0] },
-                                     .children = { cur->children[0]->children[0], cur->children[0]->children[1],
-                                                   cur->children[1]->children[0], cur->children[1]->children[1] } };
+        struct _234_TreeNode node = (struct _234_TreeNode) {
+            .count    = 4,
+            .val      = { cur->children[0]->val[0], cur->val[0], cur->children[1]->val[0] },
+            .children = (_234_tree_t[]) { cur->children[0]->children[0], cur->children[0]->children[1],
+                                          cur->children[1]->children[0], cur->children[1]->children[1] }
+        };
         _234_tree_node_destroy(&cur->children[0]), _234_tree_node_destroy(&cur->children[1]);
         if (node.children[0]) {
             for (int i = 0; i < node.count; node.children[i++]->parent = cur) {}
         }
-        memcpy(cur, &node, sizeof(struct _234_TreeNode));
+        memcpy(cur->val, node.val, 3 * sizeof(int));
+        memcpy(cur->children, node.children, (cur->count = node.count) * sizeof(_234_tree_t));
     }
 
     int index;

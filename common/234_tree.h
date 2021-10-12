@@ -13,9 +13,9 @@
 #include <common.h>
 
 typedef struct _234_TreeNode {
-    int count, val[3];
+    int val[3], count;
     struct _234_TreeNode *parent;
-    struct _234_TreeNode *children[4];
+    struct _234_TreeNode **children;
 } * _234_tree_t;
 #define _234_tree_create(array) _234_tree_create_size(array, LEN(array))
 _234_tree_t _234_tree_create_size(const int *, size_t);
