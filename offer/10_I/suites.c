@@ -9,7 +9,7 @@
  */
 #include <common.h>
 
-#include "offer_10-I.c"
+#include "offer_10_I.c"
 
 START_TEST(test_official_1) {
     int n      = 2;
