@@ -33,6 +33,7 @@
 //
 // Related Topics 位运算 👍 246 👎 0
 
+#if 0
 int findComplement(int num) {
     int mask = num;
     mask |= mask >> 1;
@@ -42,3 +43,8 @@ int findComplement(int num) {
     mask |= mask >> 16;
     return mask ^ num;
 }
+#else
+int findComplement(int num) {
+    return num ^ ((0x1U << (32 - __builtin_clz(num))) - 1);
+}
+#endif
