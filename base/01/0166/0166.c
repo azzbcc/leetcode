@@ -71,11 +71,11 @@ char *fractionToDecimal(int numerator, int denominator) {
     if (!mod) return sprintf(ss, "%ld", digit), str;
     hash_t data = NULL, cur, next;
     for (long now = mod * 10, i = 0; now; now = cur->mod * 10, ++i) {
-        HASH_FIND_INT(data, &now, cur);
+        HASH_FIND(hh, data, &now, sizeof(long), cur);
         if (cur) break;
         cur = malloc(sizeof(*cur)), decimal[i] = '0' + now / b;
         cur->now = now, cur->index = i, cur->div = now / b, cur->mod = now % b;
-        HASH_ADD_INT(data, now, cur);
+        HASH_ADD(hh, data, now, sizeof(long), cur);
     }
     int offset = cur->index, end = cur->mod;
     HASH_ITER(hh, data, cur, next) {
