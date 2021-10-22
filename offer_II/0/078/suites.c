@@ -35,7 +35,7 @@ START_TEST(test_official_2) {
     int *arr[]       = {};
     int arr_target[] = {};
 
-    list_t lists[LEN(arr)] = { NULL };
+    list_t lists[LEN(arr)] = {};
     for (int i = 0; i < LEN(arr); ++i) {
         lists[i] = list_create_size(arr[i], col[i]);
     }
