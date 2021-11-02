@@ -23,7 +23,7 @@ START_TEST(test_official_1) {
 }
 
 START_TEST(test_official_2) {
-    int arr[] = { 1,2,3,null,4 };
+    int arr[] = { 1, 2, 3, null, 4 };
     tree_t t  = tree_create(arr);
 
     char *target = "1(2()(4))(3)", *ans = tree2str(t);
@@ -32,7 +32,29 @@ START_TEST(test_official_2) {
     tree_free(t);
 }
 
+START_TEST(test_failed_1) {
+#include "failed_01.c"
+    tree_t t = tree_create(arr);
+
+    char *ans = tree2str(t);
+    ck_assert_str_eq(ans, target);
+
+    tree_free(t);
+}
+
+START_TEST(test_failed_2) {
+#include "failed_02.c"
+    tree_t t = tree_create(arr);
+
+    char *ans = tree2str(t);
+    ck_assert_str_eq(ans, target);
+
+    tree_free(t);
+}
+
 void tcase_complete(TCase *t) {
+    tcase_add_test(t, test_failed_2);
+    tcase_add_test(t, test_failed_1);
     tcase_add_test(t, test_official_1);
     tcase_add_test(t, test_official_2);
 }
