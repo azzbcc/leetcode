@@ -48,6 +48,7 @@
 //
 // Related Topics 位运算 数组 动态规划 回溯 状态压缩 👍 13 👎 0
 
+#if 0
 int maxCompatibilitySum(int **students, int size, int *colSize, int **mentors, int mentorsSize, int *mentorsColSize) {
     int grade[size][size], mask = 0x1 << size, dp[mask][mask];
 
@@ -76,3 +77,28 @@ int maxCompatibilitySum(int **students, int size, int *colSize, int **mentors, i
 
     return dp[mask - 1][mask - 1];
 }
+#else
+int maxCompatibilitySum(int **students, int size, int *colSize, int **mentors, int mentorsSize, int *mentorsColSize) {
+    int grade[size][size], mask = 0x1 << size, dp[mask];
+
+    memset(dp, 0, sizeof(dp));
+    memset(grade, 0, sizeof(grade));
+    for (int i = 0; i < size; ++i) {
+        for (int j = 0; j < size; ++j) {
+            for (int k = 0; k < *colSize; ++k) {
+                grade[i][j] += students[i][k] == mentors[j][k];
+            }
+        }
+    }
+
+    for (int i = 0; i < mask; ++i) {
+        int c = __builtin_popcount(i);
+        for (int j = 0; j < size; ++j) {
+            if ((i & 0x1 << j) == 0) continue;
+            dp[i] = fmax(dp[i], dp[0x1 << j ^ i] + grade[c - 1][j]);
+        }
+    }
+
+    return dp[mask - 1];
+}
+#endif
