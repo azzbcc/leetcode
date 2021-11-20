@@ -38,6 +38,7 @@
 //
 // Related Topics 数组 哈希表 排序 👍 227 👎 0
 
+#if 0
 int cmp(const void *a, const void *b) {
     int pa = *( int * )a, pb = *( int * )b;
     return pa >= pb ? pa != pb : -1;
@@ -60,3 +61,40 @@ int findLHS(int *nums, int size) {
 
     return ans;
 }
+#else
+typedef struct {
+    int key, count;
+    UT_hash_handle hh;
+} * hash_t;
+hash_t hash_find(hash_t t, int key) {
+    hash_t cur;
+    HASH_FIND_INT(t, &key, cur);
+    return cur;
+}
+void hash_record(hash_t *t, int key) {
+    hash_t cur = hash_find(*t, key);
+    if (!cur) {
+        cur = malloc(sizeof(*cur)), cur->key = key, cur->count = 0;
+        HASH_ADD_INT(*t, key, cur);
+    }
+    cur->count += 1;
+}
+int findLHS(int *nums, int size) {
+    int ans     = 0;
+    hash_t hash = NULL, cur, next;
+
+    for (int i = 0; i < size; ++i) {
+        hash_record(&hash, nums[i]);
+    }
+    HASH_ITER(hh, hash, cur, next) {
+        hash_t tmp = hash_find(hash, cur->key + 1);
+        if (!tmp) continue;
+        ans = fmax(ans, cur->count + tmp->count);
+    }
+    HASH_ITER(hh, hash, cur, next) {
+        HASH_DEL(hash, cur);
+        free(cur);
+    }
+    return ans;
+}
+#endif
