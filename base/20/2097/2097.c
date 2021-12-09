@@ -57,17 +57,26 @@
 //
 // 👍 16 👎 0
 
-#define MAXN 100001
+#define DYNAMIC_ARRAY_SIZE 128
+
 typedef struct {
-    int len;
-    int data[MAXN];
-} array_t;
-void array_append(array_t *a, int val) {
-    a->data[a->len++] = val;
+    int size, capacity;
+    int *data;
+} dynamic_array_t;
+void dynamic_array_init(dynamic_array_t *da) {
+    da->size = 0, da->capacity = DYNAMIC_ARRAY_SIZE;
+    da->data = malloc(da->capacity * sizeof(int));
+}
+void dynamic_array_append(dynamic_array_t *da, int val) {
+    if (da->size == da->capacity) da->data = realloc(da->data, (da->capacity += DYNAMIC_ARRAY_SIZE) * sizeof(int));
+    da->data[da->size++] = val;
+}
+void dynamic_array_destroy(dynamic_array_t *da) {
+    free(da->data);
 }
 typedef struct {
     int key, in;
-    array_t edge[1];
+    dynamic_array_t edge[1];
     UT_hash_handle hh;
 } * hash_t;
 hash_t hash_find(hash_t t, int key) {
@@ -78,61 +87,51 @@ hash_t hash_find(hash_t t, int key) {
 void pair_record(hash_t *t, int from, int to, int index) {
     hash_t find;
     if (!(find = hash_find(*t, from))) {
-        find = malloc(sizeof(*find)), find->key = from, find->in = find->edge->len = 0;
+        find = malloc(sizeof(*find)), find->key = from, find->in = 0;
+        dynamic_array_init(find->edge);
         HASH_ADD_INT(*t, key, find);
     }
-    array_append(find->edge, index);
+    dynamic_array_append(find->edge, index);
     if (!(find = hash_find(*t, to))) {
-        find = malloc(sizeof(*find)), find->key = to, find->in = find->edge->len = 0;
+        find = malloc(sizeof(*find)), find->key = to, find->in = 0;
+        dynamic_array_init(find->edge);
         HASH_ADD_INT(*t, key, find);
     }
     find->in += 1;
 }
-void dfs(int **edge, hash_t t, int now, bool visit[], array_t *res) {
+void dfs(int **edge, hash_t t, int now, dynamic_array_t *res) {
     hash_t find = hash_find(t, now);
     if (!find) return;
 
-    for (int i = 0; i < find->edge->len; ++i) {
-        if (visit[find->edge->data[i]]) continue;
-        visit[find->edge->data[i]] = true;
-        dfs(edge, t, edge[find->edge->data[i]][1], visit, res);
+    for (int pos; find->edge->size;) {
+        pos = find->edge->data[--find->edge->size];
+        dfs(edge, t, edge[pos][1], res);
     }
-    array_append(res, now);
+    dynamic_array_append(res, now);
 }
 int **validArrangement(int **pairs, int size, int *colSize, int *returnSize, int **returnColumnSizes) {
     hash_t hash = NULL, cur, next;
     for (int i = 0; i < size; ++i) {
         pair_record(&hash, pairs[i][0], pairs[i][1], i);
     }
-    HASH_ITER(hh, hash, cur, next) {
-        printf("%2d, %d, %d: ", cur->key, cur->in, cur->edge->len);
-        for (int i = 0; i < cur->edge->len; ++i) {
-            printf("(%d, %d), ", pairs[cur->edge->data[i]][0], pairs[cur->edge->data[i]][1]);
-        }
-        printf("\n");
-    }
 
     int start = hash->key;
     HASH_ITER(hh, hash, cur, next) {
-        if (cur->in + 1 == cur->edge->len) {
+        if (cur->in + 1 == cur->edge->size) {
             start = cur->key;
             break;
         }
     }
 
-    bool visit[size];
-    array_t res[1] = { 0 };
-    memset(visit, false, sizeof(visit));
-    dfs(pairs, hash, start, visit, res);
+    dynamic_array_t res[1];
+    dynamic_array_init(res);
+    dfs(pairs, hash, start, res);
 
     HASH_ITER(hh, hash, cur, next) {
         HASH_DEL(hash, cur);
+        dynamic_array_destroy(cur->edge);
         free(cur);
     }
-    for (int i = size; i >= 0; --i) {
-        printf("%d%s", res->data[i], i ? ", " : "\n");
-    }
-    printf("\n");
 
     int **ans          = malloc((*returnSize = size) * sizeof(int *));
     *returnColumnSizes = malloc(size * sizeof(int));
@@ -141,6 +140,7 @@ int **validArrangement(int **pairs, int size, int *colSize, int *returnSize, int
         ans[i]    = malloc(((*returnColumnSizes)[i] = 2) * sizeof(int));
         ans[i][0] = res->data[size - i], ans[i][1] = res->data[size - i - 1];
     }
+    dynamic_array_destroy(res);
 
     return ans;
 }
