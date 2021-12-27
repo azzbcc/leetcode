@@ -51,6 +51,7 @@
 //
 // Related Topics 数组 双指针 二分查找 排序 👍 114 👎 0
 
+#if 0
 int cmp(const void *a, const void *b) {
     return *( int * )a - *( int * )b;
 }
@@ -65,3 +66,18 @@ int numFriendRequests(int *ages, int size) {
     }
     return ans;
 }
+#else
+#define MAXN 120
+int numFriendRequests(int *ages, int size) {
+    int ans = 0;
+    int count[MAXN + 1] = { 0 }, prefix[MAXN + 1] = {0};
+    for (int i = 0; i < size; count[ages[i++]]++) {}
+    for (int i = 1; i <= MAXN; ++i) {
+        prefix[i] = prefix[i - 1] + count[i];
+    }
+    for (int x = 15; x <= MAXN; ++x) {
+        ans += count[x] * (prefix[x] - prefix[x / 2 + 7] - 1);
+    }
+    return ans;
+}
+#endif
