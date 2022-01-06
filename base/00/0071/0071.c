@@ -58,41 +58,25 @@
 //
 // Related Topics 栈 字符串 👍 379 👎 0
 
-#if 0
+#if 1
 #define MAXN 3000
 typedef enum { ST_SLASH, ST_DIR, ST_DOT, ST_DOTS } status_e;
 status_e status_next(status_e now, int ch) {
-    switch (now) {
-    case ST_SLASH:
-        if (ch == '/') return ST_SLASH;
-        if (ch == '.') return ST_DOT;
-        return ST_DIR;
-    case ST_DIR:
-        return ch == '/' ? ST_SLASH : ST_DIR;
-    case ST_DOT:
-        if (ch == '.') return ST_DOTS;
-        if (ch == '/') return ST_SLASH;
-        return ST_DIR;
-    case ST_DOTS:
-        return ch == '/' ? ST_SLASH : ST_DIR;
-    }
+    if (ch == '\0' || ch == '/') return ST_SLASH;
+    if (now == ST_SLASH && ch == '.') return ST_DOT;
+    if (now == ST_DOT && ch == '.') return ST_DOTS;
     return ST_DIR;
 }
 char *simplifyPath(char *path) {
     int top = -1, stack[MAXN], cur = 0, len = strlen(path);
 
     status_e prev = ST_DIR, now;
-    for (int i = 0; i < len; ++i, prev = now) {
+    for (int i = 0; i <= len; ++i, prev = now) {
         if (now = status_next(prev, path[i]), now == ST_SLASH) {
             if (prev == ST_DIR) ++top;
             if (prev == ST_DOTS && top > 0) --top;
             stack[top] = i;
         }
-    }
-    if (prev != ST_SLASH) {
-        if (prev == ST_DIR) ++top;
-        if (prev == ST_DOTS && top > 0) --top;
-        stack[top] = len;
     }
     if (top > 0) --top;
     for (int i = 0; i <= top; ++i) {
