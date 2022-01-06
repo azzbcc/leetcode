@@ -58,6 +58,7 @@
 //
 // Related Topics 栈 字符串 👍 379 👎 0
 
+#if 0
 #define MAXN 3000
 typedef enum { ST_SLASH, ST_DIR, ST_DOT, ST_DOTS } status_e;
 status_e status_next(status_e now, int ch) {
@@ -102,3 +103,37 @@ char *simplifyPath(char *path) {
 
     return path;
 }
+#else
+#define MAXN 3000
+char *simplifyPath(char *path) {
+    char *str[MAXN];
+    int cur = 0, len = 0;
+
+    memset(str, 0, sizeof(str));
+    for (int i = 0; path[i]; ++i) {
+        if (path[i] == '/') {
+            if (str[len]) len++;
+            path[i] = '\0';
+        } else if (str[len] == NULL) {
+            str[len] = path + i;
+        }
+    }
+    if (str[len]) len++;
+    for (int i = 0; i < len; ++i) {
+        if (!strcmp(str[i], "..")) {
+            if (cur) cur--;
+        } else if (strcmp(str[i], ".")) {
+            str[cur++] = str[i];
+        }
+    }
+    len = 0;
+    for (int i = 0; i < cur; ++i) {
+        path[len++] = '/';
+        for (int j = 0; str[i][j]; path[len++] = str[i][j++]) {}
+    }
+    if (!len) path[len++] = '/';
+    path[len] = '\0';
+
+    return path;
+}
+#endif
