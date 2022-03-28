@@ -33,6 +33,7 @@
 //
 // Related Topics 位运算 👍 143 👎 0
 
+#if 0
 bool hasAlternatingBits(int n) {
     if (n == 1 || n == 2) return true;
     for (uint32_t i = 0, cur = 2; cur < n && i < 15; ++i) {
@@ -43,3 +44,9 @@ bool hasAlternatingBits(int n) {
     }
     return false;
 }
+#else
+bool hasAlternatingBits(int n) {
+    long tmp = n ^ (n >> 1);
+    return (tmp & (tmp + 1)) == 0;
+}
+#endif
