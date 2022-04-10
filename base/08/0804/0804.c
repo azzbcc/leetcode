@@ -38,7 +38,8 @@
 // Related Topics 字符串
 // 👍 130 👎 0
 
-#define WIDTH 2
+#if 0
+#define WIDTH     2
 
 typedef struct trie_node_t *trie_t;
 struct trie_node_t {
@@ -97,3 +98,30 @@ int uniqueMorseRepresentations(char **words, int wordsSize) {
 
     return ans;
 }
+#else
+#define MAXN 50
+typedef struct {
+    char str[MAXN];
+    UT_hash_handle hh;
+} * hash_t, node_t;
+void morse_dump(char *str, char *out) {
+    static char *dict[] = { ".-",   "-...", "-.-.", "-..",  ".",   "..-.", "--.",  "....", "..",
+                            ".---", "-.-",  ".-..", "--",   "-.",  "---",  ".--.", "--.-", ".-.",
+                            "...",  "-",    "..-",  "...-", ".--", "-..-", "-.--", "--.." };
+    for (char *p = out; *str; ++str) {
+        p += sprintf(p, "%s", dict[*str - 'a']);
+    }
+}
+int uniqueMorseRepresentations(char **words, int size) {
+    node_t nodes[size];
+    hash_t hash = NULL, cur;
+    for (int i = 0; i < size; ++i) {
+        morse_dump(words[i], nodes[i].str);
+        HASH_FIND_STR(hash, nodes[i].str, cur);
+        if (!cur) HASH_ADD_STR(hash, str, &nodes[i]);
+    }
+    int ans = HASH_COUNT(hash);
+    HASH_CLEAR(hh, hash);
+    return ans;
+}
+#endif
