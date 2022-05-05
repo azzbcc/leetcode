@@ -27,6 +27,7 @@
 //
 // Related Topics 数组 滑动窗口 👍 450 👎 0
 
+#if 0
 int numSubarrayProductLessThanK(int *nums, int size, int k) {
     int ans = 0;
     for (int l = 0, r = 0, mul = 1; l < size; ++l) {
@@ -40,3 +41,13 @@ int numSubarrayProductLessThanK(int *nums, int size, int k) {
     }
     return ans;
 }
+#else
+int numSubarrayProductLessThanK(int *nums, int size, int k) {
+    int ans = 0;
+    for (int l = 0, r = 0, mul = 1; r < size; ++r) {
+        for (mul *= nums[r]; mul >= k && l <= r; mul /= nums[l++]) {}
+        ans += r - l + 1;
+    }
+    return ans;
+}
+#endif
