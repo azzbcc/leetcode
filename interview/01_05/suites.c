@@ -23,7 +23,14 @@ START_TEST(test_official_2) {
     ck_assert_int_eq(ans, target);
 }
 
+START_TEST(test_own) {
+    char *first = "azbzc", *second = "abcd";
+    bool target = false, ans = oneEditAway(first, second);
+    ck_assert_int_eq(ans, target);
+}
+
 void tcase_complete(TCase *t) {
+    tcase_add_test(t, test_own);
     tcase_add_test(t, test_official_1);
     tcase_add_test(t, test_official_2);
 }

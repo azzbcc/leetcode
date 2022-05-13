@@ -24,6 +24,7 @@ bool oneEditDiff(char *sa, int la, char *sb, int lb) {
     if (la != lb + 1) return false;
     for (int i = 0, j = 0; i < la; ++i, ++j) {
         if (sa[i] == sb[j]) continue;
+        if (i == j + 1) return false;
         if (sa[++i] != sb[j]) return false;
     }
     return true;
