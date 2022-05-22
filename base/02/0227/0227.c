@@ -49,24 +49,24 @@
 typedef struct {
     int top, size;
     int base[];
-} stack_t;
-stack_t *stack_create() {
-    stack_t *stack = malloc(sizeof(stack_t) + INIT_SIZE * sizeof(int));
+} sstack_t;
+sstack_t *stack_create() {
+    sstack_t *stack = malloc(sizeof(sstack_t) + INIT_SIZE * sizeof(int));
     stack->top = -1, stack->size = INIT_SIZE;
     return stack;
 }
-void stack_push(stack_t **stack, int val) {
-    stack_t *s = *stack;
+void stack_push(sstack_t **stack, int val) {
+    sstack_t *s = *stack;
     if (++s->top >= s->size) *stack = s = realloc(s, sizeof(*s) + (s->size += INCR_SIZE) * sizeof(void *));
     s->base[s->top] = val;
 }
-int stack_peak(stack_t *s) {
+int stack_peak(sstack_t *s) {
     return s->base[s->top];
 }
-int stack_pop(stack_t *s) {
+int stack_pop(sstack_t *s) {
     return s->base[s->top--];
 }
-void stack_destroy(stack_t *s) {
+void stack_destroy(sstack_t *s) {
     free(s);
 }
 
@@ -88,7 +88,7 @@ int operator(int a, int op, int b) {
     return -1;
 }
 int calculate(char *s) {
-    stack_t *nums = stack_create(), *oper = stack_create();
+    sstack_t *nums = stack_create(), *oper = stack_create();
 
     stack_push(&oper, '#');
     for (int i = 0, num, except = 1; !i || s[i - 1]; ++i) {

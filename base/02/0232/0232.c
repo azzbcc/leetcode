@@ -68,25 +68,25 @@
 typedef struct {
     int top;
     int data[MAXN];
-} stack_t;
-void stack_init(stack_t *s) {
+} sstack_t;
+void stack_init(sstack_t *s) {
     s->top = -1;
 }
-void stack_push(stack_t *s, int val) {
+void stack_push(sstack_t *s, int val) {
     s->data[++s->top] = val;
 }
-int stack_pop(stack_t *s) {
+int stack_pop(sstack_t *s) {
     return s->data[s->top--];
 }
-int stack_peek(stack_t *s) {
+int stack_peek(sstack_t *s) {
     return s->data[s->top];
 }
-bool stack_empty(stack_t *s) {
+bool stack_empty(sstack_t *s) {
     return s->top == -1;
 }
 
 typedef struct {
-    stack_t in[1], out[1];
+    sstack_t in[1], out[1];
 } MyQueue;
 
 MyQueue *myQueueCreate() {

@@ -53,7 +53,7 @@
 typedef struct {
     int top;
     long data[MAXM];
-} stack_t;
+} sstack_t;
 int help_len;
 char *help[MAXN];
 long operator(long a, char op, long b) {
@@ -62,19 +62,19 @@ long operator(long a, char op, long b) {
     if (op == '*') return a * b;
     return -1;
 }
-void stack_simplify(stack_t *s) {
+void stack_simplify(sstack_t *s) {
     for (; s->top; s->top -= 2) {
         s->data[s->top - 2] = operator(s->data[s->top - 2], ( char )s->data[s->top - 1], s->data[s->top]);
     }
 }
-void dfs(char *str, int target, stack_t *s, char res[], int pos) {
+void dfs(char *str, int target, sstack_t *s, char res[], int pos) {
     if (!*str) {
         res[pos] = '\0';
         stack_simplify(s);
         if (s->data[0] == target) help[help_len++] = strdup(res);
         return;
     }
-    stack_t ss[4] = { *s, *s, *s, *s }, *sp = &ss[0];
+    sstack_t ss[4] = { *s, *s, *s, *s }, *sp = &ss[0];
 
     if (sp->data[sp->top]) {
         res[pos] = *str, sp->data[sp->top] = sp->data[sp->top] * 10 + *str - '0';
@@ -102,7 +102,7 @@ void dfs(char *str, int target, stack_t *s, char res[], int pos) {
 }
 char **addOperators(char *num, int target, int *returnSize) {
     char res[MAXM]   = { *num };
-    stack_t stack[1] = { { 0, { *num++ - '0' } } };
+    sstack_t stack[1] = { { 0, { *num++ - '0' } } };
 
     help_len = 0;
     dfs(num, target, stack, res, 1);

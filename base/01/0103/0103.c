@@ -30,30 +30,30 @@
 typedef struct {
     int top, size;
     void *base[];
-} * stack_t;
-stack_t stack_create() {
-    stack_t stack = malloc(sizeof(*stack) + INIT_SIZE * sizeof(void *));
+} * sstack_t;
+sstack_t stack_create() {
+    sstack_t stack = malloc(sizeof(*stack) + INIT_SIZE * sizeof(void *));
     stack->top = -1, stack->size = INIT_SIZE;
     return stack;
 }
-int stack_size(stack_t s) {
+int stack_size(sstack_t s) {
     return s->top + 1;
 }
-void stack_push(stack_t *stack, void *val) {
-    stack_t s = *stack;
+void stack_push(sstack_t *stack, void *val) {
+    sstack_t s = *stack;
     if (++s->top >= s->size) *stack = s = realloc(s, sizeof(*s) + (s->size += INCR_SIZE) * sizeof(void *));
     s->base[s->top] = val;
 }
-void *stack_pop(stack_t s) {
+void *stack_pop(sstack_t s) {
     assert(s->top >= 0);
     return s->base[s->top--];
 }
-void stack_free(stack_t s) {
+void stack_free(sstack_t s) {
     free(s);
 }
 int **zigzagLevelOrder(struct TreeNode *root, int *returnSize, int **returnColumnSizes) {
     int len = 0, **ans = malloc(MAXN * sizeof(int *));
-    stack_t s[2] = { stack_create(), stack_create() };
+    sstack_t s[2] = { stack_create(), stack_create() };
 
     if (root) stack_push(&s[0], root);
     *returnColumnSizes = malloc(MAXN * sizeof(int));

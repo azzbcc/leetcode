@@ -36,10 +36,10 @@ typedef struct {
     void **base;
     int top;
     int size;
-} * stack_t;
+} * sstack_t;
 
-stack_t stack_create() {
-    stack_t stack = calloc(1, sizeof(*stack));
+sstack_t stack_create() {
+    sstack_t stack = calloc(1, sizeof(*stack));
 
     stack->top  = -1;
     stack->size = INIT_SIZE;
@@ -48,27 +48,27 @@ stack_t stack_create() {
     return stack;
 }
 
-bool stack_empty(stack_t s) {
+bool stack_empty(sstack_t s) {
     return s->top < 0;
 }
 
-void stack_push(stack_t s, void *val) {
+void stack_push(sstack_t s, void *val) {
     if (s->top == s->size) s->base = realloc(s->base, (s->size += INCR_SIZE) * sizeof(void *));
     s->base[++s->top] = val;
 }
 
-void *stack_pop(stack_t s) {
+void *stack_pop(sstack_t s) {
     assert(s->top >= 0);
     return s->base[s->top--];
 }
 
-void stack_free(stack_t s) {
+void stack_free(sstack_t s) {
     free(s->base);
     free(s);
 }
 
 typedef struct {
-    stack_t stack;
+    sstack_t stack;
 } BSTIterator;
 
 BSTIterator *bSTIteratorCreate(struct TreeNode *root) {
