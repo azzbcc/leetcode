@@ -47,11 +47,18 @@ if (ENABLE_MEMORY_CHECK)
 endif (ENABLE_MEMORY_CHECK)
 
 # 公共头文件夹
-include_directories(common)
+include_directories(
+    common
+    ${CHECK_INCLUDE_DIRS}
+)
+
+link_directories(
+    ${CHECK_LIBRARY_DIRS}
+)
 
 include(CTest)
 
-add_library(main SHARED ${CMAKE_CURRENT_SOURCE_DIR}/main.c)
+add_library(main ${CMAKE_CURRENT_SOURCE_DIR}/main.c)
 list(APPEND COMMON_LIBRARIES main)
 
 dir_programs(demo "")
