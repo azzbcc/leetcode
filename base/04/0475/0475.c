@@ -50,9 +50,9 @@ int findRadius(int *houses, int housesSize, int *heaters, int heatersSize) {
 
     int ans = 0;
     for (int i = 0, j = 0, a; i < housesSize && j < heatersSize; ++i) {
-        a = fabs(houses[i] - heaters[j]);
+        a = abs(houses[i] - heaters[j]);
         for (int b; j + 1 < heatersSize; ++j, a = b) {
-            b = fabs(houses[i] - heaters[j + 1]);
+            b = abs(houses[i] - heaters[j + 1]);
             if (a < b) break;
         }
         ans = fmax(ans, a);

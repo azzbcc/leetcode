@@ -57,7 +57,7 @@ int findMinMoves(int *machines, int size) {
     for (int i = 0, tmp = 0; i < size; ++i) {
         int num = machines[i] - avg;
         tmp += num;
-        ans = fmax(ans, fmax(fabs(tmp), num));
+        ans = fmax(ans, fmax(abs(tmp), num));
     }
     return ans;
 }
