@@ -32,9 +32,10 @@
 // Related Topics 树 数学 二叉树
 // 👍 114 👎 0
 
+#define INT_WIDTH sizeof(int) * 8
 #if 0
 int *pathInZigZagTree(int label, int *returnSize) {
-    int width = __INT_WIDTH__ - __builtin_clz(label), bits[width];
+    int width = INT_WIDTH - __builtin_clz(label), bits[width];
     int *ans  = malloc((*returnSize = width) * sizeof(int));
 
     for (int n = label, i = width; n; bits[--i] = n & 1, n >>= 1) {}
@@ -51,7 +52,7 @@ int *pathInZigZagTree(int label, int *returnSize) {
 }
 #else
 int *pathInZigZagTree(int label, int *returnSize) {
-    int width = __INT_WIDTH__ - __builtin_clz(label);
+    int width = INT_WIDTH - __builtin_clz(label);
     int *ans  = malloc((*returnSize = width) * sizeof(int));
 
     for (int i = width - 1, mask = 1 << i, flag = 0; i >= 0; --i, mask >>= 1, label >>= 1, flag = 1 - flag) {
