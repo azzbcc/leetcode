@@ -18,7 +18,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#ifdef __APPLE__
+#include <uthash/uthash.h>
+#else
 #include <uthash.h>
+#endif
 
 #define LEN(array) (sizeof(array) / sizeof(array[0]))
 

@@ -49,9 +49,9 @@ typedef struct {
 } hash_t;
 typedef struct {
     int top, data[MAXN];
-} stack_t;
+} sstack_t;
 int *nextGreaterElement(int *nums1, int nums1Size, int *nums2, int nums2Size, int *returnSize) {
-    stack_t stack[1] = { -1 };
+    sstack_t stack[1] = { -1 };
     hash_t *cur, *hash = NULL, nodes[nums2Size];
     int *ans = malloc((*returnSize = nums1Size) * sizeof(int));
 

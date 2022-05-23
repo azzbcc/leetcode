@@ -62,7 +62,7 @@
 // 👍 14 👎 0
 
 char *getHappyString(int n, int k) {
-    uint16_t help       = 0x1U << n - 1;
+    uint16_t help       = 0x1U << (n - 1);
     static char str[11] = { '\0' };
 
     if (3 * help < k--) {

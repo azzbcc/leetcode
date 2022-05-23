@@ -33,10 +33,12 @@ static void releaseOxygen() {
 static void *othread(void *ptr) {
     printf("%6lu: thread-%ld would print 'O'\n", getMicrotime(), ( long )pthread_self());
     oxygen(ptr);
+    return NULL;
 }
 static void *hthread(void *ptr) {
     printf("%6lu: thread-%ld would print 'H'\n", getMicrotime(), ( long )pthread_self());
     hydrogen(ptr);
+    return NULL;
 }
 
 static void run(const char *str) {

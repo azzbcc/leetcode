@@ -62,7 +62,7 @@ int findTargetSumWays(int *nums, int size, int target) {
 
     hash_record(&h_new, 0, 1);
     for (int i = size - 1, sum = 0; i >= 0; --i) {
-        suffix[i] = sum += fabs(nums[i]);
+        suffix[i] = sum += abs(nums[i]);
     }
     for (int i = 0; i < size; ++i) {
         h_old = h_new, h_new = NULL;

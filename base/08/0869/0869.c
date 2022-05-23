@@ -65,9 +65,10 @@ void init() {
     }
 }
 bool reorderedPowerOf2(int n) {
-    dict_t d = { sprintf(d.data, "%d", n) };
+    dict_t d = { 0 };
 
     init();
+    d.len = sprintf(d.data, "%d", n);
     qsort(d.data, d.len, sizeof(char), cmp);
 
     for (int i = 0; i < MAXN; ++i) {
