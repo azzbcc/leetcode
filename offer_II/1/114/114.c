@@ -54,13 +54,12 @@
 #define MAXN  100
 #define WIDTH 26
 typedef enum {
-    NONE,
+    NONE = 0,
     VISITING,
-    VISITED,
+    VISITED = -1,
 } state_t;
 typedef struct {
     char from, to;
-    bool deleted;
 } pair_t;
 typedef struct {
     int size;
@@ -73,39 +72,31 @@ pair_t pair_get(char *a, char *b) {
     }
     return (pair_t) { '\0' };
 }
-bool dfs(char cur, bool exists[], state_t state[], node_t *node, char *ans, int *index) {
-    if (state[cur - 'a']) return false;
-    state[cur - 'a'] = VISITING;
+bool dfs(int cur, state_t state[], node_t *node, char *ans, int *index) {
+    if (state[cur]) return state[cur] == VISITED;
+    state[cur] = VISITING;
     for (int i = 0; i < node->size; ++i) {
-        if (node->pairs[i].deleted) continue;
-        if (node->pairs[i].from != cur) continue;
-        if (!dfs(node->pairs[i].to, exists, state, node, ans, index)) return false;
+        if (node->pairs[i].from != 'a' + cur) continue;
+        if (!dfs(node->pairs[i].to - 'a', state, node, ans, index)) return false;
     }
-
-    state[cur - 'a'] = VISITED, exists[cur - 'a'] = false, ans[--*index] = cur;
-    for (int i = 0; i < node->size; ++i) {
-        if (node->pairs[i].deleted) continue;
-        if (node->pairs[i].from == cur || node->pairs[i].to == cur) node->pairs[i].deleted = true;
-    }
+    state[cur] = VISITED, ans[--*index] = 'a' + cur;
     return true;
 }
 char *alienOrder(char **words, int size) {
     static char str[WIDTH + 1] = { '\0' };
-    node_t node[1]             = { 0 };
-    state_t state[WIDTH]       = { NONE };
-    bool exists[WIDTH]         = { false };
-    for (int i = 0; words[0][i]; exists[words[0][i++] - 'a'] = true) {}
+    state_t state[WIDTH];
+    node_t node[1] = { 0 };
+    memset(state, VISITED, sizeof(state));
+    for (int i = 0; words[0][i]; state[words[0][i++] - 'a'] = NONE) {}
     for (int i = 1; i < size; ++i) {
-        for (int j = 0; words[i][j]; exists[words[i][j++] - 'a'] = true) {}
+        for (int j = 0; words[i][j]; state[words[i][j++] - 'a'] = NONE) {}
         node->pairs[node->size] = pair_get(words[i - 1], words[i]);
-        if (!node->pairs[node->size].to && node->pairs[node->size].from) return "";
         if (node->pairs[node->size].from) node->size++;
     }
 
     int index = WIDTH;
     for (int i = 0; i < WIDTH; ++i) {
-        if (!exists[i]) continue;
-        if (!dfs('a' + i, exists, state, node, str, &index)) return "";
+        if (!dfs(i, state, node, str, &index)) return "";
     }
     return &str[index];
 }
