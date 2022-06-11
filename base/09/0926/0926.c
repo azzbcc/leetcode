@@ -40,6 +40,7 @@
 //
 // Related Topics 字符串 动态规划 👍 219 👎 0
 
+#if 0
 int minFlipsMonoIncr(char *s) {
     int len = 0, c = 0, cur = 0, ans;
     for (; s[len]; c += s[len++] == '1') {}
@@ -51,3 +52,12 @@ int minFlipsMonoIncr(char *s) {
     }
     return ans;
 }
+#else
+int minFlipsMonoIncr(char *s) {
+    int dp[2] = { 0 };
+    for (; *s; dp[*s++ == '0']++) {
+        dp[1] = fmin(dp[0], dp[1]);
+    }
+    return fmin(dp[0], dp[1]);
+}
+#endif
