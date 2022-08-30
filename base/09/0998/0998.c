@@ -59,14 +59,14 @@
 //
 // Related Topics 树 二叉树 👍 106 👎 0
 
-struct TreeNode *tree_node_new(int val, struct TreeNode *l, struct TreeNode *r) {
+struct TreeNode *tree_node_new(int val, struct TreeNode *left) {
     struct TreeNode *ans = malloc(sizeof(*ans));
-    ans->val = val, ans->left = l, ans->right = r;
+    ans->val = val, ans->left = left, ans->right = NULL;
     return ans;
 }
 struct TreeNode *insertIntoMaxTree(struct TreeNode *root, int val) {
-    if (!root) return tree_node_new(val, NULL, NULL);
-    if (val > root->val) return tree_node_new(val, root, NULL);
+    if (!root) return tree_node_new(val, NULL);
+    if (val > root->val) return tree_node_new(val, root);
     root->right = insertIntoMaxTree(root->right, val);
     return root;
 }
