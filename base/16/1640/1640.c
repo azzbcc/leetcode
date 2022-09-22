@@ -43,6 +43,7 @@
 //
 // Related Topics 数组 哈希表 👍 84 👎 0
 
+#if 0
 #define check_end(...)                                                                                                 \
     if (__VA_ARGS__) {                                                                                                 \
         ans = false;                                                                                                   \
@@ -74,3 +75,27 @@ end:
     HASH_CLEAR(hh, hash);
     return ans;
 }
+#else
+typedef struct {
+    int key, len, *data;
+    UT_hash_handle hh;
+} hash_t;
+bool canFormArray(int *arr, int arrSize, int **pieces, int size, int *colSize) {
+    bool ans = true;
+    hash_t nodes[arrSize], *hash = NULL, *cur;
+    for (int i = 0; i < size; i++) {
+        nodes[i] = (hash_t) { pieces[i][0], colSize[i], pieces[i] };
+        HASH_ADD_INT(hash, key, &nodes[i]);
+    }
+    for (int i = 0; ans && i < arrSize;) {
+        HASH_FIND_INT(hash, &arr[i], cur);
+        if (!cur || i + cur->len > arrSize) ans = false;
+        for (int j = 1; ans && j < cur->len; j++) {
+            ans = arr[i + j] == cur->data[j];
+        }
+        if (ans) i += cur->len;
+    }
+    HASH_CLEAR(hh, hash);
+    return ans;
+}
+#endif
