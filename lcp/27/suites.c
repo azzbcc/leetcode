@@ -1963,6 +1963,4 @@ void tcase_complete(TCase* t) {
     tcase_add_test(t, test_tle);
     tcase_add_test(t, test_official_1);
     tcase_add_test(t, test_official_2);
-
-    set_execute_timeout(t, 0.1);
 }

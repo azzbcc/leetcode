@@ -48,6 +48,7 @@
 // Related Topics 栈
 // 👍 132 👎 0
 
+#if 0
 static char str[10001] = { '\0' };
 char *removeOuterParentheses(char *s) {
     int len     = 0;
@@ -69,3 +70,17 @@ char *removeOuterParentheses(char *s) {
 
     return str;
 }
+#else
+#define MAXN 10000
+static char str[MAXN + 1] = { '\0' };
+char *removeOuterParentheses(char *s) {
+    char *ps = str;
+    for (int c = 0; *s; ++s) {
+        if (*s == ')') c -= 1;
+        if (c) *ps++ = *s;
+        if (*s == '(') c += 1;
+    }
+    *ps = '\0';
+    return str;
+}
+#endif
