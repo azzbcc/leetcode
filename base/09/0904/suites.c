@@ -35,14 +35,21 @@ START_TEST(test_official_4) {
     ck_assert_int_eq(ans, target);
 }
 
-START_TEST(test_failed) {
+START_TEST(test_failed_1) {
     int fruits[] = { 1, 0, 1, 4, 1, 4, 1, 2, 3 };
     int target = 5, ans = totalFruit(fruits, LEN(fruits));
     ck_assert_int_eq(ans, target);
 }
 
+START_TEST(test_failed_2) {
+    int fruits[] = { 0 };
+    int target = 1, ans = totalFruit(fruits, LEN(fruits));
+    ck_assert_int_eq(ans, target);
+}
+
 void tcase_complete(TCase *t) {
-    tcase_add_test(t, test_failed);
+    tcase_add_test(t, test_failed_2);
+    tcase_add_test(t, test_failed_1);
     tcase_add_test(t, test_official_1);
     tcase_add_test(t, test_official_2);
     tcase_add_test(t, test_official_3);

@@ -59,6 +59,7 @@
 //
 // Related Topics 数组 哈希表 滑动窗口 👍 317 👎 0
 
+#if 0
 typedef struct {
     int key, count;
     UT_hash_handle hh;
@@ -93,3 +94,29 @@ int totalFruit(int *fruits, int size) {
     }
     return ans;
 }
+#else
+int totalFruit(int *fruits, int size) {
+    int ans = 0;
+    struct {
+        int count;
+        struct {
+            int key, last;
+        } dict[2];
+    } t = { .count = 0 };
+    for (int i = 0, last = -1; i < size; ++i) {
+        int pos = -1;
+        if (t.count > 0 && fruits[i] == t.dict[0].key) pos = 0;
+        if (t.count > 1 && fruits[i] == t.dict[1].key) pos = 1;
+        if (pos != -1) {
+            t.dict[pos].last = i;
+        } else if (t.count != 2) {
+            t.dict[t.count].key = fruits[i], t.dict[t.count].last = i, t.count++;
+        } else {
+            pos  = t.dict[1].last < t.dict[0].last;
+            last = t.dict[pos].last, t.dict[pos].key = fruits[i], t.dict[pos].last = i;
+        }
+        ans = fmax(ans, i - last);
+    }
+    return ans;
+}
+#endif
