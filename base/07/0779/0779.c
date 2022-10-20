@@ -52,10 +52,14 @@ int kthGrammar(int n, int k) {
     for (--k; --n >= 0; ans ^= k & 1, k >>= 1) {}
     return ans;
 }
-#else
+#elif 0
 int kthGrammar(int n, int k) {
     int ans = 0;
     for (--k; k; ans ^= 1, k &= k - 1) {}
     return ans;
+}
+#else
+int kthGrammar(int n, int k) {
+    return __builtin_popcount(k - 1) & 1;
 }
 #endif
