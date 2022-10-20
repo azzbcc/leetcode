@@ -46,8 +46,16 @@
 //
 // Related Topics 位运算 递归 数学 👍 214 👎 0
 
+#if 0
 int kthGrammar(int n, int k) {
     int ans = 0;
     for (--k; --n >= 0; ans ^= k & 1, k >>= 1) {}
     return ans;
 }
+#else
+int kthGrammar(int n, int k) {
+    int ans = 0;
+    for (--k; k; ans ^= 1, k &= k - 1) {}
+    return ans;
+}
+#endif
