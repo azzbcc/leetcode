@@ -46,6 +46,10 @@ if (ENABLE_MEMORY_CHECK)
     add_definitions(-DENABLE_MEMORY_CHECK)
 endif (ENABLE_MEMORY_CHECK)
 
+if (APPLE)
+    include_directories(/usr/local/include)
+endif (APPLE)
+
 # 公共头文件夹
 include_directories(
     common
