@@ -43,6 +43,7 @@
 //
 // Related Topics 贪心 数组 排序 👍 80 👎 0
 
+#if 0
 void swap(int **a, int **b) {
     for (int *tmp = *a; tmp != *b; *a = *b, *b = tmp) {}
 }
@@ -66,3 +67,16 @@ int maximumUnits(int **boxTypes, int size, int *colSize, int truckSize) {
     }
     return ans;
 }
+#else
+#define MAXN 1000
+int maximumUnits(int **boxTypes, int size, int *colSize, int truckSize) {
+    int st[MAXN + 1] = { 0 }, ans = 0;
+    for (int i = 0; i < size; ++i) {
+        st[boxTypes[i][1]] += boxTypes[i][0];
+    }
+    for (int i = MAXN, c; i >= 0 && truckSize; --i, truckSize -= c) {
+        c = fmin(truckSize, st[i]), ans += c * i;
+    }
+    return ans;
+}
+#endif
