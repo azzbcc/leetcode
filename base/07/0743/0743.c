@@ -50,7 +50,7 @@
 #define MAXM 6000
 
 typedef struct {
-    int from, to, weight;
+    int to, weight;
 } node_t;
 typedef struct {
     int size;
@@ -87,26 +87,25 @@ node_t heap_pop(heap_t *heap) {
     return ans;
 }
 int networkDelayTime(int **times, int size, int *colSize, int n, int k) {
+    bool visit[n + 1];
     int dp[n + 1], ans = 0;
-    heap_t heap[1] = { { 0 } };
+    heap_t heap[1] = { 1, { k } };
 
     memset(dp, -1, sizeof(dp));
-    idx = 0, memset(h, -1, (n + 1) * sizeof(int));
+    memset(visit, false, sizeof(visit));
+    dp[k] = 0, idx = 0, memset(h, -1, (n + 1) * sizeof(int));
     for (int i = 0; i < size; ++i) {
         edge_record(times[i][0], times[i][1], times[i][2]);
     }
-
-    dp[k] = 0;
-    for (int i = h[k]; i >= 0; i = ne[i]) {
-        heap_add(heap, (node_t) { k, e[i], w[i] });
-    }
     for (node_t cur; heap->size;) {
         cur = heap_pop(heap);
-        if (dp[cur.to] != -1 && dp[cur.from] + cur.weight >= dp[cur.to]) continue;
+        if (visit[cur.to]) continue;
+        visit[cur.to] = true;
         for (int i = h[cur.to]; i >= 0; i = ne[i]) {
-            heap_add(heap, (node_t) { cur.to, e[i], w[i] });
+            if (visit[e[i]]) continue;
+            if (dp[e[i]] != -1 && dp[cur.to] + w[i] >= dp[e[i]]) continue;
+            heap_add(heap, (node_t) { e[i], dp[e[i]] = dp[cur.to] + w[i] });
         }
-        dp[cur.to] = dp[cur.from] + cur.weight;
     }
     for (int i = 1; i <= n; ++i) {
         if (dp[i] == -1) return -1;
