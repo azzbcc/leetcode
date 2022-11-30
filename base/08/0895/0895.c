@@ -50,6 +50,7 @@
 //
 // Related Topics 栈 哈希表
 // 👍 95 👎 0
+#if 0
 #define HASH_MAX_SIZE  9997
 #define MAX_STACK_SIZE 10001
 
@@ -163,3 +164,73 @@ void freqStackFree(FreqStack *stack) {
     hash_free(stack->count_map);
     free(stack);
 }
+#else
+#define MAX_STACK_SIZE 10001
+typedef struct {
+    int val, count;
+    UT_hash_handle hh;
+} * hash_t;
+hash_t hash_find(hash_t t, int val) {
+    hash_t find = NULL;
+    HASH_FIND_INT(t, &val, find);
+    return find;
+}
+hash_t hash_record(hash_t *t, int key) {
+    hash_t cur = hash_find(*t, key);
+    if (!cur) {
+        cur = calloc(1, sizeof(*cur)), cur->val = key;
+        HASH_ADD_INT(*t, val, cur);
+    }
+    cur->count += 1;
+    return cur;
+}
+typedef struct _tag_list_node {
+    int val;
+    struct _tag_list_node *next;
+} * list_t;
+list_t list_new(int val) {
+    list_t list = malloc(sizeof(*list));
+    list->val = val, list->next = NULL;
+    return list;
+}
+void list_free(list_t l) {
+    if (l && l->next) list_free(l->next);
+    free(l);
+}
+typedef struct {
+    int max;
+    hash_t hash;
+    list_t nodes[MAX_STACK_SIZE];
+} FreqStack;
+FreqStack *freqStackCreate() {
+    return calloc(1, sizeof(FreqStack));
+}
+void freqStackPush(FreqStack *stack, int x) {
+    list_t list = list_new(x);
+    hash_t node = hash_record(&stack->hash, x);
+    if (stack->max < node->count) stack->max = node->count;
+    list->next = stack->nodes[node->count], stack->nodes[node->count] = list;
+}
+int freqStackPop(FreqStack *stack) {
+    int val     = stack->nodes[stack->max]->val;
+    list_t list = stack->nodes[stack->max];
+
+    stack->nodes[stack->max] = list->next;
+    hash_find(stack->hash, val)->count--;
+    if (!stack->nodes[stack->max]) stack->max--;
+    free(list);
+
+    return val;
+}
+void freqStackFree(FreqStack *stack) {
+    hash_t cur, next;
+    HASH_ITER(hh, stack->hash, cur, next) {
+        HASH_DEL(stack->hash, cur);
+        free(cur);
+    }
+    for (int i = 0; i <= stack->max; ++i) {
+        list_free(stack->nodes[i]);
+    }
+    free(stack);
+}
+#endif
