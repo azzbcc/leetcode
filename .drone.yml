@@ -91,6 +91,7 @@ steps:
       - name: build
         path: /drone/build
     commands:
+      - ulimit -n 1024
       - cd /drone/build
       - ctest -T memcheck
 
