@@ -33,8 +33,16 @@
 //
 // Related Topics 数学 模拟 👍 20 👎 0
 
+#if 0
 int countEven(int num) {
     int a = num / 10, b = num % 10, fa = 0;
     for (int t = a; t; fa += t % 10, t /= 10) {}
     return a * 5 + (b + 2 - fa % 2) / 2 - 1;
 }
+#else
+int countEven(int num) {
+    int f = 0;
+    for (int t = num; t; f += t % 10, t /= 10) {}
+    return (num - f % 2) / 2;
+}
+#endif
