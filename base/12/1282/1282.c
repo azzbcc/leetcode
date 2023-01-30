@@ -61,14 +61,11 @@ int **groupThePeople(int *groupSizes, int size, int *returnSize, int **returnCol
     *returnColumnSizes = malloc(len * sizeof(int));
     for (int i = 0, pos = 0, j = 0; i <= size; ++i) {
         if (!hash[i]) continue;
-        ans[pos] = malloc(((*returnColumnSizes)[pos] = i) * sizeof(int));
         HASH_ITER(hh, hash[i], cur, next) {
+            if (!j) ans[pos] = malloc(((*returnColumnSizes)[pos] = i) * sizeof(int));
             ans[pos][j++] = cur->key;
             HASH_DEL(hash[i], cur);
-            if (j == i) {
-                pos++, j = 0;
-                if (pos < len) ans[pos] = malloc(((*returnColumnSizes)[pos] = i) * sizeof(int));
-            }
+            if (j == i) pos++, j = 0;
         }
     }
     return ans;
