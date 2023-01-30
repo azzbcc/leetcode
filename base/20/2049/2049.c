@@ -51,11 +51,12 @@
 //
 // Related Topics 树 深度优先搜索 数组 二叉树 👍 90 👎 0
 
+#define MAXN 100000
 typedef struct __tag_node node_t;
 struct __tag_node {
     int child_count;
     node_t *child[2];
-};
+} nodes[MAXN];
 int dfs(node_t *root, int n, long *max, int *ans) {
     if (!root) return 0;
     long count = 0, score = 1;
@@ -69,10 +70,10 @@ int dfs(node_t *root, int n, long *max, int *ans) {
 }
 int countHighestScoreNodes(int *parents, int size) {
     int ans;
-    long max = -1;
-    node_t nodes[size], *root = NULL;
+    long max     = -1;
+    node_t *root = NULL;
 
-    memset(nodes, 0, sizeof(nodes));
+    memset(nodes, 0, size * sizeof(node_t));
     for (int i = 0; i < size; ++i) {
         if (parents[i] == -1) {
             root = &nodes[i];
