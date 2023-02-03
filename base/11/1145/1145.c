@@ -48,6 +48,7 @@
 //
 // Related Topics 树 深度优先搜索 二叉树 👍 161 👎 0
 
+#if 0
 int get_count(struct TreeNode *root, int n, int x, int ss[]) {
     if (!root) return 0;
     int l = get_count(root->left, n, x, ss), r = get_count(root->right, n, x, ss);
@@ -59,3 +60,16 @@ bool btreeGameWinningMove(struct TreeNode *root, int n, int x) {
     get_count(root, n, x, ss);
     return ss[0] + ss[1] < ss[2] || ss[0] + ss[2] < ss[1] || ss[1] + ss[2] < ss[0];
 }
+#else
+int get_count(struct TreeNode *root, int n, int x, int *ans) {
+    if (!root) return 0;
+    int l = get_count(root->left, n, x, ans), r = get_count(root->right, n, x, ans);
+    if (root->val == x) *ans = fmax(n - l - r - 1, fmax(l, r));
+    return l + r + 1;
+}
+bool btreeGameWinningMove(struct TreeNode *root, int n, int x) {
+    int ans;
+    get_count(root, n, x, &ans);
+    return ans * 2 > n;
+}
+#endif
