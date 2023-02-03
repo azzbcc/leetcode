@@ -19,7 +19,7 @@ typedef struct Node {
 
 #define null INT32_MIN
 
-static node_t node_create(int arr[], size_t size) {
+static node_t node_create(int *arr, size_t size) {
     if (!size) return NULL;
     node_t nodes[size];
 

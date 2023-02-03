@@ -16,7 +16,7 @@ typedef struct Node {
 
 #include "029.c"
 
-static list_t node_create(int arr[], int size) {
+static list_t node_create(int *arr, int size) {
     if (!size) return NULL;
     node_t *nodes[size];
     for (int i = 0; i < size; ++i) {
