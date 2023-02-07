@@ -42,7 +42,7 @@ steps:
         path: /drone/build
     commands:
       - cd /drone/build
-      - ctest
+      - ctest --stop-on-failure --output-on-failure
 
 volumes:
   - name: build
@@ -93,7 +93,7 @@ steps:
     commands:
       - ulimit -n 1024
       - cd /drone/build
-      - ctest -T memcheck
+      - ctest --stop-on-failure --output-on-failure -T memcheck
 
 volumes:
   - name: build
