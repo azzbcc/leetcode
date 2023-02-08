@@ -21,7 +21,7 @@
 // Related Topics 数学 字符串
 // 👍 425 👎 0
 
-#define MAXN      219
+#define MAXN      221
 #define MIN(a, b) (((a) < (b)) ? (a) : (b))
 char *multiply(char *num1, char *num2) {
     static char ans[MAXN] = { 0 };

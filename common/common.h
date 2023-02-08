@@ -26,8 +26,6 @@ void set_execute_timeout(TCase *, double);
 
 #ifdef PROGRAM
 const char *program = PROGRAM;
-#else
-const char *program = "";
 #endif
 
 #endif // LEETCODE_COMMON_H
