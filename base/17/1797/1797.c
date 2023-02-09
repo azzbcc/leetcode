@@ -58,6 +58,7 @@
 //
 // Related Topics 设计 哈希表 👍 59 👎 0
 
+#if 0
 typedef struct {
     char token[6];
     int expire_time;
@@ -114,3 +115,85 @@ void authenticationManagerFree(AuthenticationManager *manager) {
     }
     free(manager);
 }
+#else
+typedef struct node {
+    char *token;
+    int ttl;
+    struct node *prev, *next;
+    UT_hash_handle hh;
+} *hash_t, *list_t;
+typedef struct {
+    int ttl;
+    hash_t hash;
+    list_t list;
+} AuthenticationManager;
+static void list_set_tail(list_t *l, list_t node) {
+    list_t head = *l;
+    if (!head) {
+        // add to first
+        *l = node, node->prev = node->next = node;
+    } else if (node == head) {
+        // rotate to last
+        *l = head->next;
+    } else if (node != head->prev) {
+        // remove from middle
+        if (node->next) node->next->prev = node->prev, node->prev->next = node->next;
+
+        // append to last
+        node->prev = head->prev, node->next = head;
+        head->prev->next = node, head->prev = node;
+    }
+}
+static void authenticationManagerExpire(AuthenticationManager *m, int time) {
+    for (list_t cur; cur = m->list, cur && cur->ttl <= time; ) {
+        if (cur->prev != cur) {
+            cur->prev->next = cur->next, cur->next->prev = cur->prev;
+            m->list = cur->next;
+        } else {
+            m->list = NULL;
+        }
+        HASH_DEL(m->hash, cur);
+        free(cur);
+    }
+}
+AuthenticationManager *authenticationManagerCreate(int timeToLive) {
+    AuthenticationManager *m = malloc(sizeof(AuthenticationManager));
+    m->hash = NULL, m->list = NULL, m->ttl = timeToLive;
+    return m;
+}
+void authenticationManagerRenew(AuthenticationManager *m, char *tokenId, int currentTime) {
+    hash_t node;
+
+    authenticationManagerExpire(m, currentTime);
+    HASH_FIND_STR(m->hash, tokenId, node);
+    if (!node) return;
+    node->ttl = currentTime + m->ttl;
+    list_set_tail(&m->list, node);
+}
+void authenticationManagerGenerate(AuthenticationManager *m, char *tokenId, int currentTime) {
+    hash_t node;
+
+    authenticationManagerExpire(m, currentTime);
+    HASH_FIND_STR(m->hash, tokenId, node);
+    if (!node) {
+        node = calloc(1, sizeof(*node)), node->token = tokenId;
+        HASH_ADD_STR(m->hash, token, node);
+    }
+    node->ttl = currentTime + m->ttl;
+    list_set_tail(&m->list, node);
+}
+
+int authenticationManagerCountUnexpiredTokens(AuthenticationManager *m, int currentTime) {
+    authenticationManagerExpire(m, currentTime);
+    return HASH_COUNT(m->hash);
+}
+
+void authenticationManagerFree(AuthenticationManager *m) {
+    hash_t cur, next;
+    HASH_ITER(hh, m->hash, cur, next) {
+        HASH_DEL(m->hash, cur);
+        free(cur);
+    }
+    free(m);
+}
+#endif
