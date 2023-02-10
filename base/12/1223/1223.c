@@ -48,11 +48,9 @@ int dieSimulator(int n, int *rollMax, int size) {
     for (int i = sum[0] = 1; i <= n; ++i) {
         for (int j = 0; j < size; ++j) {
             dp[i][j] = sum[i - 1];
-            if (i > rollMax[j]) {
-                dp[i][j] = ((dp[i][j] + dp[i - rollMax[j] - 1][j]) % MOD + MOD - sum[i - rollMax[j] - 1]) % MOD;
-            }
+            if (i > rollMax[j]) dp[i][j] = (0L + dp[i][j] - sum[i - rollMax[j] - 1] + dp[i - rollMax[j] - 1][j]) % MOD;
             sum[i] += dp[i][j], sum[i] %= MOD;
         }
     }
-    return sum[n];
+    return (sum[n] + MOD) % MOD;
 }
