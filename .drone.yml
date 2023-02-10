@@ -9,9 +9,6 @@ clone:
 steps:
   - name: clone
     image: alpine/git
-    volumes:
-      - name: build
-        path: /drone/build
     commands:
       - git clone https://proxy.ananwork.com/github.com/$DRONE_REPO.git .
       - git checkout $DRONE_COMMIT
@@ -59,9 +56,6 @@ clone:
 steps:
   - name: clone
     image: alpine/git
-    volumes:
-      - name: build
-        path: /drone/build
     commands:
       - git clone https://proxy.ananwork.com/github.com/$DRONE_REPO.git .
       - git checkout $DRONE_COMMIT
