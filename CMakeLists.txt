@@ -41,7 +41,7 @@ endmacro()
 
 # memory check
 option(ENABLE_MEMORY_CHECK "Enable Memory Leak Check."               OFF)
-option(ENABLE_ASAN         "Turn ON address sanitizer build options" ON)
+option(ENABLE_ASAN         "Turn ON address sanitizer build options" OFF)
 if (ENABLE_MEMORY_CHECK)
     set(ENABLE_ASAN OFF)
     message("Enable Memory Leak Check.")
