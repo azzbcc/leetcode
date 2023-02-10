@@ -9,9 +9,6 @@ clone:
 steps:
   - name: clone
     image: alpine/git
-    volumes:
-      - name: build
-        path: /drone/build
     commands:
       - git clone https://proxy.ananwork.com/github.com/$DRONE_REPO.git .
       - git checkout $DRONE_COMMIT
@@ -51,6 +48,53 @@ volumes:
 ---
 kind: pipeline
 type: docker
+name: asan_check
+
+clone:
+  disable: true
+
+steps:
+  - name: clone
+    image: alpine/git
+    commands:
+      - git clone https://proxy.ananwork.com/github.com/$DRONE_REPO.git .
+      - git checkout $DRONE_COMMIT
+
+  - name: cmake
+    image: registry.cn-beijing.aliyuncs.com/azzbcc/cmake
+    volumes:
+      - name: build
+        path: /drone/build
+    commands:
+      - cd /drone/build
+      - cmake -DENABLE_ASAN=ON /drone/src
+
+  - name: compile
+    image: registry.cn-beijing.aliyuncs.com/azzbcc/cmake
+    pull: never
+    volumes:
+      - name: build
+        path: /drone/build
+    commands:
+      - cmake --build /drone/build -- -j $(nproc)
+
+  - name: test
+    image: registry.cn-beijing.aliyuncs.com/azzbcc/cmake
+    pull: never
+    volumes:
+      - name: build
+        path: /drone/build
+    commands:
+      - cd /drone/build
+      - ctest --stop-on-failure --output-on-failure
+
+volumes:
+  - name: build
+    temp: { }
+
+---
+kind: pipeline
+type: docker
 name: memcheck
 
 clone:
@@ -59,9 +103,6 @@ clone:
 steps:
   - name: clone
     image: alpine/git
-    volumes:
-      - name: build
-        path: /drone/build
     commands:
       - git clone https://proxy.ananwork.com/github.com/$DRONE_REPO.git .
       - git checkout $DRONE_COMMIT
