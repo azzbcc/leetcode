@@ -46,6 +46,7 @@
 //
 // Related Topics 贪心 数组 动态规划 👍 185 👎 0
 
+#if 0
 typedef struct {
     int l, r;
 } node_t;
@@ -67,3 +68,18 @@ int minTaps(int n, int *ranges, int size) {
     }
     return max >= n ? ans : -1;
 }
+#else
+int minTaps(int n, int *ranges, int size) {
+    int ans = 0, max[n + 1];
+    memset(max, 0, sizeof(max));
+    for (int i = 0, l; i < size; ++i) {
+        l = fmax(0, i - ranges[i]), max[l] = fmax(max[l], i + ranges[i]);
+    }
+    for (int i = 0, cur = 0, pre = 0; i < n; ++i) {
+        cur = fmax(cur, max[i]);
+        if (i == cur) return -1;
+        if (i == pre) pre = cur, ans += 1;
+    }
+    return ans;
+}
+#endif
