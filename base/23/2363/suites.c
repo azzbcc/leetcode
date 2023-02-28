@@ -59,7 +59,25 @@ START_TEST(test_official_3) {
     free(returnColumnSizes);
 }
 
+START_TEST(test_failed) {
+    int len, *returnColumnSizes = NULL;
+    int *items1[] = { (int[]) { 5, 1 }, (int[]) { 4, 2 }, (int[]) { 3, 3 }, (int[]) { 2, 4 }, (int[]) { 1, 5 } };
+    int *items2[] = { (int[]) { 7, 1 }, (int[]) { 6, 2 }, (int[]) { 5, 3 }, (int[]) { 4, 4 } };
+    int *target[] = { (int[]) { 1, 5 }, (int[]) { 2, 4 }, (int[]) { 3, 3 }, (int[]) { 4, 6 },
+                      (int[]) { 5, 4 }, (int[]) { 6, 2 }, (int[]) { 7, 1 } };
+    int **ans     = mergeSimilarItems(items1, LEN(items1), NULL, items2, LEN(items2), NULL, &len, &returnColumnSizes);
+    ck_assert_int_eq(len, LEN(target));
+    for (int i = 0; i < len; ++i) {
+        ck_assert_int_eq(returnColumnSizes[i], 2);
+        ck_assert_mem_eq(ans[i], target[i], 2 * sizeof(int));
+        free(ans[i]);
+    }
+    free(ans);
+    free(returnColumnSizes);
+}
+
 void tcase_complete(TCase *t) {
+    tcase_add_test(t, test_failed);
     tcase_add_test(t, test_official_1);
     tcase_add_test(t, test_official_2);
     tcase_add_test(t, test_official_3);

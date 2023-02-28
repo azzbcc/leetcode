@@ -62,6 +62,7 @@
 //
 // Related Topics 数组 哈希表 有序集合 排序 👍 53 👎 0
 
+#if 0
 #define MAXN 1001
 int **mergeSimilarItems(int **items1, int items1Size, int *items1ColSize, int **items2, int items2Size,
                         int *items2ColSize, int *returnSize, int **returnColumnSizes) {
@@ -76,3 +77,29 @@ int **mergeSimilarItems(int **items1, int items1Size, int *items1ColSize, int **
     }
     return ans;
 }
+#else
+#define MAXN 1001
+int cmp(const void *a, const void *b) {
+    int *pa = *( int ** )a, *pb = *( int ** )b;
+    return pa[0] - pb[0];
+}
+int **mergeSimilarItems(int **items1, int items1Size, int *items1ColSize, int **items2, int items2Size,
+                        int *items2ColSize, int *returnSize, int **returnColumnSizes) {
+    int *help[MAXN] = { NULL }, len = 0, **ans;
+
+    qsort(items1, items1Size, sizeof(int *), cmp);
+    qsort(items2, items2Size, sizeof(int *), cmp);
+    for (int p1 = 0, p2 = 0, value, weight; p1 < items1Size || p2 < items2Size;) {
+        value = INT32_MAX, weight = 0;
+        if (p1 < items1Size) value = fmin(value, items1[p1][0]);
+        if (p2 < items2Size) value = fmin(value, items2[p2][0]);
+        if (p1 < items1Size && value == items1[p1][0]) weight += items1[p1++][1];
+        if (p2 < items2Size && value == items2[p2][0]) weight += items2[p2++][1];
+        help[len] = malloc(2 * sizeof(int)), help[len][0] = value, help[len][1] = weight, ++len;
+    }
+
+    ans = malloc((*returnSize = len) * sizeof(int *)), *returnColumnSizes = malloc(len * sizeof(int));
+    for (int i = 0; i < len; ans[i] = help[i], returnColumnSizes[0][i] = 2, ++i) {}
+    return ans;
+}
+#endif
