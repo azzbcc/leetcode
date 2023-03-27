@@ -61,6 +61,7 @@
 //
 // Related Topics 哈希表 字符串 动态规划 👍 102 👎 0
 
+#if 0
 int countSubstrings(char *s, char *t) {
     int ans = 0;
     for (int i = 0; s[i]; ++i) {
@@ -72,3 +73,24 @@ int countSubstrings(char *s, char *t) {
     }
     return ans;
 }
+#else
+int countSubstrings(char *s, char *t) {
+    size_t sl = strlen(s), tl = strlen(t);
+    int ans = 0, dp[sl + 1][tl + 1][2];
+
+    memset(dp, 0, sizeof(dp));
+    for (int i = 0; s[i]; ++i) {
+        for (int j = 0; t[j]; ++j) {
+            if (s[i] == t[j]) {
+                dp[i + 1][j + 1][0] = dp[i][j][0] + 1;
+                dp[i + 1][j + 1][1] = dp[i][j][1];
+            } else {
+                dp[i + 1][j + 1][0] = 0;
+                dp[i + 1][j + 1][1] = dp[i][j][0] + 1;
+            }
+            ans += dp[i + 1][j + 1][1];
+        }
+    }
+    return ans;
+}
+#endif
