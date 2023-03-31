@@ -42,6 +42,7 @@
 //
 // Related Topics 数组 哈希表 双指针 枚举 👍 52 👎 0
 
+#if 0
 int arithmeticTriplets(int *nums, int size, int diff) {
     int ans = 0;
     for (int i = 0, j = 1, k = 2; k < size; ++k) {
@@ -53,3 +54,16 @@ int arithmeticTriplets(int *nums, int size, int diff) {
     }
     return ans;
 }
+#else
+int arithmeticTriplets(int *nums, int size, int diff) {
+    int ans = 0;
+    for (int i = 0, j = 1, k = 2; k < size; ++k) {
+        for (; i < k && nums[i] + diff * 2 < nums[k]; ++i) {}
+        if (nums[i] + diff * 2 > nums[k]) continue;
+        for (j = fmax(i + 1, j); j < k && nums[j] + diff < nums[k]; ++j) {}
+        if (nums[j] + diff > nums[k]) continue;
+        ans += 1;
+    }
+    return ans;
+}
+#endif
