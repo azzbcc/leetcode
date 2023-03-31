@@ -54,7 +54,7 @@ int arithmeticTriplets(int *nums, int size, int diff) {
     }
     return ans;
 }
-#else
+#elif 0
 int arithmeticTriplets(int *nums, int size, int diff) {
     int ans = 0;
     for (int i = 0, j = 1, k = 2; k < size; ++k) {
@@ -63,6 +63,15 @@ int arithmeticTriplets(int *nums, int size, int diff) {
         for (j = fmax(i + 1, j); j < k && nums[j] + diff < nums[k]; ++j) {}
         if (nums[j] + diff > nums[k]) continue;
         ans += 1;
+    }
+    return ans;
+}
+#else
+int arithmeticTriplets(int *nums, int size, int diff) {
+    int ans = 0, hash[201] = { 0 };
+    for (int i = 0; i < size; hash[nums[i++]] = true) {}
+    for (int i = 0; i < size && nums[i] + diff * 2 <= nums[size - 1]; ++i) {
+        ans += hash[nums[i] + diff] && hash[nums[i] + diff * 2];
     }
     return ans;
 }
