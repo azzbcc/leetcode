@@ -46,6 +46,7 @@
 //
 // Related Topics 数组 哈希表 字符串 👍 18 👎 0
 
+#if 0
 bool checkDistances(char *s, int *distance, int size) {
     int ss[size][2];
     memset(ss, -1, sizeof(ss));
@@ -58,3 +59,17 @@ bool checkDistances(char *s, int *distance, int size) {
     }
     return true;
 }
+#else
+#define WIDTH 26
+bool checkDistances(char *s, int *distance, int size) {
+    int ss[WIDTH] = { 0 };
+    for (int i = 0, ch; s[i]; ++i) {
+        if (ch = s[i] - 'a', ss[ch]) {
+            if (ss[ch] + distance[ch] != i) return false;
+        } else {
+            ss[ch] = i + 1;
+        }
+    }
+    return true;
+}
+#endif
