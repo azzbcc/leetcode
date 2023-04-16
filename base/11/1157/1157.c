@@ -62,29 +62,28 @@ typedef struct {
     node_t check[MAXN];
 } MajorityChecker;
 MajorityChecker *majorityCheckerCreate(int *arr, int size) {
-    hash_t cur, next, hash = NULL;
-    array_t new = malloc(sizeof(array_t) + size * sizeof(int));
-    for (new->size = 0; new->size < size; ++new->size, ++cur->count) {
-        new->data[new->size] = arr[new->size];
-        HASH_FIND_INT(hash, &arr[new->size], cur);
-        if (!cur) {
-            cur = calloc(1, sizeof(*cur)), cur->key = arr[new->size];
-            HASH_ADD_INT(hash, key, cur);
-        }
-    }
-
     MajorityChecker *checker = malloc(sizeof(MajorityChecker));
-    checker->arr = new, checker->count = 0;
-    HASH_ITER(hh, hash, cur, next) {
-        if (cur->count >= MAXN / 2) {
-            new       = malloc(sizeof(array_t) + cur->count * sizeof(int));
-            new->size = 0;
-            for (int i = 0; i < size; ++i) {
-                if (cur->key == arr[i]) new->data[new->size++] = i;
-            }
-            checker->check[checker->count++] = (node_t) { cur->key, new };
-        }
+    checker->count = 0, checker->arr = malloc(sizeof(array_t) + size * sizeof(int)), checker->arr->size = size;
+    memcpy(checker->arr->data, arr, size * sizeof(int));
+    if (size < MAXN) return checker;
 
+    hash_t cur, next, hash = NULL;
+    for (int i = 0; i < size; ++i, ++cur->count) {
+        HASH_FIND_INT(hash, &arr[i], cur);
+        if (cur) continue;
+        cur = calloc(1, sizeof(*cur)), cur->key = arr[i];
+        HASH_ADD_INT(hash, key, cur);
+    }
+    HASH_ITER(hh, hash, cur, next) {
+        if (cur->count < MAXN / 2) continue;
+        array_t new = malloc(sizeof(array_t) + cur->count * sizeof(int));
+        new->size   = 0;
+        for (int i = 0; i < size; ++i) {
+            if (cur->key == arr[i]) new->data[new->size++] = i;
+        }
+        checker->check[checker->count++] = (node_t) { cur->key, new };
+    }
+    HASH_ITER(hh, hash, cur, next) {
         HASH_DEL(hash, cur);
         free(cur);
     }
