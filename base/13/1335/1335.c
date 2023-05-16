@@ -59,6 +59,7 @@
 //
 // Related Topics 数组 动态规划 👍 128 👎 0
 
+#if 0
 int minDifficulty(int *jobDifficulty, int size, int d) {
     if (d > size) return -1;
 
@@ -80,3 +81,27 @@ int minDifficulty(int *jobDifficulty, int size, int d) {
     }
     return dp[d - 1][size - 1];
 }
+#else
+int minDifficulty(int *jobs, int size, int d) {
+    if (d > size) return -1;
+
+    int dp[d][size];
+    memset(dp, 0, sizeof(dp));
+
+    for (int i = 0, max = 0; i < size; ++i) {
+        dp[0][i] = max = fmax(max, jobs[i]);
+    }
+    for (int i = 1; i < d; ++i) {
+        for (int j = i, top = 0, job[size], min[size], cur; j < size; ++j, ++top) {
+            for (cur = dp[i - 1][j - 1]; top && jobs[job[top - 1]] < jobs[j]; cur = fmin(cur, min[--top])) {}
+            if (top) {
+                dp[i][j] = fmin(dp[i][job[top - 1]], cur + jobs[j]);
+            } else {
+                dp[i][j] = cur + jobs[j];
+            }
+            job[top] = j, min[top] = cur;
+        }
+    }
+    return dp[d - 1][size - 1];
+}
+#endif
