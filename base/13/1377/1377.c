@@ -60,12 +60,12 @@ int bfs(int n, edge_t *map[n], int t, int target) {
         int step, base;
     } nodes[n];
     bool visit[n];
-    int queue[n * t], front = 0, rear = 0;
+    int queue[n], front = 0, rear = 0;
 
     memset(nodes, 0, sizeof(nodes));
     memset(visit, false, sizeof(visit));
     visit[0] = true, nodes[0].base = 1, queue[rear++] = 0;
-    for (; nodes[queue[front]].step < t; ++front) {
+    for (; front < rear && nodes[queue[front]].step < t; ++front) {
         int count = 0;
         for (edge_t *e = map[queue[front]]; e; count += !visit[e->to], e = e->next) {}
         if (count) {
@@ -76,7 +76,7 @@ int bfs(int n, edge_t *map[n], int t, int target) {
                 nodes[e->to].base = nodes[queue[front]].base * count;
             }
         } else {
-            queue[rear++] = queue[front], nodes[queue[front]].step++;
+            nodes[queue[front]].step = t;
         }
     }
     return nodes[target].step == t ? nodes[target].base : 0;
