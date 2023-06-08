@@ -45,6 +45,7 @@
 //
 // Related Topics 动态规划 回溯 👍 163 👎 0
 
+#if 0
 typedef struct {
     int x, y;
 } point_t;
@@ -88,3 +89,50 @@ int tilingRectangle(int n, int m) {
 
     return ans;
 }
+#else
+typedef struct {
+    int x, y;
+} point_t;
+void dfs(int n, int m, bool map[n][m], point_t now, int cur, int *ans) {
+    for (; now.x < n && now.y < m && map[now.x][now.y];) {
+        if (++now.y < m) continue;
+        ++now.x, now.y = 0;
+    }
+    if (now.x == n) *ans = cur - 1;
+    if (cur >= *ans) return;
+
+    // 贪心最大边
+    int width = fmin(n - now.x, m - now.y);
+    for (bool check; check = true, width; --width) {
+        for (int x = width - 1; check && x >= 0; --x) {
+            for (int y = width - 1; check && y >= 0; --y) {
+                check = !map[now.x + x][now.y + y];
+            }
+        }
+        if (check) break;
+    }
+    // 记录
+    for (int x = 0; x < width; ++x) {
+        for (int y = 0; y < width; ++y) {
+            map[now.x + x][now.y + y] = true;
+        }
+    }
+    for (; width; --width) {
+        // 递归
+        dfs(n, m, map, now, cur + 1, ans);
+        // 恢复冗余边
+        for (int offset = 0; offset < width; ++offset) {
+            map[now.x + width - 1][now.y + offset] = map[now.x + offset][now.y + width - 1] = 0;
+        }
+    }
+}
+int tilingRectangle(int n, int m) {
+    bool map[n][m];
+    int ans = n * m + 1;
+
+    memset(map, false, sizeof(map));
+    dfs(n, m, map, (point_t) { 0, 0 }, 1, &ans);
+
+    return ans;
+}
+#endif
