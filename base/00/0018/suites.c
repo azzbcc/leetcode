@@ -51,6 +51,46 @@ START_TEST(test_official) {
     free(returnColumnSizes);
 }
 
+START_TEST(test_failed_1) {
+    int input = 0, arr[] = { 1000000000, 1000000000, 1000000000, 1000000000 };
+    int target[][4] = {};
+    int len = 0, *returnColumnSizes = NULL;
+
+    int **ans = fourSum(arr, sizeof(arr) / sizeof(arr[0]), input, &len, &returnColumnSizes);
+
+    ck_assert_int_eq(len, sizeof(target) / sizeof(target[0]));
+
+    qsort(target, len, sizeof(target[0]), array_comp);
+    qsort(ans, len, sizeof(int *), ptr_comp);
+    for (int i = 0; i < len; ++i) {
+        ck_assert_mem_eq(ans[i], target[i], sizeof(target[i]));
+        free(ans[i]);
+    }
+    free(ans);
+    free(returnColumnSizes);
+}
+
+START_TEST(test_failed_2) {
+    int input = -1, arr[] = { -1, 0, 1, 2, -1, -4 };
+    int target[][4] = { { -4, 0, 1, 2 }, { -1, -1, 0, 1 } };
+    int len = 0, *returnColumnSizes = NULL;
+
+    int **ans = fourSum(arr, sizeof(arr) / sizeof(arr[0]), input, &len, &returnColumnSizes);
+
+    ck_assert_int_eq(len, sizeof(target) / sizeof(target[0]));
+
+    qsort(target, len, sizeof(target[0]), array_comp);
+    qsort(ans, len, sizeof(int *), ptr_comp);
+    for (int i = 0; i < len; ++i) {
+        ck_assert_mem_eq(ans[i], target[i], sizeof(target[i]));
+        free(ans[i]);
+    }
+    free(ans);
+    free(returnColumnSizes);
+}
+
 void tcase_complete(TCase *t) {
+    tcase_add_test(t, test_failed_2);
+    tcase_add_test(t, test_failed_1);
     tcase_add_test(t, test_official);
 }
