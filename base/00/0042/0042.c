@@ -25,29 +25,19 @@
 //
 //
 // n == height.length
-// 0 <= n <= 3 * 104
-// 0 <= height[i] <= 105
+// 1 <= n <= 2 * 10⁴
+// 0 <= height[i] <= 10⁵
 //
-// Related Topics 栈 数组 双指针
-// 👍 1773 👎 0
+//
+// Related Topics 栈 数组 双指针 动态规划 单调栈 👍 4480 👎 0
 
-int trap(int *height, int heightSize) {
-    if (!heightSize) return 0;
-
+int trap(int *height, int size) {
     int ans = 0;
-    for (int beg = 0, end = heightSize - 1, left = height[beg], right = height[end]; beg < end;) {
-        if (left <= right) {
-            for (beg++; beg < end && height[beg] <= left; beg++) {
-                ans += left - height[beg];
-            }
-            left = height[beg];
-        } else {
-            for (end--; beg < end && height[end] <= right; end--) {
-                ans += right - height[end];
-            }
-            right = height[end];
+    for (int i = 0, top = -1, stack[size]; i < size; stack[++top] = i++) {
+        for (int h; top > -1 && height[i] > height[stack[top]];) {
+            if (h = height[stack[top--]], top < 0) break;
+            ans += (fmin(height[stack[top]], height[i]) - h) * (i - stack[top] - 1);
         }
     }
-
     return ans;
 }
