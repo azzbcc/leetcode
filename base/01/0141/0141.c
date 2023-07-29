@@ -54,6 +54,7 @@
 //
 // Related Topics 哈希表 链表 双指针 👍 1889 👎 0
 
+#if 0
 bool hasCycle(struct ListNode *head) {
     if (!head) return false;
     struct ListNode *slow = head, *fast = head;
@@ -63,3 +64,12 @@ bool hasCycle(struct ListNode *head) {
     } while (fast && slow != fast);
     return fast != NULL;
 }
+#else
+bool hasCycle(struct ListNode *head) {
+    for (struct ListNode *slow = head, *fast = head; fast && fast->next;) {
+        slow = slow->next, fast = fast->next->next;
+        if (slow == fast) return true;
+    }
+    return false;
+}
+#endif
