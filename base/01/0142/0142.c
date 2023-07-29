@@ -57,6 +57,7 @@
 //
 // Related Topics 哈希表 链表 双指针 👍 2191 👎 0
 
+#if 0
 struct ListNode *detectCycle(struct ListNode *head) {
     if (!head) return false;
     struct ListNode *slow = head, *fast = head;
@@ -68,3 +69,14 @@ struct ListNode *detectCycle(struct ListNode *head) {
     for (; head != slow; head = head->next, slow = slow->next) {}
     return head;
 }
+#else
+struct ListNode *detectCycle(struct ListNode *head) {
+    for (struct ListNode *slow = head, *fast = head; fast && fast->next;) {
+        slow = slow->next, fast = fast->next->next;
+        if (slow != fast) continue;
+        for (; head != slow; head = head->next, slow = slow->next) {}
+        return head;
+    }
+    return NULL;
+}
+#endif
