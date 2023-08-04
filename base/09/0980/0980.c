@@ -50,6 +50,7 @@
 //
 // Related Topics 位运算 数组 回溯 矩阵 👍 282 👎 0
 
+#if 0
 typedef struct {
     int x, y;
 } point_t;
@@ -79,3 +80,59 @@ int uniquePathsIII(int **grid, int size, int *colSize) {
     }
     return dfs(m, n, grid, beg, left);
 }
+#else
+typedef struct {
+    int x, y;
+} point_t;
+typedef struct {
+    long key;
+    int val;
+    UT_hash_handle hh;
+} *hash_t;
+const point_t wards[] = { -1, 0, 1, 0, 0, -1, 0, 1 };
+hash_t hash_find(hash_t t, long key) {
+    hash_t cur;
+    HASH_FIND(hh, t, &key, sizeof(long), cur);
+    return cur;
+}
+int hash_record(hash_t *t, long key, int val) {
+    hash_t cur = hash_find(*t, key);
+    if (cur) return val;
+    cur = malloc(sizeof(*cur)), cur->key = key;
+    HASH_ADD(hh, *t, key, sizeof(long), cur);
+    return cur->val = val;
+}
+int dfs(int m, int n, int *grid[], hash_t *map, point_t now, int mask) {
+    hash_t find;
+    long hash = (1UL * now.x * n + now.y) << (m * n) | mask;
+    if (grid[now.x][now.y] == 2) return !mask;
+    if ((find = hash_find(*map, hash))) return find->val;
+
+    int ans = 0;
+    for (int i = 0; i < sizeof(wards) / sizeof(wards[0]); ++i) {
+        point_t next = { now.x + wards[i].x, now.y + wards[i].y };
+        if (next.x < 0 || next.x >= m || next.y < 0 || next.y >= n) continue;
+        if ((1 << (next.x * n + next.y) & mask) == 0) continue;
+        ans += dfs(m, n, grid, map, next, 1 << (next.x * n + next.y) ^ mask);
+    }
+    return hash_record(map, hash, ans);
+}
+int uniquePathsIII(int **grid, int size, int *colSize) {
+    point_t beg;
+    hash_t hash = NULL, cur, next;
+    int m = size, n = *colSize, mask = 0;
+
+    for (int i = 0; i < m; ++i) {
+        for (int j = 0; j < n; ++j) {
+            if (grid[i][j] == 1) beg = (point_t) { i, j };
+            if (grid[i][j] == 0 || grid[i][j] == 2) mask |= 1 << (i * n + j);
+        }
+    }
+    int ans = dfs(m, n, grid, &hash, beg, mask);
+    HASH_ITER(hh, hash, cur, next) {
+        HASH_DEL(hash, cur);
+        free(cur);
+    }
+    return ans;
+}
+#endif
