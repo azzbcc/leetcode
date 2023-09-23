@@ -95,27 +95,23 @@ bool lockingTreeUnlock(LockingTree *tree, int num, int user) {
     t->lock = false;
     return !t->lock;
 }
-static bool child_locked(lock_tree_t t) {
+static bool child_check_and_unlocked(lock_tree_t t) {
+    bool ans;
     if (!t) return false;
-    return t->lock || child_locked(t->bro) || child_locked(t->child);
-}
-static void child_unlock(lock_tree_t t) {
-    if (!t) return;
-    t->lock = false;
-    child_unlock(t->bro);
-    child_unlock(t->child);
+    ans = t->lock, t->lock = false;
+    ans |= child_check_and_unlocked(t->bro);
+    ans |= child_check_and_unlocked(t->child);
+    return ans;
 }
 bool lockingTreeUpgrade(LockingTree *tree, int num, int user) {
     lock_tree_t t = &tree[num];
 
     if (t->lock) return false;
-    if (!child_locked(t->child)) return false;
     for (lock_tree_t parent = t->parent; parent; parent = parent->parent) {
         if (parent->lock) return false;
     }
-    t->lock = true, t->user = user;
-    child_unlock(t->child);
-    return true;
+    if (!child_check_and_unlocked(t->child)) return false;
+    return t->user = user, t->lock = true;
 }
 void lockingTreeFree(LockingTree *tree) {
     free(tree);
