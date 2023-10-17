@@ -35,6 +35,7 @@
 //
 // Related Topics 数学 👍 56 👎 0
 
+#if 0
 #define MAXN 105
 typedef struct {
     int c, sum;
@@ -61,3 +62,11 @@ int sumOfMultiples(int n) {
     ans += help[n % MAXN].c * MAXN * nc + help[n % MAXN].sum;
     return ans;
 }
+#else
+int f(int n, int m) {
+    return (m + n / m * m) * (n / m) / 2;
+}
+int sumOfMultiples(int n) {
+    return f(n, 3) + f(n, 5) + f(n, 7) - f(n, 15) - f(n, 21) - f(n, 35) + f(n, 105);
+}
+#endif
