@@ -92,9 +92,12 @@ int *avoidFlood(int *rains, int size, int *returnSize) {
             HASH_FIND_INT(hash, &rains[i], cur);
             if (cur) {
                 int last = cur->val, f = find(fa, last);
-                if (idx[f] >= i) return malloc(*returnSize = 0);
-                help[idx[f]++] = rains[i];
-                if (idx[f] < size && rains[idx[f]]) fa[f] = find(fa, idx[f]);
+                if (idx[f] < i) {
+                    help[idx[f]++] = rains[i];
+                    if (idx[f] < size && rains[idx[f]]) fa[f] = find(fa, idx[f]);
+                } else {
+                    size = 0;
+                }
             } else {
                 cur = malloc(sizeof(*cur)), cur->key = rains[i];
                 HASH_ADD_INT(hash, key, cur);
