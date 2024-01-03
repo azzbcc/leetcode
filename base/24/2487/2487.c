@@ -38,6 +38,7 @@
 //
 // Related Topics 栈 递归 链表 单调栈 👍 45 👎 0
 
+#if 0
 struct ListNode *removeNodes(struct ListNode *head) {
     if (!head) return head;
     struct ListNode *next = removeNodes(head->next);
@@ -48,3 +49,16 @@ struct ListNode *removeNodes(struct ListNode *head) {
     head->next = next;
     return head;
 }
+#else
+#define MAXN 100000
+struct ListNode *removeNodes(struct ListNode *head) {
+    int top = -1;
+    struct ListNode *stack[MAXN], *ans = NULL;
+    for (struct ListNode *cur = head; cur; cur = cur->next) {
+        for (; top >= 0 && stack[top]->val < cur->val; free(stack[top--])) {}
+        stack[++top] = cur;
+    }
+    for (; top >= 0; stack[top]->next = ans, ans = stack[top--]) {}
+    return ans;
+}
+#endif
