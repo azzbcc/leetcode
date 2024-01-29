@@ -1,81 +1,90 @@
-// 电子游戏“辐射4”中，任务“通向自由”要求玩家到达名为“Freedom Trail Ring”的金属表盘，并使用表盘拼写特定关键词才能开门。
+// 电子游戏“辐射4”中，任务 “通向自由” 要求玩家到达名为 “Freedom Trail Ring” 的金属表盘，并使用表盘拼写特定关键词才能开门。
 //
-// 给定一个字符串 ring，表示刻在外环上的编码；给定另一个字符串
-// key，表示需要拼写的关键词。您需要算出能够拼写关键词中所有字符的最少步数。
+// 给定一个字符串 ring ，表示刻在外环上的编码；给定另一个字符串 key ，表示需要拼写的关键词。
+// 您需要算出能够拼写关键词中所有字符的最少步数。
 //
-// 最初，ring 的第一个字符与12:00方向对齐。您需要顺时针或逆时针旋转 ring 以使 key 的一个字符在 12:00
-// 方向对齐，然后按下中心按钮，\以此逐个拼写完 key 中的所有字符。
+// 最初，ring 的第一个字符与 12:00 方向对齐。
+// 您需要顺时针或逆时针旋转 ring 以使 key 的一个字符在 12:00 方向对齐，然后按下中心按钮，以此逐个拼写完 key
+// 中的所有字符。
 //
 // 旋转 ring 拼出 key 字符 key[i] 的阶段中：
 //
 //
-// 您可以将 ring 顺时针或逆时针旋转一个位置，计为1步。旋转的最终目的是将字符串 ring 的一个字符与 12:00
-// 方向对齐，并且这个字符必须等于字符 key[i] 。 如果字符 key[i]
-// 已经对齐到12:00方向，您需要按下中心按钮进行拼写，这也将算作 1 步。按完之后，您可以开始拼写 key
-// 的下一个字符（下一阶段）, 直至完成所有拼写。
+// 您可以将 ring 顺时针或逆时针旋转 一个位置 ，计为1步。
+// 旋转的最终目的是将字符串 ring 的一个字符与 12:00 方向对齐，并且这个字符必须等于字符 key[i] 。
+// 如果字符 key[i] 已经对齐到12:00方向，您需要按下中心按钮进行拼写，这也将算作 1 步。
+// 按完之后，您可以开始拼写 key 的下一个字符（下一阶段）, 直至完成所有拼写。
 //
 //
-// 示例：
+//
+//
+// 示例 1：
+//
+//
+//
+//
+//
+//
+//
 //
 // 输入: ring = "godding", key = "gd"
 // 输出: 4
 // 解释:
-//  对于 key 的第一个字符 'g'，已经在正确的位置, 我们只需要1步来拼写这个字符。
-//  对于 key 的第二个字符 'd'，我们需要逆时针旋转 ring "godding" 2步使它变成 "ddinggo"。
-//  当然, 我们还需要1步进行拼写。
-//  因此最终的输出是 4。
+// 对于 key 的第一个字符 'g'，已经在正确的位置, 我们只需要1步来拼写这个字符。
+// 对于 key 的第二个字符 'd'，我们需要逆时针旋转 ring "godding" 2步使它变成 "ddinggo"。
+// 当然, 我们还需要1步进行拼写。
+// 因此最终的输出是 4。
+//
+//
+// 示例 2:
+//
+//
+// 输入: ring = "godding", key = "godding"
+// 输出: 13
+//
+//
 //
 //
 // 提示：
 //
 //
-// ring 和 key 的字符串长度取值范围均为 1 至 100；
-// 两个字符串中都只有小写字符，并且均可能存在重复字符；
-// 字符串 key 一定可以由字符串 ring 旋转拼出。
+// 1 <= ring.length, key.length <= 100
+// ring 和 key 只包含小写英文字母
+// 保证 字符串 key 一定可以由字符串 ring 旋转拼出
 //
-// Related Topics 深度优先搜索 分治算法 动态规划
-// 👍 129 👎 0
+//
+// Related Topics 深度优先搜索 广度优先搜索 字符串 动态规划 👍 289 👎 0
+
 #define WIDTH 26
-#define MAXN  100
-typedef struct {
+typedef struct _node {
+    struct _node *next;
     int pos;
     int count;
 } node_t;
-int dist(int old, int now, int len) {
-    int d = (old + len - now) % len;
-    if (d > len / 2) d = len - d;
-    return d;
+int dist(int a, int b, int l) {
+    return fmin((a + l - b) % l, (b + l - a) % l);
 }
 int findRotateSteps(char *ring, char *key) {
-    node_t nodes[2][MAXN];
-    int map[WIDTH][MAXN + 1] = { 0 }, len = 0;
+    size_t rl = strlen(ring), now = 1, ans = INT32_MAX;
+    node_t nodes[rl], *map[WIDTH] = { NULL };
+    node_t *status[2] = { NULL }, help[rl * 2];
 
-    for (; ring[len]; ++len) {
-        map[ring[len] - 'a'][++map[ring[len] - 'a'][0]] = len;
+    for (int i = 0; i < rl; ++i) {
+        nodes[i] = (node_t) { map[ring[i] - 'a'], i }, map[ring[i] - 'a'] = &nodes[i];
     }
-
-    int possible = map[*key - 'a'][0];
-    for (int i = 1; i <= possible; ++i) {
-        nodes[0][i - 1] = (node_t) { map[*key - 'a'][i], dist(0, map[*key - 'a'][i], len) + 1 };
-    }
-
-    int now = 0;
-    while (*++key) {
-        for (int i = 1, count, pos; i <= map[*key - 'a'][0]; ++i) {
-            pos = map[*key - 'a'][i], count = nodes[now][0].count + dist(pos, nodes[now][0].pos, len) + 1;
-            for (int j = 1, tmp; j < possible; ++j) {
-                tmp = nodes[now][j].count + dist(pos, nodes[now][j].pos, len) + 1;
-                if (count > tmp) count = tmp;
+    help[0] = (node_t) { 0 }, status[0] = &help[0];
+    for (int i = 0, hp = 1; key[i]; ++i, now ^= 1) {
+        status[now] = NULL;
+        for (node_t *cur = map[key[i] - 'a']; cur; cur = cur->next) {
+            help[hp] = (node_t) { status[now], cur->pos, INT32_MAX };
+            for (node_t *pre = status[now ^ 1]; pre; pre = pre->next) {
+                help[hp].count = fmin(help[hp].count, pre->count + dist(pre->pos, cur->pos, rl) + 1);
             }
-            nodes[1 - now][i - 1] = (node_t) { pos, count };
+            status[now] = &help[hp], hp = (hp + 1) % (rl * 2);
         }
-        possible = map[*key - 'a'][0], now = 1 - now;
     }
-
-    int ans = nodes[now][0].count;
-    for (int i = 1; i < possible; ++i) {
-        if (ans > nodes[now][i].count) ans = nodes[now][i].count;
+    for (node_t *p = status[now ^ 1]; p; p = p->next) {
+        ans = fmin(ans, p->count);
     }
-
     return ans;
 }
