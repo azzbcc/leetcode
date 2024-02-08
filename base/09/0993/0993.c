@@ -45,6 +45,7 @@
 // Related Topics 树 广度优先搜索
 // 👍 154 👎 0
 
+#if 0
 typedef struct {
     int depth;
     struct TreeNode *parent;
@@ -67,3 +68,24 @@ bool isCousins(struct TreeNode *root, int x, int y) {
     find(root, y, 0, NULL, py);
     return px->depth == py->depth && px->parent != py->parent;
 }
+#else
+#define MAX 100
+typedef struct {
+    int depth;
+    struct TreeNode *parent, *node;
+} node_t;
+bool isCousins(struct TreeNode *root, int x, int y) {
+    node_t nodes[MAX + 1] = { 0 }, *queue[MAX] = { &nodes[root->val] };
+
+    if (x == y) return false;
+    queue[0]->node = root;
+    for (int i = 0, len = 1; i < len; ++i) {
+        struct TreeNode *l = queue[i]->node->left, *r = queue[i]->node->right;
+        if (l) nodes[l->val] = (node_t) { queue[i]->depth + 1, queue[i]->node, l };
+        if (r) nodes[r->val] = (node_t) { queue[i]->depth + 1, queue[i]->node, r };
+        if (l) queue[len++] = &nodes[l->val];
+        if (r) queue[len++] = &nodes[r->val];
+    }
+    return nodes[x].node && nodes[y].node && nodes[x].depth == nodes[y].depth && nodes[x].parent != nodes[y].parent;
+}
+#endif
