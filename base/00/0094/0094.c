@@ -1,43 +1,61 @@
-// 给定一个二叉树，返回它的中序 遍历。
+// 给定一个二叉树的根节点 root ，返回 它的 中序 遍历 。
 //
-// 示例:
 //
-// 输入: [1,null,2,3]
-//   1
-//    \
-//     2
-//    /
-//   3
 //
-// 输出: [1,3,2]
+// 示例 1：
+//
+//
+// 输入：root = [1,null,2,3]
+// 输出：[1,3,2]
+//
+//
+// 示例 2：
+//
+//
+// 输入：root = []
+// 输出：[]
+//
+//
+// 示例 3：
+//
+//
+// 输入：root = [1]
+// 输出：[1]
+//
+//
+//
+//
+// 提示：
+//
+//
+// 树中节点数目在范围 [0, 100] 内
+// -100 <= Node.val <= 100
+//
+//
+//
 //
 // 进阶: 递归算法很简单，你可以通过迭代算法完成吗？
-// Related Topics 栈 树 哈希表
-// 👍 687 👎 0
-#define MAXN 0x1000
-int *inorderTraversal(struct TreeNode *root, int *returnSize) {
-    int result[MAXN], len = 0, *ans;
-    while (root) {
-        if (root->left) {
-            struct TreeNode *morris_prev = root->left;
-            while (morris_prev->right && morris_prev->right != root) {
-                morris_prev = morris_prev->right;
-            }
+//
+// Related Topics 栈 树 深度优先搜索 二叉树 👍 2013 👎 0
 
-            if (morris_prev->right) {
-                morris_prev->right = NULL;
+#define MAX 100
+int *inorderTraversal(struct TreeNode *root, int *returnSize) {
+    int help[MAX], len = 0;
+
+    for (struct TreeNode *morris; root;) {
+        if (root->left) {
+            for (morris = root->left; morris->right && morris->right != root; morris = morris->right) {}
+            if (morris->right) {
+                morris->right = NULL;
             } else {
-                morris_prev->right = root;
-                root               = root->left;
+                morris->right = root, root = root->left;
                 continue;
             }
         }
-        result[len++] = root->val;
-        root          = root->right;
+        help[len++] = root->val, root = root->right;
     }
 
-    *returnSize = len, ans = calloc(len, sizeof(int));
-    memcpy(ans, result, len * sizeof(int));
-
+    int *ans = malloc((*returnSize = len) * sizeof(int));
+    memcpy(ans, help, len * sizeof(int));
     return ans;
 }
