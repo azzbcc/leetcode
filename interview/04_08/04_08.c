@@ -30,19 +30,11 @@
 // Related Topics 树
 // 👍 18 👎 0
 
-static int dfs(struct TreeNode *root, struct TreeNode *p, struct TreeNode *q, struct TreeNode **ans) {
-    int count = 0;
-    if (!root) return count;
-    if (root == p || root == q) count++;
-
-    if (!*ans) count += dfs(root->left, p, q, ans);
-    if (!*ans) count += dfs(root->right, p, q, ans);
-    if (!*ans && count == 2) *ans = root;
-    return count;
-}
 struct TreeNode *lowestCommonAncestor(struct TreeNode *root, struct TreeNode *p, struct TreeNode *q) {
-    struct TreeNode *ans = NULL;
-    dfs(root, p, q, &ans);
-
-    return ans;
+    if (!root || root == p || root == q) return root;
+    struct TreeNode *l = lowestCommonAncestor(root->left, p, q);
+    struct TreeNode *r = lowestCommonAncestor(root->right, p, q);
+    if (!l) return r;
+    if (!r) return l;
+    return root;
 }
