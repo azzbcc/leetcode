@@ -1,50 +1,62 @@
-//给定一个二叉树，返回其节点值自底向上的层次遍历。 （即按从叶子节点所在层到根节点所在的层，逐层从左向右遍历）
-//
-// 例如：
-//给定二叉树 [3,9,20,null,null,15,7],
-//
-//     3
-//   / \
-//  9  20
-//    /  \
-//   15   7
+// 给你二叉树的根节点 root ，返回其节点值 自底向上的层序遍历 。
+// （即按从叶子节点所在层到根节点所在的层，逐层从左向右遍历）
 //
 //
-// 返回其自底向上的层次遍历为：
 //
-// [
-//  [15,7],
-//  [9,20],
-//  [3]
-//]
+// 示例 1：
 //
-// Related Topics 树 广度优先搜索
-// 👍 309 👎 0
-#define MAXN 0x1000
-int help[MAXN][MAXN], help_col[MAXN], help_len;
-void dfs(struct TreeNode *root, int depth) {
-    if (!root) {
-        if (help_len < depth) help_len = depth;
-        return;
-    }
+//
+// 输入：root = [3,9,20,null,null,15,7]
+// 输出：[[15,7],[9,20],[3]]
+//
+//
+// 示例 2：
+//
+//
+// 输入：root = [1]
+// 输出：[[1]]
+//
+//
+// 示例 3：
+//
+//
+// 输入：root = []
+// 输出：[]
+//
+//
+//
+//
+// 提示：
+//
+//
+// 树中节点数目在范围 [0, 2000] 内
+// -1000 <= Node.val <= 1000
+//
+//
+// Related Topics 树 广度优先搜索 二叉树 👍 766 👎 0
 
-    help[depth][help_col[depth]++] = root->val;
-    dfs(root->left, depth + 1);
-    dfs(root->right, depth + 1);
-}
+#define MAX 2000
+typedef struct {
+    struct TreeNode *node;
+    int depth;
+} node_t;
 int **levelOrderBottom(struct TreeNode *root, int *returnSize, int **returnColumnSizes) {
-    help_len = 0;
-    memset(help_col, 0, sizeof(help_col));
-    dfs(root, 0);
+    node_t queue[MAX] = { { root } };
+    int **ans, len = 0, help_col[MAX] = { 0 }, *help[MAX] = { NULL };
 
-    int **ans   = calloc(help_len, sizeof(int *));
-    *returnSize = help_len, *returnColumnSizes = calloc(help_len, sizeof(int));
-    for (int i = 0, pos; i < help_len; ++i) {
-        pos                     = help_len - i - 1;
-        ans[i]                  = calloc(help_col[pos], sizeof(int));
-        (*returnColumnSizes)[i] = help_col[pos];
-        memcpy(ans[i], help[pos], (*returnColumnSizes)[i] * sizeof(int));
+    for (int l = 0, r = 1, last = 0; root && last < r; ++len, last = l) {
+        help[len] = malloc((help_col[len] = r - last) * sizeof(int));
+        for (int d = queue[l].depth; l < r && queue[l].depth == d; ++l) {
+            help[len][l - last] = queue[l].node->val;
+            if (queue[l].node->left) queue[r++] = (node_t) { queue[l].node->left, d + 1 };
+            if (queue[l].node->right) queue[r++] = (node_t) { queue[l].node->right, d + 1 };
+        }
     }
 
+    *returnSize = len;
+    ans = malloc(len * sizeof(int *)), *returnColumnSizes = malloc(len * sizeof(int));
+    for (int i = 0; i < len; ++i) {
+        ans[i] = help[len - i - 1], returnColumnSizes[0][i] = help_col[len - i - 1];
+    }
     return ans;
 }
