@@ -12,23 +12,58 @@
 
 #include "0103.c"
 
-START_TEST(test_official) {
-    int arr[] = { 3, 9, 20, null, null, 15, 7 };
-    tree_t t  = tree_create(arr);
-    int len, *returnColumnSizes, **ans = zigzagLevelOrder(t, &len, &returnColumnSizes);
-    int target[][2] = { { 3 }, { 20, 9 }, { 15, 7 } }, col[] = { 1, 2, 2 };
+START_TEST(test_official_1) {
+    int len, *returnColumnSizes;
+    int arr[] = { 3, 9, 20, null, null, 15, 7 }, col[] = { 1, 2, 2 };
+    int *target[] = { (int[]) { 3 }, (int[]) { 20, 9 }, (int[]) { 15, 7 } };
 
+    tree_t t  = tree_create(arr);
+    int **ans = zigzagLevelOrder(t, &len, &returnColumnSizes);
     ck_assert_int_eq(len, LEN(target));
     for (int i = 0; i < len; ++i) {
         ck_assert_int_eq(returnColumnSizes[i], col[i]);
         ck_assert_mem_eq(ans[i], target[i], col[i] * sizeof(int));
         free(ans[i]);
     }
-    free(ans);
     free(returnColumnSizes);
     tree_free(t);
+    free(ans);
+}
+
+START_TEST(test_official_2) {
+    int len, *returnColumnSizes;
+    int arr[] = { 1 }, col[] = { 1 }, *target[] = { (int[]) { 1 } };
+    tree_t t  = tree_create(arr);
+    int **ans = zigzagLevelOrder(t, &len, &returnColumnSizes);
+    ck_assert_int_eq(len, LEN(target));
+    for (int i = 0; i < len; ++i) {
+        ck_assert_int_eq(returnColumnSizes[i], col[i]);
+        ck_assert_mem_eq(ans[i], target[i], col[i] * sizeof(int));
+        free(ans[i]);
+    }
+    free(returnColumnSizes);
+    tree_free(t);
+    free(ans);
+}
+
+START_TEST(test_official_3) {
+    int len, *returnColumnSizes;
+    int arr[] = {}, col[] = {}, *target[] = {};
+    tree_t t  = tree_create(arr);
+    int **ans = zigzagLevelOrder(t, &len, &returnColumnSizes);
+    ck_assert_int_eq(len, LEN(target));
+    for (int i = 0; i < len; ++i) {
+        ck_assert_int_eq(returnColumnSizes[i], col[i]);
+        ck_assert_mem_eq(ans[i], target[i], col[i] * sizeof(int));
+        free(ans[i]);
+    }
+    free(returnColumnSizes);
+    tree_free(t);
+    free(ans);
 }
 
 void tcase_complete(TCase *t) {
-    tcase_add_test(t, test_official);
+    tcase_add_test(t, test_official_1);
+    tcase_add_test(t, test_official_2);
+    tcase_add_test(t, test_official_3);
 }

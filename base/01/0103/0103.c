@@ -1,81 +1,61 @@
-// 给定一个二叉树，返回其节点值的锯齿形层序遍历。（即先从左往右，再从右往左进行下一层遍历，以此类推，层与层之间交替进行）。
-//
-// 例如：
-// 给定二叉树 [3,9,20,null,null,15,7],
+// 给你二叉树的根节点 root ，返回其节点值的 锯齿形层序遍历 。
+// （即先从左往右，再从右往左进行下一层遍历，以此类推，层与层之间交替进行）。
 //
 //
-//    3
-//   / \
-//  9  20
-//    /  \
-//   15   7
+//
+// 示例 1：
 //
 //
-// 返回锯齿形层序遍历如下：
+// 输入：root = [3,9,20,null,null,15,7]
+// 输出：[[3],[20,9],[15,7]]
 //
 //
-// [
-//  [3],
-//  [20,9],
-//  [15,7]
-// ]
+// 示例 2：
 //
-// Related Topics 栈 树 广度优先搜索
-// 👍 328 👎 0
+//
+// 输入：root = [1]
+// 输出：[[1]]
+//
+//
+// 示例 3：
+//
+//
+// 输入：root = []
+// 输出：[]
+//
+//
+//
+//
+// 提示：
+//
+//
+// 树中节点数目在范围 [0, 2000] 内
+// -100 <= Node.val <= 100
+//
+//
+// Related Topics 树 广度优先搜索 二叉树 👍 848 👎 0
 
-#define MAXN      0x100
-#define INIT_SIZE 0x100
-#define INCR_SIZE 0x10
-
+#define MAX 2000
 typedef struct {
-    int top, size;
-    void *base[];
-} * sstack_t;
-sstack_t stack_create() {
-    sstack_t stack = malloc(sizeof(*stack) + INIT_SIZE * sizeof(void *));
-    stack->top = -1, stack->size = INIT_SIZE;
-    return stack;
-}
-int stack_size(sstack_t s) {
-    return s->top + 1;
-}
-void stack_push(sstack_t *stack, void *val) {
-    sstack_t s = *stack;
-    if (++s->top >= s->size) *stack = s = realloc(s, sizeof(*s) + (s->size += INCR_SIZE) * sizeof(void *));
-    s->base[s->top] = val;
-}
-void *stack_pop(sstack_t s) {
-    assert(s->top >= 0);
-    return s->base[s->top--];
-}
-void stack_free(sstack_t s) {
-    free(s);
-}
+    struct TreeNode *node;
+    int depth;
+} node_t;
 int **zigzagLevelOrder(struct TreeNode *root, int *returnSize, int **returnColumnSizes) {
-    int len = 0, **ans = malloc(MAXN * sizeof(int *));
-    sstack_t s[2] = { stack_create(), stack_create() };
+    node_t queue[MAX] = { { root } };
+    int **ans, len = 0, help_col[MAX] = { 0 }, *help[MAX] = { NULL };
 
-    if (root) stack_push(&s[0], root);
-    *returnColumnSizes = malloc(MAXN * sizeof(int));
-
-    for (int cur = 0, size = stack_size(s[0]); size; len++, cur = 1 - cur, size = stack_size(s[cur])) {
-        (*returnColumnSizes)[len] = size, ans[len] = malloc(size * sizeof(int));
-        for (struct TreeNode *now; size--;) {
-            now = stack_pop(s[cur]);
-            if (cur) {
-                if (now->left) stack_push(&s[1 - cur], now->left);
-                if (now->right) stack_push(&s[1 - cur], now->right);
-            } else {
-                if (now->right) stack_push(&s[1 - cur], now->right);
-                if (now->left) stack_push(&s[1 - cur], now->left);
-            }
-            ans[len][size] = now->val;
+    for (int l = 0, r = 1, last = 0; root && last < r; ++len, last = l) {
+        help[len] = malloc((help_col[len] = r - last) * sizeof(int));
+        for (int d = queue[l].depth; l < r && queue[l].depth == d; ++l) {
+            help[len][len % 2 ? (help_col[len] - 1 - l + last) : (l - last)] = queue[l].node->val;
+            if (queue[l].node->left) queue[r++] = (node_t) { queue[l].node->left, d + 1 };
+            if (queue[l].node->right) queue[r++] = (node_t) { queue[l].node->right, d + 1 };
         }
     }
 
-    stack_free(s[0]);
-    stack_free(s[1]);
     *returnSize = len;
-
+    ans = malloc(len * sizeof(int *)), *returnColumnSizes = malloc(len * sizeof(int));
+    memcpy(ans, help, len * sizeof(int *));
+    memcpy(*returnColumnSizes, help_col, len * sizeof(int));
     return ans;
 }
