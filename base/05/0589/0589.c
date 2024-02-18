@@ -36,19 +36,15 @@
 // 进阶：递归法很简单，你可以使用迭代法完成此题吗?
 // Related Topics 栈 树 深度优先搜索 👍 244 👎 0
 
-#define MAXN 1000
-#define MAXM 10000
+#define MAX 10000
 int *preorder(struct Node *root, int *returnSize) {
-    int top = 0, len = 0, help[MAXM];
-    struct Node *stack[MAXN] = { root };
+    int top = 0, len = 0, help[MAX];
+    struct Node *stack[MAX] = { root };
 
-    if (root) {
-        for (struct Node *cur; top >= 0;) {
-            cur = stack[top--], help[len++] = cur->val;
-            for (int i = cur->numChildren - 1; i >= 0; --i) {
-                stack[++top] = cur->children[i];
-            }
-        }
+    if (!root) return malloc(*returnSize = 0);
+    for (struct Node *cur; top >= 0;) {
+        cur = stack[top--], help[len++] = cur->val;
+        for (int i = cur->numChildren - 1; i >= 0; stack[++top] = cur->children[i--]) {}
     }
 
     int *ans = malloc((*returnSize = len) * sizeof(int));
