@@ -27,6 +27,7 @@ static node_t node_create(int* arr, size_t size) {
         nodes[i] = arr[i] == null ? NULL : calloc(1, sizeof(struct Node));
         if (nodes[i]) nodes[i]->val = arr[i];
     }
+    if (nodes[1]) free(nodes[1]);
     for (int l = 2, r, p = 0; l < size; l = r + 1) {
         for (r = l; r < size && nodes[r]; ++r) {}
         nodes[p]->children = malloc((nodes[p]->numChildren = r - l) * sizeof(node_t));
