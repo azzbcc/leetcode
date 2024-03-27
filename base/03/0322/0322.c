@@ -38,6 +38,7 @@
 //
 // Related Topics 广度优先搜索 数组 动态规划 👍 2789 👎 0
 
+#if 0
 int coinChange(int *coins, int size, int amount) {
     int dp[amount + 1];
     if (!amount) return 0;
@@ -52,3 +53,22 @@ int coinChange(int *coins, int size, int amount) {
     }
     return dp[amount] == 0x3f3f3f3f ? -1 : dp[amount];
 }
+#else
+int coinChange(int *coins, int size, int amount) {
+    int front = 0, rear = 0;
+    int dp[amount + 1], queue[amount + 1];
+
+    memset(dp, 0xff, sizeof(dp));
+    queue[rear++] = dp[0] = 0;
+    for (; front < rear;) {
+        int now = queue[front++];
+        for (int i = 0; i < size; ++i) {
+            if (0L + now + coins[i] > amount) continue;
+            if (now + coins[i] == amount) return dp[now] + 1;
+            if (dp[now + coins[i]] != -1) continue;
+            dp[queue[rear++] = now + coins[i]] = dp[now] + 1;
+        }
+    }
+    return dp[amount];
+}
+#endif
