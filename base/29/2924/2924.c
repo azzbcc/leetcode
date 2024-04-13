@@ -56,6 +56,7 @@
 //
 // Related Topics 图 👍 21 👎 0
 
+#if 0
 int findChampion(int n, int **edges, int size, int *colSize) {
     int degree[n], ans = -1;
 
@@ -68,3 +69,16 @@ int findChampion(int n, int **edges, int size, int *colSize) {
     }
     return ans;
 }
+#else
+int findChampion(int n, int **edges, int size, int *colSize) {
+    bool visited[n];
+    int ans = n * (n - 1) / 2;
+
+    memset(visited, false, sizeof(visited));
+    for (int i = 0, to; i < size; ++i) {
+        if (visited[to = edges[i][1]]) continue;
+        visited[to] = true, n -= 1, ans -= to;
+    }
+    return n == 1 ? ans : -1;
+}
+#endif
